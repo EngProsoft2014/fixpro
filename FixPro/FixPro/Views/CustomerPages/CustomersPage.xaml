@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:Controls="clr-namespace:FixPro.Controls"
+                      xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                      xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                      xmlns:vm="clr-namespace:FixPro.ViewModels"
+                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                      x:Name="page"
+                      BackgroundColor="White"
+             x:Class="FixPro.Views.CustomerPages.CustomersPage">
+
+    <ContentPage.BindingContext>
+        <vm:CustomersViewModel></vm:CustomersViewModel>
+    </ContentPage.BindingContext>
+
+    <StackLayout>
+        <!--Toolbar-->
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+
+            <StackLayout Orientation="Horizontal" Spacing="0" Padding="15,10,15,10" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+
+                <Image x:Name="imgBack">
+                    <Image.Source>
+                        <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
+                    </Image.Source>
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                    </Image.GestureRecognizers>
+                </Image>
+
+                <Label x:Name="lblTitle" Text="Customers" HeightRequest="30"
+                        VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
+                        HorizontalOptions="EndAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            </StackLayout>
+
+            <Label 
+                   Text="{Binding BranchName}" 
+                   TextColor="#b66dff"
+                   FontSize="13"
+                   Margin="0,0,20,0"
+                   VerticalTextAlignment="Center"
+                   HorizontalOptions="End"></Label>
+        </StackLayout>
+
+        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray" Margin="0,0,0,10"></Line>
+
+        <Grid VerticalOptions="FillAndExpand">
+            <StackLayout>
+                <StackLayout Margin="30,0,30,0">
+                    <!--search bar Phone or Address-->
+                    <yummy:PancakeView BackgroundColor="White" HeightRequest="42" CornerRadius="25" HorizontalOptions="FillAndExpand">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                            <SearchBar x:Name="srchPhoneOrAddress" 
+                                   Text="{Binding PhoneView}" 
+                                   Placeholder="Search by Phone or Address"
+                                   HorizontalOptions="FillAndExpand"
+                                   FontSize="13"
+                                   VerticalTextAlignment="Center"
+                                   TextChanged="srchPhone_TextChanged">
+                            </SearchBar>
+                        </StackLayout>
+
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="2" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+
+                </StackLayout>
+
+                <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray" Margin="0,10,0,10"></Line>
+
+
+                <StackLayout Margin="0,0,0,20">
+
+                    <ListView x:Name="lstCustomers" SelectionMode="None" 
+                          ItemsSource="{Binding LstCustomers}"  
+                          HasUnevenRows="True" 
+                          VerticalScrollBarVisibility="Never">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <StackLayout Padding="20,10,20,10" Spacing="10">
+                                        <StackLayout Orientation="Horizontal">
+                                            <yummy:PancakeView BackgroundColor="#f1e3ff" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                                <Label 
+                                                       FontAttributes="Bold"
+                                                       TextColor="Black" 
+                                                       HorizontalTextAlignment="Start"
+                                                       VerticalTextAlignment="Center"
+                                                       Padding="20,7,20,7">
+                                                    <Label.Text>
+                                                        <MultiBinding StringFormat="{}{0} {1}">
+                                                            <Binding Path="FirstName" />
+                                                            <Binding Path="LastName" />
+                                                        </MultiBinding>
+                                                    </Label.Text>
+                                                </Label>
+                                                <yummy:PancakeView.Border>
+                                                    <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
+                                                </yummy:PancakeView.Border>
+                                                <yummy:PancakeView.Shadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                </yummy:PancakeView.Shadow>
+                                            </yummy:PancakeView>
+
+                                            <StackLayout Orientation="Horizontal"  HorizontalOptions="End" Padding="0" Margin="10,0,0,0" Spacing="0">
+                                                <Image x:Name="imgTel">
+                                                    <Image.Source>
+                                                        <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="13"></FontImageSource>
+                                                    </Image.Source>
+                                                </Image>
+                                                <Label Text="{Binding Phone1}" 
+                                                       FontSize="12" 
+                                                       WidthRequest="100" 
+                                                       FontAttributes="Bold" 
+                                                       HorizontalTextAlignment="Center"
+                                                       VerticalTextAlignment="Center"></Label>
+                                            </StackLayout>
+
+                                        </StackLayout>
+
+                                        <StackLayout Orientation="Horizontal" Spacing="10" Padding="10,0,0,0">
+                                            <Image>
+                                                <Image.Source>
+                                                    <FontImageSource FontFamily="FontIconSolid" Color="#debdff" Glyph="" Size="18"></FontImageSource>
+                                                </Image.Source>
+                                            </Image>
+                                            <Label Text="{Binding Address}" FontAttributes="Italic" VerticalTextAlignment="Center" FontSize="14"></Label>
+
+                                        </StackLayout>
+                                        <StackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding BindingContext.SelecteCustomerDetails,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                        </StackLayout.GestureRecognizers>
+
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.Triggers>
+                            <DataTrigger TargetType="ListView" Binding="{Binding LstCustomers.Count}" Value="0">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                        </ListView.Triggers>
+                    </ListView>
+
+                    <StackLayout.Triggers>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding Source={x:Reference stkNoData}, Path=IsVisible}" Value="True">
+                            <Setter Property="HeightRequest" Value="0"></Setter>
+                            <Setter Property="IsVisible" Value="False"></Setter>
+                        </DataTrigger>
+                    </StackLayout.Triggers>
+                </StackLayout>
+
+                <!--No Data-->
+                <StackLayout x:Name="stkNoData" Padding="0,50,0,0" IsVisible="False" HeightRequest="100" HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
+                    <Image Source="noresult.png" Aspect="AspectFill"></Image>
+                    <StackLayout.Triggers>
+                        <MultiTrigger TargetType="StackLayout">
+                            <MultiTrigger.Conditions>
+                                <BindingCondition Binding="{Binding LstCustomers.Count}" Value="0" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="IsVisible" Value="True"></Setter>
+                        </MultiTrigger>
+                    </StackLayout.Triggers>
+                </StackLayout>
+            </StackLayout>
+            <yummy:PancakeView CornerRadius="100"
+                               BackgroundColor="#8f1fff" 
+                               Padding="5" 
+                               VerticalOptions="End"
+                               HorizontalOptions="End" 
+                               Margin="30"
+                               HeightRequest="40"
+                               WidthRequest="40">
+                <Label TranslationY="-8"
+                    VerticalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    VerticalTextAlignment="Center"
+                    Text="+"
+                    TextColor="White"
+                    FontSize="40"></Label>
+                <yummy:PancakeView.Shadow>
+                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                </yummy:PancakeView.Shadow>
+                <yummy:PancakeView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BindingContext.CreateNewCustomer,Source={x:Reference page}}" ></TapGestureRecognizer>
+                </yummy:PancakeView.GestureRecognizers>
+            </yummy:PancakeView>
+
+        </Grid>
+
+        <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+        </ActivityIndicator>
+
+    </StackLayout>
+
+</Controls:CustomsPage>

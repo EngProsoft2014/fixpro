@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:Controls="clr-namespace:FixPro.Controls"
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             xmlns:Helpers="clr-namespace:FixPro.Helpers"
+             xmlns:density="clr-namespace:Xamarin.DeviceDensity.Plugin;assembly=Xamarin.DeviceDensity.Plugin"
+             mc:Ignorable="d"
+             x:Class="FixPro.Controls.ToolBar">
+
+    <StackLayout Spacing="0">
+        <Controls:InternetCheck></Controls:InternetCheck>
+
+        <StackLayout Orientation="Horizontal" Spacing="0" Padding="15,10,15,10" VerticalOptions="FillAndExpand">
+            <Image x:Name="imgBack">
+                <Image.Source>
+                    <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
+                </Image.Source>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                </Image.GestureRecognizers>
+            </Image>
+
+            <Label x:Name="lblTitle" Text="Welcome to Xamarin.Forms!" HeightRequest="30"
+                VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
+                HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+        </StackLayout>
+    </StackLayout>
+
+</StackLayout>

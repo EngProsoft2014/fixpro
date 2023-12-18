@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:Controls="clr-namespace:FixPro.Controls"
+                      xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                      xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                      xmlns:vm="clr-namespace:FixPro.ViewModels"
+                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                      xmlns:schedule="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms" xmlns:signature="clr-namespace:SignaturePad.Forms;assembly=SignaturePad.Forms"
+                      BackgroundColor="White"
+                      x:Name="page"
+             x:Class="FixPro.Views.CustomerPages.CashOrCreditPaymentPage">
+
+    <ContentPage.BindingContext>
+        <vm:PaymentsViewModel></vm:PaymentsViewModel>
+    </ContentPage.BindingContext>
+    <StackLayout>
+
+        <!--Payment Credit Card-->
+        <ScrollView IsVisible="False" VerticalOptions="FillAndExpand">
+            <StackLayout>
+
+                <!--Toolbar Credit Card-->
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="20,10,20,10">
+
+                    <Image x:Name="imgback">
+                        <Image.Source>
+                            <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
+                        </Image.Source>
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                        </Image.GestureRecognizers>
+                    </Image>
+
+                    <Label x:Name="lblTitle" Text="Credit Card" HeightRequest="30"
+                        VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
+                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                </StackLayout>
+
+                <StackLayout Padding="20,20,20,0" VerticalOptions="FillAndExpand" TranslationY="0" Spacing="25">
+                    <StackLayout Orientation="Horizontal" Spacing="20" HorizontalOptions="EndAndExpand" Margin="0,0,20,10">
+                        <Image x:Name="imgBack">
+                            <Image.Source>
+                                <FontImageSource FontFamily="FontIconSolid" Color="#b66dff" Glyph="" Size="25"></FontImageSource>
+                            </Image.Source>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.ScanCommand,Source={x:Reference page}}"></TapGestureRecognizer>
+                            </Image.GestureRecognizers>
+                        </Image>
+
+                        <Label Text="Scan Card" VerticalTextAlignment="Center"></Label>
+                    </StackLayout>
+
+                    <yummy:PancakeView BackgroundColor="White" Padding="5,5,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                        <Entry Text="{Binding HolderName}"          
+                     TextColor="Gray"
+                     Placeholder="Card holder name"
+                     FontSize="12"
+                     HorizontalOptions="FillAndExpand"
+                     VerticalTextAlignment="Center">
+                        </Entry>
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+
+                    <yummy:PancakeView BackgroundColor="White" Padding="5,5,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                        <Entry Text="{Binding CardNumber}"
+                     TextColor="Gray"
+                     Placeholder="Card Number"
+                     FontSize="12"
+                     HorizontalOptions="FillAndExpand"
+                     VerticalTextAlignment="Center">
+                        </Entry>
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+
+                    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                        <yummy:PancakeView BackgroundColor="White" Padding="5,5,5,0" CornerRadius="10" WidthRequest="160" HorizontalOptions="StartAndExpand">
+                            <Entry Text="{Binding ExpirationDate}"               
+                         TextColor="Gray"
+                         Placeholder="Expired Date"
+                         FontSize="12"
+                         HorizontalOptions="FillAndExpand"
+                         VerticalTextAlignment="Center">
+                            </Entry>
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+
+                        <Image x:Name="imgCard" HorizontalOptions="Center" Margin="10,0,10,0">
+                            <Image.Source>
+                                <FontImageSource FontFamily="FontIconSolid" Glyph="" Color="Gray" Size="22"></FontImageSource>
+                            </Image.Source>
+                        </Image>
+
+                        <yummy:PancakeView BackgroundColor="White" Padding="5,5,5,0" CornerRadius="10" WidthRequest="150" HorizontalOptions="FillAndExpand">
+                            <Entry Text="{Binding cvv}"
+                             TextColor="Gray"
+                             Placeholder="Cvv"
+                             FontSize="12"
+                             HorizontalOptions="FillAndExpand"
+                             VerticalTextAlignment="Center">
+                            </Entry>
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                    </StackLayout>
+
+                    <StackLayout Orientation="Horizontal" Spacing="20">
+                        <StackLayout Orientation="Horizontal" Padding="5,5,5,5" Spacing="10">
+                            <Label Text="Full Payment" TextColor="#333" FontSize="14" VerticalTextAlignment="Center"></Label>
+                            <Switch x:Name="swtPayCredit" IsToggled="True" Scale="1.2" Toggled="swtPayCredit_Toggled" ThumbColor="#8f1fff" OnColor="#debdff"></Switch>
+                        </StackLayout>
+
+                        <yummy:PancakeView x:Name="yumPayCredit" BackgroundColor="White" TranslationX="18" Padding="5,5,5,0" CornerRadius="10" WidthRequest="160" HorizontalOptions="StartAndExpand">
+                            <Entry x:Name="entryNewAmount"
+                               Text="{Binding OnePayment.Amount}"
+                               Placeholder="{Binding OneInvoice.Net}"
+                               FontSize="12"
+                               Keyboard="Numeric"
+                               VerticalTextAlignment="Center"
+                               TextChanged="Entry_TextChanged"></Entry>
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <yummy:PancakeView.Triggers>
+                                <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding Source={x:Reference swtPayCredit},Path=IsToggled}" Value="True">
+                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                </DataTrigger>
+                            </yummy:PancakeView.Triggers>
+                        </yummy:PancakeView>
+                    </StackLayout>
+
+                    <StackLayout Spacing="10">
+                        <Label Text="Input Your Signature"/>
+                        <Frame BorderColor="Gray" HasShadow="True" Padding="2">
+                            <StackLayout Orientation="Horizontal">
+                                <signature:SignaturePadView x:Name="signaturePadCredit" 
+                                                            StrokeColor="Blue"
+                                                            HeightRequest="230" 
+                                                            StrokeWidth="3"
+                                                            BackgroundColor="White" />
+                                <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                                <StackLayout>
+                                    <Button Text="Save" HeightRequest="35" TextColor="White" BackgroundColor="#b66dff" Padding="2" WidthRequest="100" Clicked="Button_Clicked"></Button>
+                                    <Button Text="Clear" HeightRequest="35" TextColor="#b66dff" BorderColor="#b66dff" BorderWidth="1" BackgroundColor="White" Padding="2" WidthRequest="100" Clicked="Button_Clicked_1"></Button>
+                                </StackLayout>
+                            </StackLayout>
+
+                        </Frame>
+                    </StackLayout>
+
+                    <yummy:PancakeView BackgroundColor="#8f1fff" Padding="5,12,5,12" Margin="0,20,0,0" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="End">
+                        <Label x:Name="btnPayCredit" Text="{Binding OneInvoice.Net,StringFormat='Pay USD ${0}'}"
+                                 TextColor="White"
+                                 FontSize="16"
+                                 HorizontalOptions="CenterAndExpand"
+                                 VerticalTextAlignment="Center">
+                        </Label>
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                        <yummy:PancakeView.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BindingContext.CreditPayNow,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></TapGestureRecognizer>
+                        </yummy:PancakeView.GestureRecognizers>
+                    </yummy:PancakeView>
+                </StackLayout>
+                
+            </StackLayout>
+            <ScrollView.Triggers>
+                <DataTrigger TargetType="ScrollView" Binding="{Binding CashOrCredit}" Value="2">
+                    <Setter Property="IsVisible" Value="True"></Setter>
+                </DataTrigger>
+            </ScrollView.Triggers>
+        </ScrollView>
+
+
+        <ScrollView IsVisible="False" VerticalOptions="FillAndExpand">
+            <StackLayout>
+
+                <!--Toolbar Payment Cash-->
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="20,10,20,10">
+
+                    <Image x:Name="imgBack2">
+                        <Image.Source>
+                            <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
+                        </Image.Source>
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                        </Image.GestureRecognizers>
+                    </Image>
+
+                    <Label x:Name="lblTitle2" Text="Payment Cash" HeightRequest="30"
+                            VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
+                            HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                </StackLayout>
+
+                <StackLayout Padding="20,30,20,0" VerticalOptions="FillAndExpand" Spacing="50">
+                    <yummy:PancakeView HeightRequest="160" Padding="0,10,0,10" CornerRadius="20" BackgroundGradientStartPoint="1,1" BackgroundGradientEndPoint="1,0">
+                        <StackLayout  Spacing="0">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                                <Label x:Name="lblPayCash" Text="{Binding OneInvoice.Net}" 
+                                       FontSize="50"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center" 
+                                       VerticalOptions="Center"
+                                       FontFamily="InterBold" 
+                                       TextColor="#FFFFFF"></Label>
+                                <Label Text="USD" 
+                                       FontSize="18"
+                                       HorizontalOptions="Start"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center" 
+                                       VerticalOptions="Center"
+                                       FontFamily="AlmaraiBold" 
+                                       TextColor="#FFFFFF">
+                                </Label>
+                            </StackLayout>
+
+
+                            <Label Text="Outstanding Balance" 
+                                   FontSize="23"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center" 
+                                   VerticalOptions="Center"
+                                   FontFamily="AlmaraiRegular" 
+                                   TextColor="#FFFFFF"></Label>
+                        </StackLayout>
+                        <yummy:PancakeView.BackgroundGradientStops>
+                            <yummy:GradientStopCollection>
+                                <yummy:GradientStop Color="#8f1fff" Offset="0"></yummy:GradientStop>
+                                <yummy:GradientStop Color="#b66dff" Offset="0.5"></yummy:GradientStop>
+                                <yummy:GradientStop Color="#c995fc" Offset="1.0"></yummy:GradientStop>
+                                <yummy:GradientStop Color="#e3c7ff" Offset="1.0"></yummy:GradientStop>
+                            </yummy:GradientStopCollection>
+                        </yummy:PancakeView.BackgroundGradientStops>
+                    </yummy:PancakeView>
+
+                    <StackLayout Orientation="Horizontal" Spacing="20">
+                        <StackLayout Orientation="Horizontal" Padding="5,5,5,5" Spacing="10">
+                            <Label Text="Full Payment" TextColor="#333" FontSize="14" VerticalTextAlignment="Center"></Label>
+                            <Switch x:Name="swtPayCash" IsToggled="True" Scale="1.2" Toggled="swtPayCredit_Toggled" ThumbColor="#8f1fff" OnColor="#debdff"></Switch>
+                        </StackLayout>
+
+                        <yummy:PancakeView x:Name="yumPayCash" BackgroundColor="White" TranslationX="18" Padding="5,5,5,0" Margin="0,0,20,0" CornerRadius="10" WidthRequest="150" HorizontalOptions="EndAndExpand">
+                            <Entry x:Name="entryCashNewAmount"
+                                   Text="{Binding OnePayment.Amount}"
+                                   Placeholder="{Binding OneInvoice.Net}"
+                                   FontSize="12"
+                                   Keyboard="Numeric"
+                                   VerticalTextAlignment="Center"
+                                   TextChanged="Entry_TextChanged"></Entry>
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <yummy:PancakeView.Triggers>
+                                <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding Source={x:Reference swtPayCash},Path=IsToggled}" Value="True">
+                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                </DataTrigger>
+                            </yummy:PancakeView.Triggers>
+                        </yummy:PancakeView>
+                    </StackLayout>
+
+                    <StackLayout Spacing="10">
+                        <Label Text="Input Your Signature"/>
+                        <Frame BorderColor="Gray" HasShadow="True" Padding="2">
+                            <StackLayout>
+                                <signature:SignaturePadView x:Name="signaturePadCash" 
+                                                        StrokeColor="Blue"  
+                                                        HeightRequest="200"
+                                                        StrokeWidth="3"
+                                                        BackgroundColor="White" />
+                                <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                                <StackLayout  Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Margin="5">
+                                    <Button Text="Save" HeightRequest="35" TextColor="White" BackgroundColor="#b66dff" Padding="2" WidthRequest="100" Clicked="Button_Clicked_2"></Button>
+                                    <Button Text="Clear" HeightRequest="35" TextColor="#b66dff" BorderColor="#b66dff" BorderWidth="1" BackgroundColor="White" Padding="2" WidthRequest="100" Clicked="Button_Clicked_3"></Button>
+                                </StackLayout>
+                            </StackLayout>
+
+                        </Frame>
+                    </StackLayout>
+
+                    <yummy:PancakeView Padding="5,10,5,10" Margin="0,0,0,30" CornerRadius="10" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand" BackgroundGradientStartPoint="1,1" BackgroundGradientEndPoint="1,0">
+                        <Label x:Name="btnPayCash" Text="{Binding OneInvoice.Net,StringFormat='Pay USD ${0}'}"
+                                 TextColor="White"
+                                 FontSize="16"
+                                 HorizontalOptions="CenterAndExpand"
+                                 VerticalTextAlignment="Center">
+                        </Label>
+                        <yummy:PancakeView.BackgroundGradientStops>
+                            <yummy:GradientStopCollection>
+                                <yummy:GradientStop Color="#8f1fff" Offset="0"></yummy:GradientStop>
+                                <yummy:GradientStop Color="#b66dff" Offset="0.5"></yummy:GradientStop>
+                                <yummy:GradientStop Color="#c995fc" Offset="1.0"></yummy:GradientStop>
+                                <yummy:GradientStop Color="#e3c7ff" Offset="1.0"></yummy:GradientStop>
+                            </yummy:GradientStopCollection>
+                        </yummy:PancakeView.BackgroundGradientStops>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                        <yummy:PancakeView.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BindingContext.CashPayNow,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></TapGestureRecognizer>
+                        </yummy:PancakeView.GestureRecognizers>
+                    </yummy:PancakeView>
+                </StackLayout>
+                
+            </StackLayout>
+            <ScrollView.Triggers>
+                <DataTrigger TargetType="ScrollView" Binding="{Binding CashOrCredit}" Value="1">
+                    <Setter Property="IsVisible" Value="True"></Setter>
+                </DataTrigger>
+            </ScrollView.Triggers>
+        </ScrollView>
+        <!--Payment Cash-->
+        
+
+        <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+        </ActivityIndicator>
+    </StackLayout>
+
+</Controls:CustomsPage>

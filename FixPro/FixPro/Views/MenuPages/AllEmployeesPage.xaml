@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:Controls="clr-namespace:FixPro.Controls"
+             xmlns:Helpers="clr-namespace:FixPro.Helpers"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+             xmlns:vm="clr-namespace:FixPro.ViewModels"
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             x:Name="page"
+             Visual="Material"
+                      BackgroundColor="White"
+             x:Class="FixPro.Views.MenuPages.AllEmployeesPage">
+
+    <ContentPage.BindingContext>
+        <vm:EmployeesViewModel></vm:EmployeesViewModel>
+    </ContentPage.BindingContext>
+
+    <StackLayout>
+        <!--Toolbar-->
+        <StackLayout Orientation="Horizontal" Padding="20,10,20,0" HorizontalOptions="FillAndExpand">
+
+            <Image x:Name="imgBack">
+                <Image.Source>
+                    <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
+                </Image.Source>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_2"></TapGestureRecognizer>
+                </Image.GestureRecognizers>
+            </Image>
+
+            <Label Text="All Employees" HeightRequest="30"
+                    VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
+                    HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+
+            <!--<Image HorizontalOptions="End">
+                <Image.Source>
+                    <FontImageSource FontFamily="FontIconSolid" Color="Gray" Glyph="" Size="20"></FontImageSource>
+                </Image.Source>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BindingContext.SelectedCreateNewEmployees,Source={x:Reference page}}"></TapGestureRecognizer>
+                </Image.GestureRecognizers>
+            </Image>-->
+        </StackLayout>
+
+        <!--Search Bar-->
+        <yummy:PancakeView BackgroundColor="White" HeightRequest="42" Margin="30,10,30,10" Padding="0" CornerRadius="25" HorizontalOptions="FillAndExpand">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                <SearchBar x:Name="srcBarEmployee"
+                           Placeholder="Search"    
+                           TextChanged="srcBarEmployee_TextChanged"
+                           HorizontalOptions="FillAndExpand" 
+                           WidthRequest="265"
+                           Margin="5,0,5,0" 
+                           FontSize="14"></SearchBar>
+
+                <!--<yummy:PancakeView BackgroundColor="#029ef7" CornerRadius="0,0,25,0" HorizontalOptions="End">
+                    <Image HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Margin="15,10,15,10">
+                        <Image.Source>
+                            <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="18"></FontImageSource>
+                        </Image.Source>
+                    </Image>
+                </yummy:PancakeView>-->
+            </StackLayout>
+
+            <yummy:PancakeView.Border>
+                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+            </yummy:PancakeView.Border>
+            <yummy:PancakeView.Shadow>
+                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+            </yummy:PancakeView.Shadow>
+        </yummy:PancakeView>
+
+        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+        <StackLayout Padding="0,0,0,30">
+
+            <ListView x:Name="lstEmployees" 
+                      ItemsSource="{Binding LstEmployees}"
+                      HasUnevenRows="True" 
+                      SelectionMode="None"
+                      VerticalScrollBarVisibility="Never"
+                      ItemAppearing="lstEmployees_ItemAppearing">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Margin="20,10,20,10" Spacing="10">
+                                <yummy:PancakeView x:Name="yumEmployee" BackgroundColor="#b66dff" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Label 
+                                          FontAttributes="Bold"
+                                          TextColor="White" 
+                                          HorizontalTextAlignment="Start"
+                                          VerticalTextAlignment="Center"
+                                          Padding="20,7,20,7">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} {1}">
+                                                <Binding Path="FirstName" />
+                                                <Binding Path="LastName" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                    <!--<yummy:PancakeView.Triggers>
+                                        <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding TotalBranches}" Value="0">
+                                            <Setter Property="BackgroundColor" Value="#65a88c"></Setter>
+                                        </DataTrigger>
+                                    </yummy:PancakeView.Triggers>-->
+                                </yummy:PancakeView>
+
+                                <StackLayout Orientation="Horizontal" Spacing="10" Padding="10,0,0,0">
+                                    <Image>
+                                        <Image.Source>
+                                            <FontImageSource FontFamily="FontIconSolid" Color="Gray" Glyph="" Size="18"></FontImageSource>
+                                        </Image.Source>
+                                    </Image>
+                                    <Label Text="{Binding BranchName}" FontAttributes="Italic" VerticalTextAlignment="Center" FontSize="14"></Label>
+                                    <Label Text="{Binding TotalBranches,StringFormat='+{0}'}" FontAttributes="Italic" VerticalTextAlignment="Center" FontSize="14">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding TotalBranches}" Value="0">
+                                                <Setter Property="IsVisible" Value="False"></Setter>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </StackLayout>
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.SelectedEmployee,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                </StackLayout.GestureRecognizers>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+            </ActivityIndicator>
+
+        </StackLayout>
+
+    </StackLayout>
+
+</Controls:CustomsPage>

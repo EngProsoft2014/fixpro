@@ -1,0 +1,1018 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:Controls="clr-namespace:FixPro.Controls"
+                      xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                      xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                      xmlns:vm="clr-namespace:FixPro.ViewModels"
+                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                      xmlns:schedule="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms"
+                      xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+                      BackgroundColor="White"
+                      x:Name="page"
+             x:Class="FixPro.Views.CustomerPages.CreateNewCustomerPage">
+
+    <ContentPage.BindingContext>
+        <vm:CustomersViewModel></vm:CustomersViewModel>
+    </ContentPage.BindingContext>
+
+    <StackLayout>
+        <StackLayout>
+            <Controls:ToolBar Title="Create New Customer" HasBackButton="True" HorizontalOptions="FillAndExpand"></Controls:ToolBar>
+        </StackLayout>
+        <ScrollView>
+            <StackLayout>
+                <StackLayout>
+                    <Label Text="Details" TextColor="#b66dff" FontAttributes="Bold" HorizontalOptions="StartAndExpand" Padding="20,0,20,5"></Label>
+
+                    <yummy:PancakeView BackgroundColor="White" CornerRadius="10" HorizontalOptions="FillAndExpand" Margin="20,0,20,20" Padding="20,10,20,10">
+                        <Grid RowSpacing="10" Padding="5,10,5,10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"></RowDefinition>
+                                <RowDefinition Height="1*"></RowDefinition>
+                                <RowDefinition Height="1*"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="5"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <StackLayout Grid.Column="0" HorizontalOptions="FillAndExpand">
+                                <Label Text="First Name" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                          Text="{Binding CustomerDetails.FirstName}" 
+                                          Placeholder="First Name"
+                                          TextColor="#8f1fff"
+                                          FontSize="12"
+                                          HorizontalOptions="FillAndExpand"
+                                          VerticalTextAlignment="Center">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Column="3" HorizontalOptions="FillAndExpand">
+                                <Label Text="Last Name" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                          Text="{Binding CustomerDetails.LastName}" 
+                                          Placeholder="Last Name"
+                                          TextColor="#8f1fff"
+                                          FontSize="12"
+                                          HorizontalOptions="FillAndExpand"
+                                          VerticalTextAlignment="Center">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Row="1" Grid.Column="0" HorizontalOptions="FillAndExpand">
+                                <Label Text="Category" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Picker ItemsSource="{Binding CustomerFeatures.LstCustomerCategory}" ItemDisplayBinding="{Binding CategoryName}" SelectedIndexChanged="Picker_SelectedIndexChanged_1" 
+                                            TextColor="#8f1fff" Title="Category"
+                                            HorizontalOptions="FillAndExpand"
+                                            FontSize="12"
+                                            VerticalTextAlignment="Center">
+                                    </Picker>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Row="1" Grid.Column="3" HorizontalOptions="FillAndExpand">
+                                <Label Text="Source" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Picker ItemsSource="{Binding LstCampaigns}" ItemDisplayBinding="{Binding Lable}" SelectedIndexChanged="Picker_SelectedIndexChanged_3"
+                                          TextColor="#8f1fff" Title="Source"
+                                          FontSize="12"
+                                          HorizontalOptions="FillAndExpand"
+                                          VerticalTextAlignment="Center">
+                                    </Picker>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Row="2" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                                <Label Text="Member?" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="Center" Spacing="0">
+                                    <RadioButton x:Name="rdBtnYes" Content="Yes$" TextColor="#333" GroupName="Group1" Scale=".8" FontSize="16" CheckedChanged="rdBtnYes_CheckedChanged"></RadioButton>
+                                    <RadioButton x:Name="rdBtnNo" Content="No%" TextColor="#333" GroupName="Group1" IsChecked="True" Scale=".8" FontSize="16" CheckedChanged="rdBtnNo_CheckedChanged"></RadioButton>
+                                </StackLayout>
+                            </StackLayout>
+
+                            <StackLayout x:Name="stkMember" IsVisible="False" Grid.Row="2" Grid.Column="3" HorizontalOptions="FillAndExpand">
+                                <Label Text="Member Type" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Picker ItemsSource="{Binding CustomerFeatures.LstMemberships}" ItemDisplayBinding="{Binding Name}" SelectedIndexChanged="Picker_SelectedIndexChanged"
+                                            Title="Choose Membership"
+                                            TextColor="#8f1fff"
+                                            FontSize="12"
+                                            HorizontalOptions="FillAndExpand"
+                                            VerticalTextAlignment="Center">
+                                    </Picker>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout x:Name="stkDiscount" Grid.Row="2" Grid.Column="3" HorizontalOptions="FillAndExpand">
+                                <Label Text="Discount %" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                        Text="{Binding CustomerDetails.Discount}"
+                                        Placeholder="Enter Discount"
+                                        TextColor="#8f1fff"
+                                        Keyboard="Numeric"
+                                        FontSize="12"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalTextAlignment="Center">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+
+                            <StackLayout Grid.Row="3" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                                <StackLayout Orientation="Horizontal" Padding="5,10,5,10">
+                                    <Label Text="Texable" TextColor="Black" FontSize="13" VerticalOptions="Center" HorizontalOptions="Start"></Label>
+                                    <Switch x:Name="swtTaxable" IsToggled="{Binding CustomerDetails.Taxable}" VerticalOptions="Center" Toggled="swtTaxable_Toggled"></Switch>
+                                </StackLayout>
+                            </StackLayout>
+
+                            <StackLayout x:Name="stkTexable" IsVisible="False" Grid.Row="3" Grid.Column="3" HorizontalOptions="FillAndExpand">
+                                <Label Text="Choose Tax" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Picker ItemsSource="{Binding CustomerFeatures.LstTaxes}" ItemDisplayBinding="{Binding Taxname}" SelectedIndexChanged="Picker_SelectedIndexChanged_2"
+                                            Title="Choose Tax"
+                                            TextColor="#8f1fff"
+                                            FontSize="12"
+                                            HorizontalOptions="FillAndExpand"
+                                            VerticalTextAlignment="Center">
+                                    </Picker>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+
+                        </Grid>
+
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+                </StackLayout>
+
+                <StackLayout>
+                    <Label Text="Contact" HorizontalOptions="StartAndExpand" TextColor="#b66dff" FontAttributes="Bold" Padding="20,0,20,5"></Label>
+
+                    <!--<yummy:PancakeView BackgroundColor="White" CornerRadius="10" HorizontalOptions="FillAndExpand" Margin="20,0,20,20" Padding="20,10,20,10">
+                        <Grid RowSpacing="10" Padding="5,10,5,10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"></RowDefinition>
+                                <RowDefinition Height="1*"></RowDefinition>
+                                <RowDefinition Height="1*"></RowDefinition>
+                                <RowDefinition Height="1*"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="5"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <StackLayout Grid.Column="0" HorizontalOptions="FillAndExpand">
+                                <Label Text="Phone" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                          Text="{Binding CustomerDetails.Phone1}" 
+                                          Placeholder="Phone"
+                                          Keyboard="Telephone"
+                                          TextColor="Gray"
+                                          FontSize="12"
+                                          HorizontalOptions="FillAndExpand"
+                                          VerticalTextAlignment="Center">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Column="3" HorizontalOptions="FillAndExpand">
+                                <Label Text="Email" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                        Text="{Binding CustomerDetails.Email}"
+                                        Placeholder="Email"
+                                        Keyboard="Email"
+                                        TextColor="Gray"
+                                        FontSize="12"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalTextAlignment="Center">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalOptions="FillAndExpand">
+                                <Label Text="Address" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                          Text="{Binding Address}" 
+                                          TextColor="Gray"
+                                          Placeholder="Address"
+                                          FontSize="12"
+                                          HorizontalOptions="FillAndExpand"
+                                          VerticalTextAlignment="Center"
+                                        Focused="Entry_Focused">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Row="2" Grid.Column="0" HorizontalOptions="FillAndExpand">
+                                <Label Text="City" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                        TextColor="Gray" Text="{Binding City}"
+                                        HorizontalOptions="FillAndExpand"
+                                        Placeholder="City"
+                                        FontSize="12"
+                                        VerticalTextAlignment="Center">
+                                    </Entry>
+
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Row="2" Grid.Column="3" HorizontalOptions="FillAndExpand">
+                                <Label Text="State" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                        Text="{Binding State}" 
+                                        Placeholder="State"
+                                        TextColor="Gray"
+                                        FontSize="12"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalTextAlignment="Center">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Row="3" Grid.Column="0" HorizontalOptions="FillAndExpand">
+                                <Label Text="Zip Code" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                          Text="{Binding ZipCode}" 
+                                          Placeholder="ZIP Code"
+                                          TextColor="Gray"
+                                          FontSize="12"
+                                          HorizontalOptions="FillAndExpand"
+                                          VerticalTextAlignment="Center">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Row="3" Grid.Column="3" HorizontalOptions="FillAndExpand">
+                                <Label Text="Notes" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                        Text="{Binding CustomerDetails.Notes}" 
+                                        Placeholder="Notes"
+                                        TextColor="Gray"
+                                        FontSize="12"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalTextAlignment="Center">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                        </Grid>
+
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>-->
+                    <yummy:PancakeView BackgroundColor="White" CornerRadius="10" HorizontalOptions="FillAndExpand" Margin="20,0,20,20" Padding="20,10,20,10">
+                        <Grid RowSpacing="10" Padding="5,10,5,10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"></RowDefinition>
+                                <RowDefinition Height="1*"></RowDefinition>
+                                <RowDefinition Height="auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <StackLayout HorizontalOptions="FillAndExpand" Grid.Column="0" Grid.ColumnSpan="4">
+                                <Label Text="Phone" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                          Text="{Binding CustomerDetails.Phone1}" 
+                                          Placeholder="Phone"
+                                          Keyboard="Telephone"
+                                          TextColor="#8f1fff"
+                                          FontSize="12"
+                                          HorizontalOptions="FillAndExpand"
+                                          VerticalTextAlignment="Center">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <StackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalOptions="FillAndExpand">
+                                <Label Text="Email" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                        Text="{Binding CustomerDetails.Email}"
+                                        Placeholder="Email"
+                                        Keyboard="Email"
+                                        TextColor="#8f1fff"
+                                        FontSize="12"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalTextAlignment="Center">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+
+                            <StackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" HorizontalOptions="FillAndExpand">
+                                <Label Text="Notes" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Editor 
+                                        Text="{Binding CustomerDetails.Notes}" 
+                                        Placeholder="Notes"
+                                        TextColor="#8f1fff"
+                                        FontSize="12"
+                                        HorizontalOptions="FillAndExpand"
+                                        HeightRequest="80">
+                                    </Editor>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                        </Grid>
+
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+                </StackLayout>
+
+
+                <StackLayout>
+                    <Label Text="Location" HorizontalOptions="StartAndExpand" TextColor="#b66dff" FontAttributes="Bold" Padding="20,0,20,5"></Label>
+                    <yummy:PancakeView BackgroundColor="White" CornerRadius="10" HorizontalOptions="FillAndExpand" Margin="20,0,20,20" Padding="20,10,20,10">
+                        <Grid RowSpacing="10" Padding="5,10,5,10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"></RowDefinition>
+                                <RowDefinition Height="1*"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <StackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" HorizontalOptions="FillAndExpand">
+                                <Label Text="Address" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry 
+                                           Text="{Binding Address}"  
+                                           TextColor="#8f1fff"
+                                           Placeholder="Address"
+                                           FontSize="12"
+                                           HorizontalOptions="FillAndExpand"
+                                           VerticalTextAlignment="Center"
+                                         Focused="Entry_Focused">
+                                    </Entry>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                            <!--<StackLayout Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalOptions="FillAndExpand">
+                                <StackLayout HorizontalOptions="FillAndExpand">
+                                    <Label Text="City" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                    <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                        <Entry 
+                                             TextColor="#8f1fff" Text="{Binding City}"      
+                                             HorizontalOptions="FillAndExpand"
+                                             Placeholder="City"
+                                             FontSize="12"
+                                             VerticalTextAlignment="Center">
+                                        </Entry>
+
+                                        <yummy:PancakeView.Border>
+                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                        </yummy:PancakeView.Border>
+                                        <yummy:PancakeView.Shadow>
+                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        </yummy:PancakeView.Shadow>
+                                    </yummy:PancakeView>
+                                </StackLayout>
+
+                                <StackLayout HorizontalOptions="FillAndExpand">
+                                    <Label Text="State" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                    <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                        <Entry 
+                                             Text="{Binding State}"            
+                                             Placeholder="State"
+                                             TextColor="#8f1fff"
+                                             FontSize="12"
+                                             HorizontalOptions="FillAndExpand"
+                                             VerticalTextAlignment="Center">
+                                        </Entry>
+                                        <yummy:PancakeView.Border>
+                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                        </yummy:PancakeView.Border>
+                                        <yummy:PancakeView.Shadow>
+                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        </yummy:PancakeView.Shadow>
+                                    </yummy:PancakeView>
+                                </StackLayout>
+
+                                <StackLayout HorizontalOptions="FillAndExpand">
+                                    <Label Text="Zip Code" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                    <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                        <Entry 
+                                               Text="{Binding ZipCode}"               
+                                               Placeholder="ZIP Code"
+                                               TextColor="#8f1fff"
+                                               FontSize="12"
+                                               HorizontalOptions="FillAndExpand"
+                                               VerticalTextAlignment="Center">
+                                        </Entry>
+                                        <yummy:PancakeView.Border>
+                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                        </yummy:PancakeView.Border>
+                                        <yummy:PancakeView.Shadow>
+                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        </yummy:PancakeView.Shadow>
+                                    </yummy:PancakeView>
+                                </StackLayout>
+                            </StackLayout>-->
+
+
+                            <StackLayout Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" HorizontalOptions="FillAndExpand">
+                                <StackLayout HorizontalOptions="FillAndExpand">
+                                    <Label Text="Year Built" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                    <yummy:PancakeView BackgroundColor="White" Padding="10" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                        <Label 
+                                             Text="{Binding YearBuilt}"      
+                                             HorizontalOptions="FillAndExpand"
+                                             FontSize="12"
+                                             VerticalTextAlignment="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding YearBuilt}" Value="0">
+                                                    <Setter Property="Text" Value=""></Setter>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+
+                                        <yummy:PancakeView.Border>
+                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                        </yummy:PancakeView.Border>
+                                        <yummy:PancakeView.Shadow>
+                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        </yummy:PancakeView.Shadow>
+                                    </yummy:PancakeView>
+                                </StackLayout>
+
+                                <StackLayout HorizontalOptions="FillAndExpand">
+                                    <Label Text="Estimate Value" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                    <yummy:PancakeView BackgroundColor="White" Padding="10" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                        <Label 
+                                             Text="{Binding HouseValue}"            
+                                             FontSize="12"
+                                             HorizontalOptions="FillAndExpand"
+                                             VerticalTextAlignment="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding HouseValue}" Value="0">
+                                                    <Setter Property="Text" Value=""></Setter>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <yummy:PancakeView.Border>
+                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                        </yummy:PancakeView.Border>
+                                        <yummy:PancakeView.Shadow>
+                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        </yummy:PancakeView.Shadow>
+                                    </yummy:PancakeView>
+                                </StackLayout>
+
+                                <StackLayout HorizontalOptions="FillAndExpand">
+                                    <Label Text="Square Footage" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                                    <yummy:PancakeView BackgroundColor="White" Padding="10" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                        <Label 
+                                               Text="{Binding SquareFootage}"               
+                                               FontSize="12"
+                                               HorizontalOptions="FillAndExpand"
+                                               VerticalTextAlignment="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding SquareFootage}" Value="0">
+                                                    <Setter Property="Text" Value=""></Setter>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <yummy:PancakeView.Border>
+                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                        </yummy:PancakeView.Border>
+                                        <yummy:PancakeView.Shadow>
+                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        </yummy:PancakeView.Shadow>
+                                    </yummy:PancakeView>
+                                </StackLayout>
+                            </StackLayout>
+
+                        </Grid>
+
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+
+                    
+
+                </StackLayout>
+                
+                <StackLayout Margin="0,0,0,30">
+                    <Label Text="Custom Fields" HorizontalOptions="StartAndExpand" TextColor="#b66dff" FontAttributes="Bold" Padding="20,0,20,5"></Label>
+
+                    <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="20,0,20,0">
+
+                        <!--<ListView x:Name="lstCustomFields" SelectionMode="None" HeightRequest="280"
+                              ItemsSource="{Binding CustomerFeatures.LstCustomersCustomField}"
+                              HasUnevenRows="True" 
+                              VerticalScrollBarVisibility="Never">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Spacing="0">
+
+                                            <yummy:PancakeView BackgroundColor="White" Margin="0,0,0,15" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="0,10,0,10">
+                                                    <Label Text="{Binding CustomFieldName,StringFormat='{0} :'}"
+                                                       FontAttributes="Bold"
+                                                       TextColor="Gray" FontSize="12"
+                                                       HorizontalTextAlignment="Start"
+                                                       VerticalTextAlignment="Center"
+                                                       Padding="20,7,20,7">
+                                                    </Label>
+                                                   
+                                                    <yummy:PancakeView IsVisible="False" CornerRadius="10" Padding="5,0,5,0">
+                                                        <Entry Text="{Binding DefaultValue}" 
+                                                       FontSize="12"
+                                                       WidthRequest="100"
+                                                       FontAttributes="Bold">
+                                                        </Entry>
+                                                        <yummy:PancakeView.Border>
+                                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                                        </yummy:PancakeView.Border>
+                                                        <yummy:PancakeView.Triggers>
+                                                            <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding FieldType}" Value="1">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </yummy:PancakeView.Triggers>
+                                                    </yummy:PancakeView>
+
+                                                    <yummy:PancakeView IsVisible="False" CornerRadius="10" Padding="5,0,5,0">
+                                                        <Editor Text="{Binding DefaultValue}" 
+                                                       FontSize="12"
+                                                       WidthRequest="100"
+                                                       FontAttributes="Bold">
+                                                        </Editor>
+                                                        <yummy:PancakeView.Border>
+                                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                                        </yummy:PancakeView.Border>
+                                                        <yummy:PancakeView.Triggers>
+                                                            <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding FieldType}" Value="2">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </yummy:PancakeView.Triggers>
+                                                    </yummy:PancakeView>
+
+                                                    <StackLayout Orientation="Horizontal" IsVisible="False" HorizontalOptions="End" VerticalOptions="Center" Spacing="0">
+                                                        <RadioButton x:Name="rdBtYes" Content="Yes" Scale=".7" FontSize="16">
+                                                            <RadioButton.Triggers>
+                                                                <DataTrigger TargetType="RadioButton" Binding="{Binding DefaultValue}" Value="Yes">
+                                                                    <Setter Property="IsChecked" Value="True"></Setter>
+                                                                </DataTrigger>
+                                                            </RadioButton.Triggers>
+                                                        </RadioButton>
+                                                        <RadioButton x:Name="rdBtNo" Content="No" Scale=".7" FontSize="16">
+                                                            <RadioButton.Triggers>
+                                                                <DataTrigger TargetType="RadioButton" Binding="{Binding DefaultValue}" Value="No">
+                                                                    <Setter Property="IsChecked" Value="True"></Setter>
+                                                                </DataTrigger>
+                                                            </RadioButton.Triggers>
+                                                        </RadioButton>
+
+                                                        <CheckBox IsChecked="{Binding DefaultValue}" IsVisible="False">
+                                                            <CheckBox.Triggers>
+                                                                <DataTrigger TargetType="CheckBox" Binding="{Binding Source={x:Reference rdBtYes},Path=IsChecked}" Value="True">
+                                                                    <Setter Property="IsChecked" Value="True"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger TargetType="CheckBox" Binding="{Binding Source={x:Reference rdBtNo},Path=IsChecked}" Value="True">
+                                                                    <Setter Property="IsChecked" Value="False"></Setter>
+                                                                </DataTrigger>
+                                                            </CheckBox.Triggers>
+                                                        </CheckBox>
+                                                        <StackLayout.Triggers>
+                                                            <DataTrigger TargetType="StackLayout" Binding="{Binding FieldType}" Value="4">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </StackLayout.Triggers>
+                                                    </StackLayout>
+
+
+
+
+                                                    <yummy:PancakeView IsVisible="False" CornerRadius="10" Padding="5,0,5,0">
+                                                        <Picker ItemsSource="{Binding LstString}" Title="Enter Value" ItemDisplayBinding="{Binding}" SelectedItem="{Binding DefaultValue}"
+                                                               FontSize="12"
+                                                               WidthRequest="100"
+                                                               FontAttributes="Bold">
+                                                        </Picker>
+                                                        <yummy:PancakeView.Border>
+                                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                                        </yummy:PancakeView.Border>
+                                                        <yummy:PancakeView.Triggers>
+                                                            <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding FieldType}" Value="6">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </yummy:PancakeView.Triggers>
+                                                    </yummy:PancakeView>
+
+                                                    <yummy:PancakeView IsVisible="False" WidthRequest="100" CornerRadius="10" Padding="5,0,5,0">
+                                                        <DatePicker Date="{Binding DefaultValue}"
+                                                                   FontSize="12"
+                                                                   FontAttributes="Bold">
+                                                        </DatePicker>
+                                                        <yummy:PancakeView.Border>
+                                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                                        </yummy:PancakeView.Border>
+                                                        <yummy:PancakeView.Triggers>
+                                                            <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding FieldType}" Value="3">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </yummy:PancakeView.Triggers>
+                                                    </yummy:PancakeView>
+
+                                                    <Switch IsToggled="{Binding DefaultValue}"
+                                                              IsVisible="False" Scale="0.9" 
+                                                              OnColor="#d14343">
+                                                        <Switch.Triggers>
+                                                            <DataTrigger TargetType="Switch" Binding="{Binding FieldType}" Value="5">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </Switch.Triggers>
+                                                    </Switch>
+
+                                                </StackLayout>
+                                                <yummy:PancakeView.Border>
+                                                    <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                                                </yummy:PancakeView.Border>
+                                                <yummy:PancakeView.Shadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="3" Opacity="1"></yummy:DropShadow>
+                                                </yummy:PancakeView.Shadow>
+                                            </yummy:PancakeView>
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.Triggers>
+                                <DataTrigger TargetType="ListView" Binding="{Binding CustomerFeatures.LstCustomersCustomField.Count}" Value="0">
+                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                    <Setter Property="HeightRequest" Value="0"></Setter>
+                                </DataTrigger>
+                            </ListView.Triggers>
+                        </ListView>-->
+
+
+                        <syncfusion:SfListView x:Name="lstCustomFields" 
+                                               SelectionMode="None"
+                                               AllowGroupExpandCollapse="True"
+                                               ItemSize="75"
+                                               Padding="0"
+                                               Margin="0"
+                                               IsScrollBarVisible="True"
+                                               ItemsSource="{Binding CustomerFeatures.LstCustomersCustomField}"    
+                                               AutoFitMode="None">
+                            <syncfusion:SfListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <StackLayout Spacing="0">
+
+                                            <yummy:PancakeView BackgroundColor="White" Margin="0,0,0,15" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="0,10,0,10">
+                                                    <Label Text="{Binding CustomFieldName,StringFormat='{0} :'}"          
+                                                           FontAttributes="Bold"
+                                                           TextColor="Black" FontSize="12"
+                                                           HorizontalTextAlignment="Start"
+                                                           VerticalTextAlignment="Center"
+                                                           Padding="20,7,20,7">
+                                                    </Label>
+
+                                                    <yummy:PancakeView IsVisible="False" CornerRadius="10" Padding="5,0,5,0">
+                                                        <Entry Text="{Binding DefaultValue}"                                                              
+                                                               TextColor="#8f1fff"
+                                                               FontSize="12"
+                                                               WidthRequest="100"
+                                                               FontAttributes="Bold">
+                                                        </Entry>
+                                                        <yummy:PancakeView.Border>
+                                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                                        </yummy:PancakeView.Border>
+                                                        <yummy:PancakeView.Triggers>
+                                                            <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding FieldType}" Value="1">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </yummy:PancakeView.Triggers>
+                                                    </yummy:PancakeView>
+
+                                                    <yummy:PancakeView IsVisible="False" CornerRadius="10" Padding="5,0,5,0">
+                                                        <Editor Text="{Binding DefaultValue}"  
+                                                                TextColor="#8f1fff"
+                                                               FontSize="12"
+                                                               WidthRequest="100"
+                                                               FontAttributes="Bold">
+                                                        </Editor>
+                                                        <yummy:PancakeView.Border>
+                                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                                        </yummy:PancakeView.Border>
+                                                        <yummy:PancakeView.Triggers>
+                                                            <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding FieldType}" Value="2">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </yummy:PancakeView.Triggers>
+                                                    </yummy:PancakeView>
+
+                                                    <StackLayout Orientation="Horizontal" IsVisible="False"  HorizontalOptions="End" VerticalOptions="Center" Spacing="0">
+                                                        <RadioButton x:Name="rdBtYes" TextColor="#333" Content="Yes" Scale=".7" FontSize="16">
+                                                            <RadioButton.Triggers>
+                                                                <DataTrigger TargetType="RadioButton" Binding="{Binding DefaultValue}" Value="Yes">
+                                                                    <Setter Property="IsChecked" Value="True"></Setter>
+                                                                </DataTrigger>
+                                                            </RadioButton.Triggers>
+                                                        </RadioButton>
+                                                        <RadioButton x:Name="rdBtNo" TextColor="#333" Content="No" Scale=".7" FontSize="16">
+                                                            <RadioButton.Triggers>
+                                                                <DataTrigger TargetType="RadioButton" Binding="{Binding DefaultValue}" Value="No">
+                                                                    <Setter Property="IsChecked" Value="True"></Setter>
+                                                                </DataTrigger>
+                                                            </RadioButton.Triggers>
+                                                        </RadioButton>
+
+                                                        <CheckBox IsChecked="{Binding DefaultValue}" IsVisible="False">
+                                                            <CheckBox.Triggers>
+                                                                <DataTrigger TargetType="CheckBox" Binding="{Binding Source={x:Reference rdBtYes},Path=IsChecked}" Value="True">
+                                                                    <Setter Property="IsChecked" Value="True"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger TargetType="CheckBox" Binding="{Binding Source={x:Reference rdBtNo},Path=IsChecked}" Value="True">
+                                                                    <Setter Property="IsChecked" Value="False"></Setter>
+                                                                </DataTrigger>
+                                                            </CheckBox.Triggers>
+                                                        </CheckBox>
+                                                        <StackLayout.Triggers>
+                                                            <DataTrigger TargetType="StackLayout" Binding="{Binding FieldType}" Value="4">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </StackLayout.Triggers>
+                                                    </StackLayout>
+
+                                                    <yummy:PancakeView IsVisible="False" CornerRadius="10" Padding="5,0,5,0">
+                                                        <Picker ItemsSource="{Binding LstString}" Title="Enter Value" ItemDisplayBinding="{Binding}" SelectedItem="{Binding DefaultValue}"
+                                                               FontSize="12"
+                                                               TextColor="#8f1fff"
+                                                               WidthRequest="100"
+                                                               FontAttributes="Bold">
+                                                        </Picker>
+                                                        <yummy:PancakeView.Border>
+                                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                                        </yummy:PancakeView.Border>
+                                                        <yummy:PancakeView.Triggers>
+                                                            <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding FieldType}" Value="6">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </yummy:PancakeView.Triggers>
+                                                    </yummy:PancakeView>
+
+                                                    <yummy:PancakeView IsVisible="False" WidthRequest="100" CornerRadius="10" Padding="5,0,5,0">
+                                                        <DatePicker Date="{Binding DefaultValue}"                                                                     
+                                                                    TextColor="#8f1fff"
+                                                                   FontSize="12"
+                                                                   FontAttributes="Bold">
+                                                        </DatePicker>
+                                                        <yummy:PancakeView.Border>
+                                                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                                        </yummy:PancakeView.Border>
+                                                        <yummy:PancakeView.Triggers>
+                                                            <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding FieldType}" Value="3">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </yummy:PancakeView.Triggers>
+                                                    </yummy:PancakeView>
+
+                                                    <Switch IsToggled="{Binding DefaultValue}" 
+                                                              IsVisible="False" Scale="0.9">
+                                                        <Switch.Triggers>
+                                                            <DataTrigger TargetType="Switch" Binding="{Binding FieldType}" Value="5">
+                                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                                            </DataTrigger>
+                                                        </Switch.Triggers>
+                                                    </Switch>
+
+                                                </StackLayout>
+                                                <yummy:PancakeView.Border>
+                                                    <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                                                </yummy:PancakeView.Border>
+                                                <yummy:PancakeView.Shadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="3" Opacity="1"></yummy:DropShadow>
+                                                </yummy:PancakeView.Shadow>
+                                            </yummy:PancakeView>
+                                        </StackLayout>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </syncfusion:SfListView.ItemTemplate>
+                            <syncfusion:SfListView.Triggers>
+                                <DataTrigger TargetType="syncfusion:SfListView" Binding="{Binding CustomerFeatures.LstCustomersCustomField.Count}" Value="0">
+                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                    <Setter Property="HeightRequest" Value="0"></Setter>
+                                </DataTrigger>
+                            </syncfusion:SfListView.Triggers>
+                        </syncfusion:SfListView>
+
+
+                        <!--<StackLayout VerticalOptions="FillAndExpand" IsVisible="False">
+                            <Image x:Name="imgArrowUp" VerticalOptions="Start">
+                                <Image.Source>
+                                    <FontImageSource FontFamily="FontIconSolid" Color="#d14343" Glyph="" Size="18"></FontImageSource>
+                                </Image.Source>
+                            </Image>
+                            <Image x:Name="imgArrowDown" VerticalOptions="EndAndExpand">
+                                <Image.Source>
+                                    <FontImageSource FontFamily="FontIconSolid" Color="#d14343" Glyph="" Size="18"></FontImageSource>
+                                </Image.Source>
+                            </Image>
+                            <StackLayout.Triggers>
+                                <DataTrigger TargetType="StackLayout" Binding="{Binding ShowArrowsBarFeatures}" Value="True">
+                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                </DataTrigger>
+                            </StackLayout.Triggers>
+                        </StackLayout>-->
+
+                        <StackLayout.Triggers>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerFeatures.LstCustomersCustomField.Count}" Value="0">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                                <Setter Property="HeightRequest" Value="0"></Setter>
+                            </DataTrigger>
+                        </StackLayout.Triggers>
+                    </StackLayout>
+
+                    <!--<StackLayout.Triggers>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerFeatures.LstCustomersCustomField.Count}" Value="0">
+                            <Setter Property="IsVisible" Value="False"></Setter>
+                        </DataTrigger>
+
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerFeatures.LstCustomersCustomField.Count}" Value="1">
+                            <Setter Property="HeightRequest" Value="90"></Setter>
+                        </DataTrigger>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerFeatures.LstCustomersCustomField.Count}" Value="2">
+                            <Setter Property="HeightRequest" Value="180"></Setter>
+                        </DataTrigger>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerFeatures.LstCustomersCustomField.Count}" Value="3">
+                            <Setter Property="HeightRequest" Value="270"></Setter>
+                        </DataTrigger>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerFeatures.LstCustomersCustomField.Count}" Value="4">
+                            <Setter Property="HeightRequest" Value="360"></Setter>
+                        </DataTrigger>
+                    </StackLayout.Triggers>-->
+                </StackLayout>
+
+            </StackLayout>
+        </ScrollView>
+
+        <Button x:Name="btnSubmit" HeightRequest="45" 
+                VerticalOptions="End" FontSize="16"
+                Text="Submit" TextTransform="None"
+                BackgroundColor="#b66dff" 
+                TextColor="White"
+                Margin="50,0,50,15"
+                Padding="0" 
+                CornerRadius="20"
+                Command="{Binding BindingContext.InsertCustomer, Source={x:Reference page}}" CommandParameter="{Binding CustomerDetails}">
+        </Button>
+    </StackLayout>
+</Controls:CustomsPage>

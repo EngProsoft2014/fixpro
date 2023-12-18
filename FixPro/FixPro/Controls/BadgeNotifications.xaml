@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Grid xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:density="clr-namespace:Xamarin.DeviceDensity.Plugin;assembly=Xamarin.DeviceDensity.Plugin"
+             x:Class="FixPro.Controls.BadgeNotifications">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="1*"></RowDefinition>
+        <RowDefinition Height="1*"></RowDefinition>
+        <RowDefinition Height="1*"></RowDefinition>
+        <RowDefinition Height="1*"></RowDefinition>
+        <RowDefinition Height="1*"></RowDefinition>
+        <RowDefinition Height=".5*"></RowDefinition>
+
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="1*"></ColumnDefinition>
+        <ColumnDefinition Width="1*"></ColumnDefinition>
+        <ColumnDefinition Width="1*"></ColumnDefinition>
+        <ColumnDefinition Width="1*"></ColumnDefinition>
+        <ColumnDefinition Width="1*"></ColumnDefinition>
+
+    </Grid.ColumnDefinitions>
+
+    <Image Grid.Row="0" 
+               Grid.RowSpan="5"
+               Grid.Column="1"
+               Grid.ColumnSpan="6">
+        <Image.Source>
+            <FontImageSource FontFamily="FontIcon" Glyph="" Color="Black" Size="{density:OnScreenDensityDouble Default=22, OnePointZero=14, OnePointFive=14, TwoPointZero=14, TwoPointFive=16, ThreePointZero=18, ThreePointFive=22, FourPointZero=24}"></FontImageSource>
+        </Image.Source>
+    </Image>
+
+    <Frame  CornerRadius="20" TranslationY="-10"
+                BackgroundColor="Transparent"
+                HeightRequest="12"
+                WidthRequest="12"
+                Margin="0" 
+                Padding="0"
+                Grid.Column="4"
+                Grid.ColumnSpan="4"
+                Grid.Row="0"
+                Grid.RowSpan="4">
+        <Label x:Name="lblBadge" 
+               FontSize="11" 
+               VerticalTextAlignment="Center"
+               WidthRequest="10" 
+               HeightRequest="16" 
+               HorizontalTextAlignment="Center" 
+               TextColor="White" 
+               BackgroundColor="#b66dff">
+        </Label>
+        <Frame.Triggers>
+            <DataTrigger TargetType="Frame" Binding="{Binding Source={x:Reference lblBadge},Path=Text}" Value="0">
+                <Setter Property="IsVisible" Value="False"></Setter>
+            </DataTrigger>
+        </Frame.Triggers>
+    </Frame>
+</Grid>

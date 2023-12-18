@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+    xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" 
+    xmlns:Helpers="clr-namespace:FixPro.Helpers"
+    xmlns:vm="clr-namespace:FixPro.ViewModels" 
+    xmlns:syncfusion="clr-namespace:Syncfusion.SfCalendar.XForms;assembly=Syncfusion.SfCalendar.XForms"
+    x:Name="page"
+    x:Class="FixPro.Views.PopupPages.CheckoutPopup" CloseWhenBackgroundIsClicked="False">
+
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+
+    <Grid Padding="0" Margin="40,200,40,150">
+        <yummy:PancakeView TranslationY="0" HeightRequest="200" VerticalOptions="CenterAndExpand" CornerRadius="10" BackgroundColor="White">
+            <StackLayout Padding="20,20,20,0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <Label Text="Time Picker:" FontSize="14" FontAttributes="Bold" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+
+                <yummy:PancakeView BackgroundColor="White" Padding="0" Margin="0,20,0,0" CornerRadius="25" HorizontalOptions="FillAndExpand">
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" HeightRequest="45">
+                        <yummy:PancakeView BackgroundColor="#e3cafc" CornerRadius="0,30,0,0" HorizontalOptions="End">
+                            <Image HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Margin="15,10,15,10">
+                                <Image.Source>
+                                    <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="18"></FontImageSource>
+                                </Image.Source>
+                            </Image>
+                        </yummy:PancakeView>
+                        
+                        <TimePicker x:Name="timeCheckOut" HorizontalOptions="FillAndExpand" Margin="15,3,5,3" FontSize="14"></TimePicker>
+
+                        <yummy:PancakeView BackgroundColor="#e3cafc" CornerRadius="0,0,30,0" HorizontalOptions="End">
+                            <Image HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Margin="15,10,15,10">
+                                <Image.Source>
+                                    <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="18"></FontImageSource>
+                                </Image.Source>
+                            </Image>
+                        </yummy:PancakeView>
+                    </StackLayout>
+
+                    <yummy:PancakeView.Border>
+                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                    </yummy:PancakeView.Border>
+                    <yummy:PancakeView.Shadow>
+                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                    </yummy:PancakeView.Shadow>
+                </yummy:PancakeView>
+
+                <StackLayout Orientation="Horizontal" Spacing="20" VerticalOptions="EndAndExpand" Padding="20,0,20,20" HeightRequest="35" HorizontalOptions="CenterAndExpand">
+                    <Button x:Name="btnCheck"
+                                    FontSize="12"
+                                    FontAttributes="Bold"
+                                    TextTransform="None"
+                                    TextColor="White"
+                                    WidthRequest="80"
+                                    CornerRadius="20"
+                                    BackgroundColor="#b66dff"
+                            Clicked="Button_Clicked_1"></Button>
+                    <Button Text="Close" 
+                                    WidthRequest="80"
+                                    FontSize="12" 
+                                    TextColor="#b66dff"
+                                    BorderColor="#b66dff"
+                                    TextTransform="None"
+                                    CornerRadius="20"
+                                    BorderWidth="1" 
+                                    BackgroundColor="White"
+                            Clicked="Button_Clicked"></Button>
+                </StackLayout>
+            </StackLayout>
+
+            <yummy:PancakeView.Shadow>
+                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+            </yummy:PancakeView.Shadow>
+        </yummy:PancakeView>
+
+    </Grid>
+</pages:PopupPage>

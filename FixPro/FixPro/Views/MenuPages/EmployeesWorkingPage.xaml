@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                     xmlns:Controls="clr-namespace:FixPro.Controls"
+                     xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                     xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                     xmlns:vm="clr-namespace:FixPro.ViewModels"
+                     xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                     xmlns:navigationdrawer="clr-namespace:Syncfusion.SfNavigationDrawer.XForms;assembly=Syncfusion.SfNavigationDrawer.XForms"
+                     x:Name="page"
+                     BackgroundColor="White"
+             x:Class="FixPro.Views.MenuPages.EmployeesWorkingPage">
+
+    <ContentPage.BindingContext>
+        <vm:EmployeesViewModel></vm:EmployeesViewModel>
+    </ContentPage.BindingContext>
+
+    <StackLayout>
+        <!--Toolbar-->
+        <StackLayout>
+            <Controls:ToolBar Title="Employees Working" HasBackButton="True"></Controls:ToolBar>
+        </StackLayout>
+
+        <!--Search Bar-->
+        <yummy:PancakeView BackgroundColor="White" HeightRequest="42" Margin="30,10,30,10" Padding="0" CornerRadius="25" HorizontalOptions="FillAndExpand">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
+                <SearchBar x:Name="srcBarEmployee"
+                           Placeholder="Search"    
+                           TextChanged="srcBarEmployee_TextChanged"
+                           HorizontalOptions="FillAndExpand" 
+                           WidthRequest="265"
+                           Margin="5,0,5,0" 
+                           FontSize="14"></SearchBar>
+            </StackLayout>
+
+            <yummy:PancakeView.Border>
+                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+            </yummy:PancakeView.Border>
+            <yummy:PancakeView.Shadow>
+                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+            </yummy:PancakeView.Shadow>
+        </yummy:PancakeView>
+
+        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+        <StackLayout Padding="0,0,0,30">
+
+            <StackLayout>
+                <ListView x:Name="lstEmployees" 
+                      ItemsSource="{Binding LstWorkingEmployees}"
+                      HasUnevenRows="True"
+                      SelectionMode="None"
+                      VerticalScrollBarVisibility="Never">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Margin="20,10,20,10" Spacing="10">
+                                    <yummy:PancakeView x:Name="yumEmployee" BackgroundColor="#b66dff" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                        <Label 
+                                          FontAttributes="Bold"
+                                          TextColor="White" 
+                                          HorizontalTextAlignment="Start"
+                                          VerticalTextAlignment="Center"
+                                          Padding="20,7,20,7">
+                                            <Label.Text>
+                                                <MultiBinding StringFormat="{}{0} {1}">
+                                                    <Binding Path="FirstName" />
+                                                    <Binding Path="LastName" />
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+
+                                    </yummy:PancakeView>
+
+                                    <StackLayout Orientation="Horizontal" Spacing="10" Padding="10,0,0,0">
+                                        <Image>
+                                            <Image.Source>
+                                                <FontImageSource FontFamily="FontIconSolid" Color="Gray" Glyph="" Size="18"></FontImageSource>
+                                            </Image.Source>
+                                        </Image>
+                                        <Label Text="{Binding BranchName}" FontAttributes="Italic" VerticalTextAlignment="Center" FontSize="14"></Label>
+                                        <Label Text="{Binding TotalBranches,StringFormat='+{0}'}" FontAttributes="Italic" VerticalTextAlignment="Center" FontSize="14">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding TotalBranches}" Value="0">
+                                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </StackLayout>
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding BindingContext.SelectedEmployeeInMap,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                    </StackLayout.GestureRecognizers>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <StackLayout.Triggers>
+                    <DataTrigger TargetType="StackLayout" Binding="{Binding Source={x:Reference stkNoData2}, Path=IsVisible}" Value="True">
+                        <Setter Property="HeightRequest" Value="0"></Setter>
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                </StackLayout.Triggers>
+            </StackLayout>
+
+            <!--No Data-->
+            <StackLayout x:Name="stkNoData2" Padding="0,50,0,0" IsVisible="False" HeightRequest="100" HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
+                <Image Source="noresult.png" Aspect="AspectFill"></Image>
+                <StackLayout.Triggers>
+                    <MultiTrigger TargetType="StackLayout">
+                        <MultiTrigger.Conditions>
+                            <BindingCondition Binding="{Binding LstWorkingEmployees.Count}" Value="0" />
+                        </MultiTrigger.Conditions>
+                        <Setter Property="IsVisible" Value="True"></Setter>
+                    </MultiTrigger>
+                </StackLayout.Triggers>
+            </StackLayout>
+            
+            <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+            </ActivityIndicator>
+
+        </StackLayout>
+    </StackLayout>
+
+</Controls:CustomsPage>

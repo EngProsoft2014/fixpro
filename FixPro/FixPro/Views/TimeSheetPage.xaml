@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:Controls="clr-namespace:FixPro.Controls"
+                      xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                      xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                      xmlns:vm="clr-namespace:FixPro.ViewModels"
+                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                      x:Name="page"
+                      BackgroundColor="White"
+                      x:Class="FixPro.Views.TimeSheetPage">
+
+    <ContentPage.BindingContext>
+        <vm:TimeSheetViewModel></vm:TimeSheetViewModel>
+    </ContentPage.BindingContext>
+
+    <StackLayout VerticalOptions="FillAndExpand">
+
+        <StackLayout VerticalOptions="Start" HeightRequest="260">
+            <!--Toolbar-->
+            <StackLayout>
+                <StackLayout x:Name="stkNoInternet" 
+                     Orientation="Horizontal" 
+                     Spacing="15" 
+                     HorizontalOptions="CenterAndExpand" 
+                     IsVisible="False"
+                     BackgroundColor="White"
+                     Padding="0">
+                    <Image x:Name="imgInternet">
+                        <Image.Source>
+                            <FontImageSource FontFamily="FontIconSolid" Color="#9E2F2F" Glyph="" Size="12"></FontImageSource>
+                        </Image.Source>
+                    </Image>
+                    <Label Text="Waiting for network" TextColor="#9E2F2F" FontSize="12"></Label>
+                </StackLayout>
+
+
+                <StackLayout Orientation="Horizontal" Spacing="0" Padding="15,5,15,10" VerticalOptions="FillAndExpand">
+                    <Image x:Name="imgBack">
+                        <Image.Source>
+                            <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
+                        </Image.Source>
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"></TapGestureRecognizer>
+                        </Image.GestureRecognizers>
+                    </Image>
+
+                    <Label x:Name="lblTitle" Text="Time Sheet" HeightRequest="30"
+                            VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
+                            HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                </StackLayout>
+            </StackLayout>
+
+            <!--Date-->
+            <yummy:PancakeView BackgroundColor="White" HeightRequest="60" HorizontalOptions="FillAndExpand">
+                <StackLayout Orientation="Horizontal" Padding="30,0,30,0" Spacing="0">
+
+                    <!--Back Date-->
+                    <Image>
+                        <Image.Source>
+                            <FontImageSource FontFamily="FontIconSolid" Color="Gray" Glyph="" Size="20"></FontImageSource>
+                        </Image.Source>
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BindingContext.BackDay,Source={x:Reference page}}"></TapGestureRecognizer>
+                        </Image.GestureRecognizers>
+                    </Image>
+
+                    <yummy:PancakeView BackgroundColor="White" HorizontalOptions="FillAndExpand" HeightRequest="60" CornerRadius="50" Margin="50,0,50,0">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                            <Label x:Name="lblDate" Text="{Binding Date}" FontSize="16"></Label>
+                            <Image>
+                                <Image.Source>
+                                    <FontImageSource FontFamily="FontIconSolid" Color="Gray" Glyph="" Size="16"></FontImageSource>
+                                </Image.Source>
+                            </Image>
+                            <StackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.SelectedDate, Source={x:Reference page}}"></TapGestureRecognizer>
+                            </StackLayout.GestureRecognizers>
+                        </StackLayout>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="10" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+
+                    <!--Next Date-->
+                    <Image>
+                        <Image.Source>
+                            <FontImageSource FontFamily="FontIconSolid" Color="Gray" Glyph="" Size="20"></FontImageSource>
+                        </Image.Source>
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BindingContext.NextDay,Source={x:Reference page}}"></TapGestureRecognizer>
+                        </Image.GestureRecognizers>
+                    </Image>
+                </StackLayout>
+
+                <yummy:PancakeView.Shadow>
+                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                </yummy:PancakeView.Shadow>
+            </yummy:PancakeView>
+
+            <StackLayout Orientation="Horizontal" Spacing="0" Margin="0,10,0,10" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
+
+                <!--In-->
+                <Grid>
+                    <yummy:PancakeView x:Name="yumCheckIn" HeightRequest="70" WidthRequest="130" CornerRadius="10,40,10,40" BackgroundColor="#b66dff">
+                        <StackLayout VerticalOptions="Center">
+                            <Label x:Name="lblCheckIn" Text="Check In" FontSize="14" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                        </StackLayout>
+                        <yummy:PancakeView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_3"></TapGestureRecognizer>
+                        </yummy:PancakeView.GestureRecognizers>
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+
+                    <Frame  CornerRadius="20" VerticalOptions="End" HorizontalOptions="End"
+                            BackgroundColor="#debdff"
+                            BorderColor="#b66dff"
+                            HeightRequest="20"
+                            WidthRequest="20"
+                            Margin="0" TranslationY="10"
+                            Padding="0">
+                        <Label x:Name="lblBadgeIn" 
+                               FontSize="11" Text="{Binding NumIn}"
+                               VerticalTextAlignment="Center"
+                               WidthRequest="10" 
+                               HeightRequest="16" 
+                               HorizontalTextAlignment="Center" 
+                               TextColor="White">
+                        </Label>
+                        <Frame.Triggers>
+                            <DataTrigger TargetType="Frame" Binding="{Binding Source={x:Reference lblBadgeIn},Path=Text}" Value="0">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                        </Frame.Triggers>
+                    </Frame>
+                </Grid>
+
+                <!--Logo-->
+                <Grid>
+                    <yummy:PancakeView HeightRequest="70" WidthRequest="35" CornerRadius="100" Padding="12" BackgroundColor="White">
+                        <Image VerticalOptions="Center"
+                               Source="Logo.png"
+                               Aspect="Fill"></Image>
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+                </Grid>
+
+                <!--Out-->
+                <Grid>
+                    <yummy:PancakeView x:Name="yumCheckOut" HeightRequest="70" WidthRequest="130" CornerRadius="40,10,40,10" BackgroundColor="#eedeff">
+                        <StackLayout VerticalOptions="Center">
+                            <Label x:Name="lblCheckOut" Text="Check Out" FontSize="14" TextColor="Black" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                        </StackLayout>
+                        <yummy:PancakeView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                        </yummy:PancakeView.GestureRecognizers>
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+
+                    <Frame  CornerRadius="20" VerticalOptions="End" HorizontalOptions="End"
+                            BackgroundColor="#debdff"
+                            HeightRequest="20"
+                            WidthRequest="20"
+                            BorderColor="#b66dff" 
+                            Margin="0" TranslationY="10"
+                            Padding="0">
+                        <Label x:Name="lblBadgeOut" 
+                               FontSize="11" Text="{Binding NumOut}"
+                               VerticalTextAlignment="Center"
+                               WidthRequest="10" 
+                               HeightRequest="16" 
+                               HorizontalTextAlignment="Center" 
+                               TextColor="Black">
+                        </Label>
+                        <Frame.Triggers>
+                            <DataTrigger TargetType="Frame" Binding="{Binding Source={x:Reference lblBadgeOut},Path=Text}" Value="0">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                        </Frame.Triggers>
+                    </Frame>
+                </Grid>
+
+            </StackLayout>
+
+            <!--Search Bar-->
+            <yummy:PancakeView BackgroundColor="White" HeightRequest="42" Margin="30,10,30,10" Padding="0" CornerRadius="25" HorizontalOptions="FillAndExpand">
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <SearchBar x:Name="srcBarEmployee"
+                           Placeholder="Search"    
+                           TextChanged="srcBarEmployee_TextChanged"
+                           HorizontalOptions="FillAndExpand" 
+                           WidthRequest="265"
+                           Margin="5,0,5,0" 
+                           FontSize="14"></SearchBar>
+                </StackLayout>
+
+                <yummy:PancakeView.Border>
+                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                </yummy:PancakeView.Border>
+                <yummy:PancakeView.Shadow>
+                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                </yummy:PancakeView.Shadow>
+            </yummy:PancakeView>
+
+            <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+        </StackLayout>
+
+        <StackLayout x:Name="stkAllClock">
+
+            <ListView x:Name="lstEmployeesIn" SelectionMode="None"
+                          ItemsSource="{Binding LstEmployeesIn}"
+                          HasUnevenRows="True" HeightRequest="450"
+                          VerticalScrollBarVisibility="Never"
+                          IsRefreshing="{Binding IsRefresh}"
+                          RefreshCommand="{Binding BindingContext.RefreshLstEmployees, Source={x:Reference page}}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="20,10,20,10" Spacing="10">
+                                <StackLayout Orientation="Horizontal">
+                                    <yummy:PancakeView BackgroundColor="#b66dff" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                        <Label Text="{Binding EmployeeName}"
+                                                   FontAttributes="Bold"
+                                                   TextColor="White" 
+                                                   HorizontalTextAlignment="Start"
+                                                   VerticalTextAlignment="Center"
+                                                   Padding="20,7,20,7"></Label>
+                                        <yummy:PancakeView.Shadow>
+                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                        </yummy:PancakeView.Shadow>
+                                        <yummy:PancakeView.Triggers>
+                                            <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding MytimeSheet}" Value="1">
+                                                <Setter Property="BackgroundColor" Value="#8f1fff"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding MytimeSheet}" Value="2">
+                                                <Setter Property="BackgroundColor" Value="#8f1fff"></Setter>
+                                            </DataTrigger>
+                                        </yummy:PancakeView.Triggers>
+                                    </yummy:PancakeView>
+
+                                    <Label Text="{Binding HoursFrom}" 
+                                               FontSize="12" 
+                                               Margin="50,0,0,0"
+                                               FontAttributes="Bold"
+                                               HorizontalOptions="End"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center"></Label>
+                                </StackLayout>
+
+                                <StackLayout Orientation="Horizontal" Spacing="10" Padding="10,0,0,0">
+                                    <Image>
+                                        <Image.Source>
+                                            <FontImageSource FontFamily="FontIconSolid" Color="#b66dff" Glyph="" Size="18"></FontImageSource>
+                                        </Image.Source>
+                                        <Image.Triggers>
+                                            <DataTrigger TargetType="Image" Binding="{Binding MytimeSheet}" Value="1">
+                                                <Setter Property="Source">
+                                                    <Setter.Value>
+                                                        <FontImageSource FontFamily="FontIconSolid" Color="#8f1fff" Glyph="" Size="18"></FontImageSource>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding MytimeSheet}" Value="2">
+                                                <Setter Property="Source">
+                                                    <Setter.Value>
+                                                        <FontImageSource FontFamily="FontIconSolid" Color="#8f1fff" Glyph="" Size="18"></FontImageSource>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Image.Triggers>
+                                    </Image>
+                                    <Label Text="{Binding BranchName}" FontAttributes="Italic" VerticalTextAlignment="Center" FontSize="14"></Label>
+
+                                    <StackLayout x:Name="stkBaseButton" IsVisible="False" Orientation="Horizontal" Spacing="10" HorizontalOptions="EndAndExpand">
+                                        <Button Text="CheckIn" 
+                                                FontSize="11" 
+                                                Padding="0"
+                                                TextTransform="None"
+                                                FontAttributes="Bold"
+                                                CornerRadius="20"                  
+                                                HeightRequest="35" 
+                                                TextColor="White"
+                                                BorderColor="#b66dff"
+                                                BorderWidth="1"
+                                                BackgroundColor="#b66dff" 
+                                                HorizontalOptions="Start"
+                                                Command="{Binding BindingContext.SelectedTimeIn,Source={x:Reference page}}" CommandParameter="{Binding}">
+                                            <!--<Button.Triggers>
+                                                <DataTrigger TargetType="Button" Binding="{Binding MytimeSheet}" Value="2">
+                                                    <Setter Property="BackgroundColor" Value="#a80724"></Setter>
+                                                    <Setter Property="BorderColor" Value="#a80724"></Setter>
+                                                </DataTrigger>
+                                            </Button.Triggers>-->
+                                        </Button>
+
+                                        <Button Text="Checkout"
+                                                FontSize="11" 
+                                                Padding="0"
+                                                TextTransform="None"
+                                                FontAttributes="Bold"
+                                                CornerRadius="20"
+                                                HeightRequest="35" 
+                                                TextColor="Black"
+                                                BorderColor="#b66dff"
+                                                BorderWidth="1"
+                                                BackgroundColor="#eedeff" 
+                                                HorizontalOptions="EndAndExpand"
+                                                Command="{Binding BindingContext.SelectedTimeOut,Source={x:Reference page}}" CommandParameter="{Binding}">
+                                            <Button.Triggers>
+                                                <DataTrigger TargetType="Button" Binding="{Binding Id}" Value="0">
+                                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                        <StackLayout.Triggers>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding MytimeSheet}" Value="0">
+                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                            </DataTrigger>
+                                        </StackLayout.Triggers>
+                                        <!--<StackLayout.Triggers>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding Source={x:Reference stkMyButton},Path=IsVisible}" Value="True">
+                                                <Setter Property="IsVisible" Value="False"></Setter>
+                                            </DataTrigger>
+                                        </StackLayout.Triggers>-->
+                                    </StackLayout>
+
+                                    <StackLayout x:Name="stkMyButton" IsVisible="False" Orientation="Horizontal" Spacing="10" HorizontalOptions="EndAndExpand">
+                                        <Button Text="CheckIn" 
+                                                FontSize="11" IsVisible="False"
+                                                Padding="0"
+                                                TextTransform="None"
+                                                FontAttributes="Bold"
+                                                CornerRadius="20"                  
+                                                HeightRequest="35" 
+                                                TextColor="White"
+                                                BorderColor="#8f1fff"
+                                                BorderWidth="1"
+                                                BackgroundColor="#8f1fff" 
+                                                Command="{Binding BindingContext.SelectedTimeMyStart,Source={x:Reference page}}" CommandParameter="{Binding}">
+
+                                            <Button.Triggers>
+                                                <DataTrigger TargetType="Button" Binding="{Binding ShowEndTimeBtn}" Value="0">
+                                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+
+                                        <Button Text="CheckOut" 
+                                                FontSize="11" IsVisible="False"
+                                                Padding="0"
+                                                TextTransform="None"
+                                                FontAttributes="Bold"
+                                                CornerRadius="20"                  
+                                                HeightRequest="35" 
+                                                TextColor="White"
+                                                BorderColor="#8f1fff"
+                                                BorderWidth="1"
+                                                BackgroundColor="#8f1fff" 
+                                                Command="{Binding BindingContext.SelectedTimeMyEnd,Source={x:Reference page}}" CommandParameter="{Binding}">
+                                            <Button.Triggers>
+                                                <DataTrigger TargetType="Button" Binding="{Binding ShowEndTimeBtn}" Value="1">
+                                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+
+                                        <StackLayout.Triggers>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding MytimeSheet}" Value="1">
+                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                            </DataTrigger>
+                                        </StackLayout.Triggers>
+                                    </StackLayout>
+
+                                </StackLayout>
+
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.Triggers>
+                    <DataTrigger TargetType="ListView" Binding="{Binding LstEmployeesIn.Count}" Value="0">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                </ListView.Triggers>
+            </ListView>
+
+
+            <ListView x:Name="lstEmployeesOut" IsVisible="False" SelectionMode="None" 
+                          ItemsSource="{Binding LstEmployeesOut}"
+                          HasUnevenRows="True" HeightRequest="450"
+                          VerticalScrollBarVisibility="Never"
+                          IsRefreshing="{Binding IsRefresh}"
+                          RefreshCommand="{Binding BindingContext.RefreshLstEmployees, Source={x:Reference page}}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="20,10,20,10" Spacing="10">
+                                <StackLayout Orientation="Horizontal">
+                                    <yummy:PancakeView BackgroundColor="#eedeff" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                        <Label Text="{Binding EmployeeName}"
+                                                   FontAttributes="Bold"
+                                                   TextColor="Gray" 
+                                                   HorizontalTextAlignment="Start"
+                                                   VerticalTextAlignment="Center"
+                                                   Padding="20,7,20,7"></Label>
+                                        <yummy:PancakeView.Border>
+                                            <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
+                                        </yummy:PancakeView.Border>
+                                        <yummy:PancakeView.Shadow>
+                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                        </yummy:PancakeView.Shadow>
+                                    </yummy:PancakeView>
+
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="End" Margin="20,0,0,0" Spacing="20">
+                                        <StackLayout Spacing="0">
+                                            <Label Text="In" FontSize="12" 
+                                               TextColor="#65a88c"
+                                               FontAttributes="Bold"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center"></Label>
+                                            <Label Text="{Binding HoursFrom,StringFormat='{0:HH:mm}'}" 
+                                               FontSize="12" 
+                                               TextColor="#65a88c"
+                                               FontAttributes="Bold"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center"></Label>
+                                        </StackLayout>
+
+                                        <StackLayout Spacing="0">
+                                            <Label Text="Out" 
+                                               FontSize="12" 
+                                               TextColor="Red"
+                                               FontAttributes="Bold"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center"></Label>
+                                            <Label Text="{Binding HoursTo,StringFormat='{0:HH:mm}'}" 
+                                               FontSize="12" 
+                                               TextColor="Red"
+                                               FontAttributes="Bold"
+                                               HorizontalTextAlignment="Center"
+                                               VerticalTextAlignment="Center"></Label>
+                                        </StackLayout>
+
+                                    </StackLayout>
+
+                                </StackLayout>
+
+                                <StackLayout Orientation="Horizontal" Spacing="10" Padding="10,0,0,0">
+                                    <Image>
+                                        <Image.Source>
+                                            <FontImageSource FontFamily="FontIconSolid" Color="Gray" Glyph="" Size="18"></FontImageSource>
+                                        </Image.Source>
+                                    </Image>
+                                    <Label Text="{Binding BranchName}" FontAttributes="Italic" VerticalTextAlignment="Center" FontSize="14"></Label>
+
+                                </StackLayout>
+
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.Triggers>
+                    <DataTrigger TargetType="ListView" Binding="{Binding LstEmployeesOut.Count}" Value="0">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                </ListView.Triggers>
+            </ListView>
+
+            <StackLayout.Triggers>
+                <DataTrigger TargetType="StackLayout" Binding="{Binding Source={x:Reference stkNoData}, Path=IsVisible}" Value="True">
+                    <Setter Property="HeightRequest" Value="0"></Setter>
+                    <Setter Property="IsVisible" Value="False"></Setter>
+                </DataTrigger>
+            </StackLayout.Triggers>
+        </StackLayout>
+
+        <!--No Data-->
+        <StackLayout x:Name="stkNoData" Padding="0,50,0,0" IsVisible="False" HorizontalOptions="CenterAndExpand" VerticalOptions="End">
+            <Image Source="noresult.png" Aspect="AspectFill"></Image>
+            <StackLayout.Triggers>
+                <MultiTrigger TargetType="StackLayout">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding LstEmployeesIn.Count}" Value="0" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsVisible" Value="True"></Setter>
+                </MultiTrigger>
+                <MultiTrigger TargetType="StackLayout">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding LstEmployeesOut.Count}" Value="0" />
+                        <BindingCondition Binding="{Binding Source={x:Reference lstEmployeesOut}, Path=IsVisible}" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsVisible" Value="True"></Setter>
+                </MultiTrigger>
+            </StackLayout.Triggers>
+        </StackLayout>
+
+        <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+        </ActivityIndicator>
+    </StackLayout>
+
+</Controls:CustomsPage>

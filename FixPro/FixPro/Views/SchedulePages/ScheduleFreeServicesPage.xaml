@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage  xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:Controls="clr-namespace:FixPro.Controls" 
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" 
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:Helpers="clr-namespace:FixPro.Helpers"
+             xmlns:xctViews="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit" 
+             xmlns:vm="clr-namespace:FixPro.ViewModels"
+             xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+             x:Name="page"
+             x:Class="FixPro.Views.SchedulePages.ScheduleFreeServicesPage">
+
+    <Controls:CustomsPage.BindingContext>
+        <vm:ScheduleFreeServicesViewModel></vm:ScheduleFreeServicesViewModel>
+    </Controls:CustomsPage.BindingContext>
+
+
+    <Grid Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <yummy:PancakeView x:Name="yummyAddService"  CornerRadius="0" BackgroundColor="White" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <StackLayout Padding="20,20,20,20" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <!--Header-->
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <Image HorizontalOptions="Start">
+                        <Image.Source>
+                            <FontImageSource FontFamily="FontIconSolid" Color="#b66dff" Glyph="" Size="20"></FontImageSource>
+                        </Image.Source>
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                        </Image.GestureRecognizers>
+                    </Image>
+
+                    <Label Text="Service" TextColor="#b66dff" FontSize="16" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center" Padding="0,0,0,10"></Label>
+
+                </StackLayout>
+
+                <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray" Margin="0,0,0,20"></Line>
+
+
+                <StackLayout>
+
+                    <StackLayout Spacing="25">
+
+                        <!--Service-->
+                        <StackLayout  HorizontalOptions="FillAndExpand">
+
+                            <Label Text="Service" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+
+                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+
+                                <!--<Picker ItemsSource="{Binding LstItemCategory}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedServiceCateory,Mode=TwoWay}" SelectedIndexChanged="Picker_SelectedIndexChanged"
+                                        Title="Choose Item/Service"
+                                        FontSize="12"
+                                        HorizontalOptions="FillAndExpand">
+                                </Picker>-->
+
+                                <combobox:SfComboBox x:Name="cobxLstServices"
+                                    DataSource="{Binding LstServiceCategory}" 
+                                    SelectedItem="{Binding SelectedServiceCateory,Mode=TwoWay}"
+                                    SelectionChanged="SfComboBox_SelectionChanged"
+                                    Watermark="Select Service"
+                                    TextSize="15" TextColor="#333"
+                                    MaximumDropDownHeight="400"
+                                    HeightRequest="45" 
+                                    NoResultsFoundText="No result found"
+                                    NoResultsFoundTextColor="Gray"
+                                    NoResultsFoundFontSize="14"
+                                    IsEditableMode="False"
+                                    AllowFiltering="False"
+                                    HighlightedTextColor="#b66dff"
+                                    HighlightedTextFontAttributes="Bold"
+                                    DisplayMemberPath="Name">
+                                    <combobox:SfComboBox.DropDownHeaderView>
+                                        <Label Text="Materials" Padding="5" TextColor="Gray"></Label>
+                                    </combobox:SfComboBox.DropDownHeaderView>
+                                </combobox:SfComboBox>
+
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="Gray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+
+                        <!--Cost-->
+                        <StackLayout HorizontalOptions="FillAndExpand" >
+                            <Label Text="Cost" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+
+                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                <Entry x:Name="entryCost"
+                                 Text="{Binding ServiceDetails.CostperUnit}"
+                                 FontSize="15"
+                                 Placeholder="Cost"
+                                 TextColor="#333"
+                                 Keyboard="Numeric"
+                                 HorizontalOptions="FillAndExpand">
+                                </Entry>
+
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+                        <!--Qty-->
+                        <StackLayout HorizontalOptions="FillAndExpand" >
+                            <Label Text="Qty" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+
+                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                <Entry x:Name="entryQty"
+                                Text="{Binding ServiceDetails.QTYTime}"
+                                FontSize="15"
+                                TextColor="#333"
+                                Keyboard="Numeric"
+                                HorizontalOptions="FillAndExpand">
+                                </Entry>
+
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                            <!--<StackLayout.Triggers>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ShowQty}" Value="False">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                        </StackLayout.Triggers>-->
+                        </StackLayout>
+
+
+                        <!--Description-->
+                        <StackLayout  HorizontalOptions="FillAndExpand">
+                            <Label Text="Description" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+
+                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" Margin="0,0,0,10" CornerRadius="10">
+                                <Editor x:Name="edtDescription"
+                                    Text="{Binding ServiceDetails.Description}"
+                                    Placeholder="Enter Description"
+                                    TextColor="#333"
+                                    FontSize="15" 
+                                    HeightRequest="150"
+                                    HorizontalOptions="FillAndExpand">
+                                </Editor>
+
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+                    </StackLayout>
+
+                </StackLayout>
+
+
+                <StackLayout x:Name="stkBtns" Orientation="Horizontal" Spacing="20" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="10">
+
+                    <Button Text="OK"
+                        BackgroundColor="#b66dff"
+                        FontAttributes="Bold"
+                        FontSize="14" 
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        TextColor="White" 
+                        x:Name="btnOk"
+                        Command="{Binding BindingContext.ApplyService,Source={x:Reference page}}" CommandParameter="{Binding ServiceDetails}">
+                    </Button>
+                    <Button Text="Cancel" 
+                        TextTransform="None" 
+                        BackgroundColor="Transparent" 
+                        FontAttributes="Bold" 
+                        FontSize="14"
+                        CornerRadius="10"
+                        HeightRequest="40"
+                        BorderColor="#b66dff" 
+                        BorderWidth="1"
+                        TextColor="#b66dff" 
+                        Clicked="Button_Clicked"></Button>
+                </StackLayout>
+            </StackLayout>
+        </yummy:PancakeView>
+        <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+        </ActivityIndicator>
+    </Grid>
+</Controls:CustomsPage>

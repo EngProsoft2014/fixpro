@@ -1,0 +1,105 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <ProduceReferenceAssemblyInOutDir>true</ProduceReferenceAssemblyInOutDir>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Fonts\Almarai-Bold.ttf" />
+    <None Remove="Fonts\Almarai-ExtraBold.ttf" />
+    <None Remove="Fonts\Almarai-Light.ttf" />
+    <None Remove="Fonts\Almarai-Regular.ttf" />
+    <None Remove="Fonts\Amiri-Bold.ttf" />
+    <None Remove="Fonts\Amiri-BoldItalic.ttf" />
+    <None Remove="Fonts\Amiri-Regular.ttf" />
+    <None Remove="Fonts\Font Awesome 6 Brands-Regular-400.otf" />
+    <None Remove="Fonts\Font Awesome 6 Free-Regular-400.otf" />
+    <None Remove="Fonts\Font Awesome 6 Free-Solid-900.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\Almarai-Bold.ttf" />
+    <EmbeddedResource Include="Fonts\Almarai-ExtraBold.ttf" />
+    <EmbeddedResource Include="Fonts\Almarai-Light.ttf" />
+    <EmbeddedResource Include="Fonts\Almarai-Regular.ttf" />
+    <EmbeddedResource Include="Fonts\Amiri-Bold.ttf" />
+    <EmbeddedResource Include="Fonts\Amiri-BoldItalic.ttf" />
+    <EmbeddedResource Include="Fonts\Amiri-Regular.ttf" />
+    <EmbeddedResource Include="Fonts\Font Awesome 6 Brands-Regular-400.otf" />
+    <EmbeddedResource Include="Fonts\Font Awesome 6 Free-Regular-400.otf" />
+    <EmbeddedResource Include="Fonts\Font Awesome 6 Free-Solid-900.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Acr.UserDialogs" Version="7.2.0.564" />
+    <PackageReference Include="akavache.core" Version="9.1.7" />
+    <PackageReference Include="GoogleApi" Version="4.5.4" />
+    <PackageReference Include="Microsoft.AspNet.SignalR.Client" Version="2.4.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.9" />
+    <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
+    <PackageReference Include="OneSignalSDK.Xamarin" Version="4.3.4" />
+    <PackageReference Include="Plugin.PayCards" Version="1.1.1" />
+    <PackageReference Include="Polly" Version="7.2.3" />
+    <PackageReference Include="Rg.Plugins.Popup" Version="2.1.0" />
+    <PackageReference Include="Stripe.net" Version="41.13.0" />
+    <PackageReference Include="Syncfusion.Xamarin.SfCalendar" Version="19.3.0.43" />
+    <PackageReference Include="Syncfusion.Xamarin.SfComboBox" Version="19.3.0.43" />
+    <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="19.3.0.43" />
+    <PackageReference Include="Syncfusion.Xamarin.SfNavigationDrawer" Version="19.3.0.43" />
+    <PackageReference Include="Syncfusion.Xamarin.SfSchedule" Version="19.3.0.43" />
+    <PackageReference Include="Syncfusion.Xamarin.SfTabView" Version="19.3.0.43" />
+    <PackageReference Include="TcxTools.NetStandard" Version="1.0.0" />
+    <PackageReference Include="Twilio" Version="5.78.0" />
+    <PackageReference Include="Xam.Plugin.Connectivity" Version="3.2.0" />
+    <PackageReference Include="Xam.Plugin.Geolocator" Version="4.5.0.6" />
+    <PackageReference Include="Xam.Plugin.Media" Version="6.0.2" />
+    <PackageReference Include="Xam.Plugins.Settings" Version="3.1.1" />
+    <PackageReference Include="Xamarin.CommunityToolkit" Version="2.0.5" />
+    <PackageReference Include="Xamarin.Controls.SignaturePad.Forms" Version="3.0.0" />
+    <PackageReference Include="Xamarin.DeviceDensity.Plugin" Version="0.0.3" />
+    <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
+    <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
+    <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.11.982" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2612" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.8.0" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="5.0.0.2612" />
+    <PackageReference Include="Xamarin.Forms.PancakeView" Version="2.3.0.759" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\CreateNotificationsPage.xaml.cs">
+      <DependentUpon>CreateNotificationsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SchedulePages\MaterialReceiptPage.xaml.cs">
+      <DependentUpon>MaterialReceiptPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SchedulePages\NewItemsServicesSchedulePage.xaml.cs">
+      <DependentUpon>NewItemsServicesSchedulePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SchedulePages\ScheduleFreeServicesPage.xaml.cs">
+      <DependentUpon>ScheduleFreeServicesPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\CreateNotificationsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\PopupPages\ScheduleDatesPopup.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\SchedulePages\MaterialReceiptPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\SchedulePages\ScheduleFreeServicesPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

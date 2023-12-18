@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:Controls="clr-namespace:FixPro.Controls"
+                      xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                      xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                      xmlns:vm="clr-namespace:FixPro.ViewModels"
+                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                      x:Name="page"
+                      BackgroundColor="White"
+             x:Class="FixPro.Views.CallPages.NewCallPage">
+
+    <ContentPage.BindingContext>
+        <vm:CallsViewModel></vm:CallsViewModel>
+    </ContentPage.BindingContext>
+
+    <StackLayout>
+
+        <!--Toolbar-->
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="20,10,20,10">
+
+            <Image x:Name="imgBack">
+                <Image.Source>
+                    <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
+                </Image.Source>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                </Image.GestureRecognizers>
+            </Image>
+
+            <Label x:Name="lblTitle" Text="Call Details" HeightRequest="30" HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
+                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding OneCall.Id}" Value="0">
+                        <Setter Property="Text" Value="New Call"></Setter>
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+
+            <Image x:Name="imgDelete" IsVisible="True">
+                <Image.Source>
+                    <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
+                </Image.Source>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BindingContext.DeleteCall,Source={x:Reference page}}" CommandParameter="{Binding OneCall.Id}"></TapGestureRecognizer>
+                </Image.GestureRecognizers>
+                <Image.Triggers>
+                    <DataTrigger TargetType="Image" Binding="{Binding OneCall.Id}" Value="0">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                </Image.Triggers>
+            </Image>
+        </StackLayout>
+
+        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray" Margin="0,0,0,10"></Line>
+
+        <ScrollView>
+            <StackLayout Padding="25,5,25,30" Spacing="20">
+
+                <!--Phone Number-->
+                <StackLayout HorizontalOptions="FillAndExpand">
+                    <Label Text="Phone Number" TextColor="Black"></Label>
+                    <StackLayout Orientation="Horizontal" Spacing="10">
+                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                            <Entry x:Name="entryPhone" 
+                                   Text="{Binding OneCall.PhoneNum}"
+                                   Keyboard="Telephone"
+                                   IsReadOnly="True"
+                                   Placeholder="Enter Phone" 
+                                   PlaceholderColor="Gray"
+                                   TextColor="Black" 
+                                   FontSize="13" 
+                                   Focused="entryPhone_Focused"
+                                   Unfocused="entryPhone_Unfocused">
+                                <Entry.Triggers>
+                                    <DataTrigger TargetType="Entry" Binding="{Binding OneCall.Id}" Value="0">
+                                        <Setter Property="IsReadOnly" Value="False"></Setter>
+                                    </DataTrigger>
+                                </Entry.Triggers>
+                            </Entry>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+
+                        <!--Add Job-->
+                        <yummy:PancakeView x:Name="yumMkSch" HorizontalOptions="End" IsVisible="False" Padding="10" CornerRadius="10" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
+                            <StackLayout Spacing="0" VerticalOptions="Center">
+                                <Label Text="Add Job" FontSize="12" TextColor="#333" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                                    
+                                </Label>
+                            </StackLayout>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                            <yummy:PancakeView.BackgroundGradientStops>
+                                <yummy:GradientStopCollection>
+                                    <yummy:GradientStop Color="#b66dff" Offset="0.1"></yummy:GradientStop>
+                                    <yummy:GradientStop Color="#debdff" Offset="1.5"></yummy:GradientStop>
+                                </yummy:GradientStopCollection>
+                            </yummy:PancakeView.BackgroundGradientStops>
+                            <yummy:PancakeView.Triggers>
+                                <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding IsShowBtnSch}" Value="1">
+                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                </DataTrigger>
+                            </yummy:PancakeView.Triggers>
+                            <yummy:PancakeView.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.CreateScheduleFromCall,Source={x:Reference page}}" CommandParameter="{Binding CustomerDetails}"></TapGestureRecognizer>
+                            </yummy:PancakeView.GestureRecognizers>      
+                        </yummy:PancakeView>
+
+                        <!--Go Job-->
+                        <yummy:PancakeView HorizontalOptions="End" IsVisible="False" Padding="10" CornerRadius="10" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
+                            <StackLayout Spacing="0" VerticalOptions="Center">
+                                <Label Text="Go Job" FontSize="12" TextColor="#333" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+
+                                </Label>
+                            </StackLayout>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                            <yummy:PancakeView.BackgroundGradientStops>
+                                <yummy:GradientStopCollection>
+                                    <yummy:GradientStop Color="#b66dff" Offset="0.1"></yummy:GradientStop>
+                                    <yummy:GradientStop Color="#debdff" Offset="1.5"></yummy:GradientStop>
+                                </yummy:GradientStopCollection>
+                            </yummy:PancakeView.BackgroundGradientStops>
+                            <yummy:PancakeView.Triggers>
+                                <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding IsShowBtnSch}" Value="2">
+                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                </DataTrigger>
+                            </yummy:PancakeView.Triggers>
+                            <yummy:PancakeView.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.SelectGoJob,Source={x:Reference page}}" CommandParameter="{Binding OneCall}"></TapGestureRecognizer>
+                            </yummy:PancakeView.GestureRecognizers>
+                        </yummy:PancakeView>
+                    </StackLayout>
+                    
+                </StackLayout>
+
+                <!--Cust Name-->
+                <!--<StackLayout x:Name="stkCustName" HorizontalOptions="FillAndExpand" IsVisible="False">
+                    <Label Text="Customer Name2" TextColor="Black"></Label>
+                    <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                        <Entry x:Name="entryName" 
+                               Placeholder="Enter Phone" 
+                               PlaceholderColor="Gray"
+                               TextColor="Black" 
+                               FontSize="13">
+                        </Entry>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+                </StackLayout>-->
+
+                <!--Cust Name Get-->
+                <StackLayout x:Name="stkCustNameGet" HorizontalOptions="FillAndExpand">
+                    <Label Text="Customer Name" TextColor="Black"></Label>
+                    <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                        <Entry x:Name="entryNameGet" Text="{Binding OneCall.CustomerName,Mode=TwoWay}"
+                               PlaceholderColor="Gray"
+                               TextColor="Black" 
+                               FontSize="13"
+                               Focused="entryNameGet_Focused"
+                               Unfocused="entryNameGet_Unfocused">
+                            <Entry.Triggers>
+                                <DataTrigger TargetType="Entry" Binding="{Binding OneCall.CustomerName}" Value="">
+                                    <Setter Property="Text" Value="Please choose customer"></Setter>
+                                </DataTrigger>
+                            </Entry.Triggers>
+                        </Entry>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+                    <!--<StackLayout.Triggers>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding Source={x:Reference stkCustName},Path=IsVisible}" Value="True">
+                            <Setter Property="IsVisible" Value="False"></Setter>
+                        </DataTrigger>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding OneCall.CustomerId}" Value="0">
+                            <Setter Property="IsVisible" Value="False"></Setter>
+                        </DataTrigger>
+                    </StackLayout.Triggers>-->
+                </StackLayout>
+
+                <StackLayout Spacing="20">
+                    <!--Call Reason-->
+                    <StackLayout>
+                        <Label Text="Call Reason" TextColor="Black"></Label>
+                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                            <Picker x:Name="pkrReason" ItemsSource="{Binding LstReasons}" ItemDisplayBinding="{Binding Lable}" SelectedItem="{Binding OneReason,Mode=TwoWay}" 
+                                    Title="Select Reason" 
+                                    TitleColor ="Gray" 
+                                    TextColor="Black"
+                                    FontFamily="AlmaraiRegular" FontSize="13">
+                            </Picker>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                    </StackLayout>
+
+                    <!--<StackLayout>
+                        <Label Text="Call Result" TextColor="Black"></Label>
+                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#facfcf" HorizontalOptions="FillAndExpand">
+                            <Picker x:Name="pkrResult"
+                                Title="Select Result" 
+                                FontFamily="AlmaraiRegular" 
+                                FontSize="13" 
+                                TitleColor="#333">
+                            </Picker>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                    </StackLayout>-->
+                    <!--Campaign-->
+                    <StackLayout>
+                        <Label Text="Campaign" TextColor="Black"></Label>
+                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                            <Picker x:Name="pkrCampaign" ItemsSource="{Binding LstCampaigns}" ItemDisplayBinding="{Binding Lable}" SelectedItem="{Binding OneCampaign,Mode=TwoWay}" 
+                                Title="Select Campaign" 
+                                FontFamily="AlmaraiRegular" 
+                                FontSize="13" 
+                                TitleColor ="Gray" 
+                                TextColor="Black">
+                            </Picker>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                    </StackLayout>
+                    <!--Employee-->
+                    <StackLayout>
+                        <Label Text="Created by" TextColor="Black"></Label>
+                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                            <Label x:Name="lblEmployee"
+                                Text="{Binding OneCall.EmployeeName}" 
+                                FontFamily="AlmaraiRegular" 
+                                FontSize="13" Padding="5,10,5,10"
+                                TextColor="Black">
+                            </Label>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                        <StackLayout.Triggers>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding OneCall.Id}" Value="0">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                        </StackLayout.Triggers>
+                    </StackLayout>
+
+                    <!--Schedule Title-->
+                    <!--<StackLayout>
+                        <Label Text="Schedule Title" TextColor="Black"></Label>
+                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                            <Label x:Name="lblSchTitle" 
+                                Text="{Binding OneCall.ScheduleTitle}" 
+                                FontFamily="AlmaraiRegular" 
+                                FontSize="13" Padding="5,10,5,10"
+                                TextColor="Black">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding OneCall.ScheduleTitle}" Value="">
+                                        <Setter Property="Text" Value="Without Schedule"></Setter>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                        <StackLayout.Triggers>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding OneCall.Id}" Value="0">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                        </StackLayout.Triggers>
+                    </StackLayout>-->
+
+                    <!--Notes-->
+                    <StackLayout>
+                        <Label Text="Notes" TextColor="Black"></Label>
+                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HeightRequest="170" HorizontalOptions="FillAndExpand">
+                            <Editor x:Name="pkrNotes" Text="{Binding OneCall.Notes}"
+                                    Placeholder="Enter Notes" 
+                                    PlaceholderColor="Gray"
+                                    FontFamily="AlmaraiRegular" 
+                                    FontSize="13" 
+                                    TextColor="Black">
+                            </Editor>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                    </StackLayout>
+                </StackLayout>
+
+            </StackLayout>
+        </ScrollView>
+        <StackLayout VerticalOptions="EndAndExpand" Margin="0,0,0,7">
+            <Button  Text="Apply"  
+                     Margin="30,5,30,10"
+                     FontSize="15"
+                     FontAttributes="Bold"
+                     TextTransform="None"
+                     TextColor="White"
+                     WidthRequest="80"
+                     CornerRadius="20"
+                     BackgroundColor="#8f1fff"
+                     Command="{Binding BindingContext.SubmitCall,Source={x:Reference page}}" CommandParameter="{Binding OneCall}"></Button>
+        </StackLayout>
+
+        <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+        </ActivityIndicator>
+    </StackLayout>
+</Controls:CustomsPage>

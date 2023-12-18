@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:Controls="clr-namespace:FixPro.Controls"
+                      xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                      xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                      xmlns:vm="clr-namespace:FixPro.ViewModels"
+                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                      xmlns:syncfusion="clr-namespace:Syncfusion.SfCalendar.XForms;assembly=Syncfusion.SfCalendar.XForms"
+                      xmlns:schedule="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms"
+                      BackgroundColor="White"
+                      x:Name="page"
+             x:Class="FixPro.Views.SchedulePages.SchedulePage">
+
+    <ContentPage.BindingContext>
+        <vm:SchedulesViewModel></vm:SchedulesViewModel>
+    </ContentPage.BindingContext>
+
+    <StackLayout>
+
+        <!--Toolbar-->
+        <StackLayout>
+            <Controls:ToolBar Title="Schedule" HasBackButton="True"></Controls:ToolBar>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <StackLayout Orientation="Horizontal" Spacing="2" Padding="10,0,10,0" HorizontalOptions="FillAndExpand" Margin="0,0,20,0">
+                    <Label Text="List" VerticalTextAlignment="Center"></Label>
+                    <Switch x:Name="swchCalenderOrListView" Toggled="swchCalenderOrListView_Toggled"></Switch>
+                    <Label Text="Calendar" VerticalTextAlignment="Center"></Label>
+                </StackLayout>
+
+                <StackLayout x:Name="stkSwtScheduleView" Orientation="Horizontal" IsVisible="False" Spacing="2" Padding="10,0,10,0" HorizontalOptions="End" Margin="0,0,20,0">
+                    <Label Text="Weeks" VerticalTextAlignment="Center"></Label>
+                    <Switch x:Name="swchCalenderView" Toggled="swchCalenderView_Toggled"></Switch>
+                    <Label Text="Days" VerticalTextAlignment="Center"></Label>
+                </StackLayout>
+            </StackLayout>
+
+        </StackLayout>
+
+        <Grid VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="120"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <schedule:SfSchedule x:Name="schedule"
+                                 Grid.RowSpan="3"
+                                 IsVisible="False"
+                                 ScheduleView="WeekView" 
+                                 VerticalOptions="FillAndExpand"  CellTapped="schedule_CellTapped" 
+                                 CellTappedCommand="{Binding BindingContext.OpenScheduleDetails,Source={x:Reference page}}" 
+                                 DataSource="{Binding LstSchedules}">
+
+                <schedule:SfSchedule.AppointmentMapping>
+                    <schedule:ScheduleAppointmentMapping 
+                        IdMapping="Id"
+                        ColorMapping="Color"
+                        EndTimeMapping="To"
+                        StartTimeMapping="From"
+                        SubjectMapping="Title"
+                        />
+                </schedule:SfSchedule.AppointmentMapping>
+                <schedule:SfSchedule.BindingContext>
+                    <vm:SchedulesViewModel/>
+                </schedule:SfSchedule.BindingContext>
+
+                <schedule:SfSchedule.ViewHeaderStyle>
+                    <schedule:ViewHeaderStyle
+                        CurrentDateTextColor="#8f1fff"
+                        CurrentDayTextColor="#8f1fff"
+				        BackgroundColor="#eedeff" 
+				        DayTextColor="#404040" 
+				        DateTextColor="#404040" 
+				        DayFontFamily="Arial" 
+				        DateFontFamily="Arial">
+                    </schedule:ViewHeaderStyle>
+                </schedule:SfSchedule.ViewHeaderStyle>
+            </schedule:SfSchedule>
+
+
+            <syncfusion:SfCalendar  x:Name="calendar"
+                                    Grid.Row="0"
+                                    ViewMode="MonthView" 
+                                    SelectionMode="SingleSelection"
+                                    FirstDayofWeek="1"
+                                    NumberOfWeeksInView ="1"
+                                    HeaderHeight="50"
+                                    EnableDatesInPast="True"
+                                    Margin="0,0,0,0" 
+                                    HeightRequest="130"
+                                    VerticalOptions="StartAndExpand"
+                                    SelectionChanged="calendar_SelectionChanged">
+                <syncfusion:SfCalendar.MonthViewSettings>
+                    <syncfusion:MonthViewSettings HeaderBackgroundColor="#b66dff" 
+                                                  HeaderFontFamily="InterMedium"
+                                                  HeaderFont="18" 
+                                                  BorderColor ="#b66dff" 
+                                                  CellGridOptions="Both"
+                                                  TodayBorderColor="#b66dff"
+                                                  DateSelectionColor="#b66dff"
+                                                  TodaySelectionBackgroundColor="#b66dff"
+                                                  HeaderTextColor="#FFFFFF"
+                                                  DayHeight="50"
+                                                  DayHeaderTextColor="#000000"
+                                                  DayHeaderFontAttributes="Bold">
+                        <!--<syncfusion:MonthViewSettings.InlineItemTemplate>
+                            <DataTemplate>
+                                <Frame BackgroundColor="Purple" HeightRequest="50">
+                                    <StackLayout>
+                                        <Label Text="{Binding Title}" TextColor="White"></Label>
+                                        <Label Text="{Binding StartDate}" TextColor="White"></Label>
+                                        <Label Text="{Binding Location}" TextColor="White"></Label>
+                                    </StackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </syncfusion:MonthViewSettings.InlineItemTemplate>-->
+                    </syncfusion:MonthViewSettings>
+                </syncfusion:SfCalendar.MonthViewSettings>
+            </syncfusion:SfCalendar>
+
+
+            <CollectionView x:Name="colJobs" Grid.Row="1" Grid.RowSpan="2" ItemsSource="{Binding CalendarDataToday}" VerticalOptions="End" Margin="10,20,10,0">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"></LinearItemsLayout>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <yummy:PancakeView CornerRadius="15" BackgroundColor="White">
+                            <Grid>
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15">
+                                    <Image VerticalOptions="Start">
+                                        <Image.Source>
+                                            <FontImageSource FontFamily="FontIconSolid" Color="#538dd4" Glyph="" Size="14"></FontImageSource>
+                                        </Image.Source>
+                                    </Image>
+
+                                    <StackLayout HorizontalOptions="FillAndExpand">
+                                        <!--<Label Text="{Binding Title,StringFormat='Job Title : {0}'}" TextColor="#333"></Label>-->
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding From,StringFormat='{0:h:mm tt}'}" FontSize="12" TextColor="#333"></Label>
+
+                                            <Label Text="{Binding To,StringFormat='- {0:h:mm tt}'}" FontSize="12" TextColor="#333"></Label>
+                                        </StackLayout>
+
+                                        <Label Text="{Binding CustomerName}" TextColor="Black" FontAttributes="Bold"></Label>
+                                        <Label Text="{Binding CustomerPhone, StringFormat='{0:(###) ###-####}'}" TextColor="Gray"></Label>
+                                        <Label Text="{Binding Location}" FontSize="13" TextColor="Gray"></Label>
+                                    </StackLayout>
+
+
+                                    <StackLayout HeightRequest="100" HorizontalOptions="End">
+                                        <CollectionView ItemsSource="{Binding LstScheduleEmployeeDTO}" WidthRequest="110">
+                                            <CollectionView.ItemsLayout>
+                                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="5"></LinearItemsLayout>
+                                            </CollectionView.ItemsLayout>
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate>
+
+                                                    <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                                                        <Image VerticalOptions="Center">
+                                                            <Image.Source>
+                                                                <FontImageSource FontFamily="FontIconSolid" Color="#538dd4" Glyph="" Size="8"></FontImageSource>
+                                                            </Image.Source>
+                                                        </Image>
+                                                        <Label TextColor="#333" HorizontalTextAlignment="End" FontSize="11">
+                                                            <Label.Text>
+                                                                <MultiBinding StringFormat="{}{0} {1}">
+                                                                    <Binding Path="EmpFirstName" />
+                                                                    <Binding Path="EmpLastName" />
+                                                                </MultiBinding>
+                                                            </Label.Text>
+                                                        </Label>
+
+                                                    </StackLayout>
+
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+                                    </StackLayout>
+
+
+
+                                </StackLayout>
+
+                                <StackLayout IsVisible="False" HorizontalOptions="End" VerticalOptions="End"  WidthRequest="70" HeightRequest="32">
+                                    <Button Text="Start" 
+                                            TextColor="White"
+                                            BackgroundColor="#538dd4" 
+                                            Padding="0" 
+                                            CornerRadius="13" 
+                                            TextTransform="None"
+                                            WidthRequest="70"
+                                            HeightRequest="32"
+                                            Command="{Binding BindingContext.StartScheduleOutSide,Source={x:Reference page}}" CommandParameter="{Binding}"></Button>
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="3">
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="0">
+                                            <Setter Property="IsVisible" Value="True"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="1">
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="2">
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding OneScheduleDate.Status}" Value="2">
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
+                                </StackLayout>
+
+                                <StackLayout IsVisible="False" HorizontalOptions="End" VerticalOptions="End"  WidthRequest="70" HeightRequest="32">
+                                    <Button Text="End" 
+                                            TextColor="White"
+                                            BackgroundColor="#538dd4" 
+                                            Padding="0" 
+                                            CornerRadius="13" 
+                                            TextTransform="None"
+                                            WidthRequest="70"
+                                            HeightRequest="32"
+                                            Command="{Binding BindingContext.EndScheduleOutSide,Source={x:Reference page}}" CommandParameter="{Binding}"></Button>
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="3">
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="0">
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="1">
+                                            <Setter Property="IsVisible" Value="True"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="2">
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding OneScheduleDate.Status}" Value="2">
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
+                                </StackLayout>
+
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.ScheduleDetailsformList, Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+
+                            <yummy:PancakeView.Triggers>
+                                <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding Status}" Value="2">
+                                    <Setter Property="BackgroundColor" Value="LightGray"></Setter>
+                                </DataTrigger>
+                            </yummy:PancakeView.Triggers>
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                            </yummy:PancakeView.Border>
+
+                        </yummy:PancakeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <yummy:PancakeView CornerRadius="100"
+                               Grid.Row="2" 
+                               BackgroundColor="#8f1fff" 
+                               Padding="5" 
+                               VerticalOptions="End"
+                               HorizontalOptions="End" 
+                               Margin="30"
+                               HeightRequest="40"
+                               WidthRequest="40">
+                <Label TranslationY="-8"
+                            VerticalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="Center"
+                            Text="+"
+                            TextColor="White"
+                            FontSize="40"></Label>
+                <yummy:PancakeView.Shadow>
+                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                </yummy:PancakeView.Shadow>
+                <yummy:PancakeView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                </yummy:PancakeView.GestureRecognizers>
+            </yummy:PancakeView>
+
+
+        </Grid>
+        <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+        </ActivityIndicator>
+    </StackLayout>
+
+</Controls:CustomsPage>

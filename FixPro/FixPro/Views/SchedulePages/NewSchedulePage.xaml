@@ -1,0 +1,1948 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:Controls="clr-namespace:FixPro.Controls"
+                      xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                      xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                      xmlns:vm="clr-namespace:FixPro.ViewModels"
+                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                      xmlns:schedule="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms"
+                      xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
+                      xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+                      BackgroundColor="#faf5ff"
+                      x:Name="page"
+             x:Class="FixPro.Views.SchedulePages.NewSchedulePage">
+
+    <ContentPage.BindingContext>
+        <vm:SchedulesViewModel></vm:SchedulesViewModel>
+    </ContentPage.BindingContext>
+    <StackLayout>
+
+        <!--Header-->
+        <StackLayout Orientation="Horizontal" Spacing="0">
+
+            <StackLayout Orientation="Horizontal" Spacing="0" Padding="15,10,15,10" HorizontalOptions="FillAndExpand">
+
+                <Image x:Name="imgBack">
+                    <Image.Source>
+                        <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
+                    </Image.Source>
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped1"></TapGestureRecognizer>
+                    </Image.GestureRecognizers>
+                </Image>
+                <StackLayout HeightRequest="30" Spacing="0" HorizontalOptions="CenterAndExpand" TranslationX="0">
+                    <Label x:Name="lblTitle"
+                        VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
+                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding SchedulePage}" Value="0">
+                                <Setter Property="Text" Value="New Schedule"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding SchedulePage}" Value="1">
+                                <Setter Property="Text" Value="{Binding ScheduleDetails.Title}"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="1">
+                                <Setter Property="TextColor" Value="#027db3"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                <Setter Property="TextColor" Value="#1b7302"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                <Setter Property="TextColor" Value="#1b7302"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                <Setter Property="TextColor" Value="Red"></Setter>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                    <Label FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="1">
+                                <Setter Property="Text" Value="Open"></Setter>
+                                <Setter Property="TextColor" Value="#027db3"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                <Setter Property="Text" Value="Completed"></Setter>
+                                <Setter Property="TextColor" Value="#1b7302"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                <Setter Property="Text" Value="Not Serviced"></Setter>
+                                <Setter Property="TextColor" Value="Red"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                <Setter Property="Text" Value="Completed"></Setter>
+                                <Setter Property="TextColor" Value="#1b7302"></Setter>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                    <StackLayout.Triggers>
+                        <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                            <Setter Property="TranslationX" Value="25"></Setter>
+                        </DataTrigger>
+                    </StackLayout.Triggers>
+                </StackLayout>
+
+            </StackLayout>
+            <Label Text="Recurring" IsVisible="False"
+                    TextColor="#b66dff"
+                    BackgroundColor="White"
+                    TextTransform="None"
+                    FontSize="12"
+                    VerticalTextAlignment="Center"
+                    HorizontalOptions="End"
+                    Margin="0,0,10,0">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                        <Setter Property="IsVisible" Value="True"></Setter>
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+        </StackLayout>
+
+        <Grid VerticalOptions="FillAndExpand">
+            <ScrollView Padding="0,0,0,80">
+                <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+
+                    <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Padding="20,10,20,10" Spacing="20">
+                        <Label Text="Customer" FontSize="15" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+
+                        <Image HorizontalOptions="End" VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="FontIconSolid" Color="#b66dff" Glyph="" Size="20"></FontImageSource>
+                            </Image.Source>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.OpenCustomerDetails,Source={x:Reference page}}" CommandParameter="{Binding CustomerDetails}"></TapGestureRecognizer>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </StackLayout>
+                    <!--<Label Text="Customer" Padding="20,0,20,0" FontSize="15" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>-->
+
+                    <!--Customer Name-->
+                    <StackLayout  HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+
+
+                        <yummy:PancakeView BackgroundColor="White" CornerRadius="10">
+                            <StackLayout>
+                                <StackLayout Orientation="Horizontal" Padding="15,10,15,0" >
+                                    <Image HorizontalOptions="Start" VerticalOptions="Center">
+                                        <Image.Source>
+                                            <FontImageSource FontFamily="FontIconSolid" Color="Black" Glyph="" Size="22"></FontImageSource>
+                                        </Image.Source>
+                                    </Image>
+                                    <Label  VerticalTextAlignment="Center"
+                                            FontAttributes="Bold"
+                                            FontSize="13" 
+                                            TextColor="#333" 
+                                            HorizontalOptions="FillAndExpand">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} {1}">
+                                                <Binding Path="CustomerDetails.FirstName" />
+                                                <Binding Path="CustomerDetails.LastName" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                </StackLayout>
+
+                                <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                                <StackLayout Orientation="Horizontal" Padding="15,0,15,0" Spacing="5">
+                                    <Image HorizontalOptions="Start" VerticalOptions="Center">
+                                        <Image.Source>
+                                            <FontImageSource FontFamily="FontIconSolid" Color="Gray" Glyph="" Size="10"></FontImageSource>
+                                        </Image.Source>
+                                    </Image>
+                                    <Label  
+                                        Text="{Binding CustomerDetails.Address}"
+                                        FontSize="13"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalOptions="FillAndExpand">
+                                    </Label>
+                                </StackLayout>
+
+
+                                <StackLayout Orientation="Horizontal" Margin="15,0,15,10">
+                                    <StackLayout Orientation="Vertical">
+                                        <Label Text="Year Built" TextColor="Black" FontSize="12" HorizontalOptions="StartAndExpand"></Label>
+                                        <Label 
+                                              Text="{Binding CustomerDetails.YearBuit}"      
+                                              HorizontalOptions="FillAndExpand"
+                                              FontSize="12"
+                                               HorizontalTextAlignment ="Center"
+                                              VerticalTextAlignment="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.YearBuit}" Value="0">
+                                                    <Setter Property="Text" Value=""></Setter>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </StackLayout>
+
+                                    <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand">
+                                        <Label Text="Estimate Value" TextColor="Black" FontSize="12" HorizontalOptions="StartAndExpand"></Label>
+                                        <Label 
+                                              Text="{Binding CustomerDetails.EstimedValueView}"            
+                                              FontSize="12"
+                                              HorizontalTextAlignment ="Center"
+                                              HorizontalOptions="FillAndExpand"
+                                              VerticalTextAlignment="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.EstimedValue}" Value="0">
+                                                    <Setter Property="Text" Value=""></Setter>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </StackLayout>
+
+                                    <StackLayout Orientation="Vertical">
+                                        <Label Text="Square Footage" TextColor="Black" FontSize="12" HorizontalOptions="StartAndExpand"></Label>
+
+                                        <Label 
+                                                Text="{Binding CustomerDetails.Squirefootage}"               
+                                                FontSize="12"
+                                                HorizontalOptions="FillAndExpand"
+                                                HorizontalTextAlignment ="Center"
+                                                VerticalTextAlignment="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Squirefootage}" Value="0">
+                                                    <Setter Property="Text" Value=""></Setter>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </StackLayout>
+
+                                </StackLayout>
+
+
+                                <Grid HeightRequest="90" Padding="0" Margin="0">
+
+
+                                    <maps:Map x:Name="map" 
+                                              HasScrollEnabled="True"
+                                              MoveToLastRegionOnLayoutChange="True" 
+                                              HorizontalOptions="FillAndExpand" 
+                                              VerticalOptions="FillAndExpand"
+                                              MapType="Street" 
+                                              MapClicked="map_MapClicked">
+                                        <maps:Map.ItemTemplate>
+                                            <DataTemplate>
+                                                <maps:Pin Type="Generic" Position="{Binding MPosition}" Label="{Binding Address}" MarkerId="{Binding Id}">
+
+                                                </maps:Pin>
+                                            </DataTemplate>
+                                        </maps:Map.ItemTemplate>
+                                    </maps:Map>
+
+
+                                    <Label x:Name="lbllocationlatitude" IsVisible="False" Text="{Binding CustomerDetails.locationlatitude}" TextColor="Black"></Label>
+                                    <Label x:Name="lbllocationlongitude" IsVisible="False" Text="{Binding CustomerDetails.locationlongitude}" TextColor="Black"></Label>
+
+                                </Grid>
+                            </StackLayout>
+
+
+
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                    </StackLayout>
+
+                    <!--Customer Name-->
+                    <!--<StackLayout  HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+                        
+
+                        <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                            <Label Padding="5,10,5,10"  
+                                    FontSize="13"
+                                    HorizontalOptions="FillAndExpand">
+                                <Label.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="CustomerDetails.FirstName" />
+                                        <Binding Path="CustomerDetails.LastName" />
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                    </StackLayout>-->
+
+                    <!--Location-->
+                    <!--<StackLayout HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+                        <Label Text="Location" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+
+                        <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                            <Label 
+                                   Padding="5,10,5,10"
+                                   Text="{Binding CustomerDetails.Address}"
+                                   FontSize="13"
+                                   HorizontalOptions="FillAndExpand">
+                            </Label>
+
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                    </StackLayout>-->
+
+                    <!--House Details-->
+                    <!--<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label Text="Year Built" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                            <yummy:PancakeView BackgroundColor="White" Padding="10" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                <Label 
+                                      Text="{Binding CustomerDetails.YearBuit}"      
+                                      HorizontalOptions="FillAndExpand"
+                                      FontSize="12"
+                                      VerticalTextAlignment="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.YearBuit}" Value="0">
+                                            <Setter Property="Text" Value=""></Setter>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label Text="Estimate Value" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                            <yummy:PancakeView BackgroundColor="White" Padding="10" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                <Label 
+                                      Text="{Binding CustomerDetails.EstimedValue}"            
+                                      FontSize="12"
+                                      HorizontalOptions="FillAndExpand"
+                                      VerticalTextAlignment="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.EstimedValue}" Value="0">
+                                            <Setter Property="Text" Value=""></Setter>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label Text="Square Footage" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                            <yummy:PancakeView BackgroundColor="White" Padding="10" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                <Label 
+                                        Text="{Binding CustomerDetails.Squirefootage}"               
+                                        FontSize="12"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalTextAlignment="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Squirefootage}" Value="0">
+                                            <Setter Property="Text" Value=""></Setter>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+                    </StackLayout>-->
+
+
+                    <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                    <Label Text="Job Details" Padding="20,10,20,0" FontSize="15" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center"></Label>
+
+                    <Grid HorizontalOptions="FillAndExpand">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="12"></RowDefinition>
+                            <RowDefinition Height="22"></RowDefinition>
+                            <RowDefinition Height="1*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="100"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <!--Title-->
+                        <StackLayout Grid.RowSpan="4" Grid.ColumnSpan="4" IsVisible="False" HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+                            <Label Text="Title" FontSize="13" FontAttributes="Bold" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                            <StackLayout>
+                                <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry  Text="{Binding ScheduleDetails.Title}"
+                                            FontSize="13"
+                                            Placeholder="Enter Title"
+                                            HorizontalOptions="FillAndExpand">
+                                        <Entry.Triggers>
+                                            <DataTrigger TargetType="Entry" Binding="{Binding ScheduleDetails.IsStopUpdateSchedule}" Value="False">
+                                                <Setter Property="IsReadOnly" Value="True"></Setter>
+                                            </DataTrigger>
+                                        </Entry.Triggers>
+                                    </Entry>
+
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+                            <StackLayout.Triggers>
+                                <DataTrigger TargetType="StackLayout" Binding="{Binding ShowEstimateButton}" Value="True">
+                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                </DataTrigger>
+                            </StackLayout.Triggers>
+                        </StackLayout>
+
+                        <StackLayout Grid.RowSpan="4" Grid.ColumnSpan="5" IsVisible="False" HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+                            <Label Text="Title" FontSize="13" FontAttributes="Bold" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                            <StackLayout>
+                                <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                    <Entry  Text="{Binding ScheduleDetails.Title}"
+                                            FontSize="13"
+                                            Placeholder="Enter Title"
+                                            HorizontalOptions="FillAndExpand">
+                                        <Entry.Triggers>
+                                            <DataTrigger TargetType="Entry" Binding="{Binding ScheduleDetails.IsStopUpdateSchedule}" Value="False">
+                                                <Setter Property="IsReadOnly" Value="True"></Setter>
+                                            </DataTrigger>
+                                        </Entry.Triggers>
+                                    </Entry>
+
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+                            <StackLayout.Triggers>
+                                <DataTrigger TargetType="StackLayout" Binding="{Binding ShowEstimateButton}" Value="False">
+                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                </DataTrigger>
+                            </StackLayout.Triggers>
+                        </StackLayout>
+                        <!--Show Estimate-->
+                        <yummy:PancakeView Grid.Row="0" Grid.RowSpan="4" IsVisible="False" Grid.Column="4" Margin="0,0,20,0" Padding="12" CornerRadius="50" HorizontalOptions="End" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
+                            <StackLayout Spacing="0" VerticalOptions="CenterAndExpand">
+                                <Label Text="Show" FontSize="12" TextColor="White" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                                <Label Text="Estimate" FontSize="12" TextColor="White" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+                            </StackLayout>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                            <yummy:PancakeView.BackgroundGradientStops>
+                                <yummy:GradientStopCollection>
+                                    <yummy:GradientStop Color="#8f1fff" Offset="0.1"></yummy:GradientStop>
+                                    <yummy:GradientStop Color="#debdff" Offset="1.5"></yummy:GradientStop>
+                                </yummy:GradientStopCollection>
+                            </yummy:PancakeView.BackgroundGradientStops>
+                            <yummy:PancakeView.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.CreateScheduleEstimate,Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}"></TapGestureRecognizer>
+                            </yummy:PancakeView.GestureRecognizers>
+                            <yummy:PancakeView.Triggers>
+                                <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ShowEstimateButton}" Value="True">
+                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                </DataTrigger>
+                            </yummy:PancakeView.Triggers>
+                        </yummy:PancakeView>
+                    </Grid>
+
+                    <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+
+                        <!--Priority-->
+                        <StackLayout HorizontalOptions="Start" WidthRequest="150">
+                            <Label Text="Priority" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                <!--<Picker ItemsSource="{Binding LstPriority}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding OnePriorityModel,Mode=TwoWay}"
+                                  Title="Priority" 
+                                  FontSize="12"
+                                  HorizontalOptions="FillAndExpand">
+                                </Picker>-->
+
+                                <combobox:SfComboBox x:Name="comboBox" 
+                                                     DataSource="{Binding LstPriority}"
+                                                     SelectedItem="{Binding OnePriorityModel,Mode=TwoWay}" 
+                                                     TextSize="14" HeightRequest="40"
+                                                     Watermark="Priority" 
+                                                     MaximumDropDownHeight="200" 
+                                                     NoResultsFoundText="No result found"
+                                                     NoResultsFoundTextColor="Gray"
+                                                     NoResultsFoundFontSize="14"
+                                                     AllowFiltering="False"
+                                                     IsEditableMode="False"
+                                                     ShowClearButton="False"
+                                                     TextHighlightMode="MultipleOccurrence"
+                                                     HighlightedTextColor="#b66dff"
+                                                     HighlightedTextFontAttributes="Bold"
+                                                     DisplayMemberPath="Name">
+                                    <combobox:SfComboBox.DropDownHeaderView>
+                                        <Label Text="Priority" Padding="5" TextColor="Gray"></Label>
+                                    </combobox:SfComboBox.DropDownHeaderView>
+                                </combobox:SfComboBox>
+
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                                <yummy:PancakeView.Triggers>
+                                    <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.IsStopUpdateSchedule}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                    </DataTrigger>
+                                </yummy:PancakeView.Triggers>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+                        <!--Job Date-->
+                        <StackLayout HorizontalOptions="EndAndExpand" WidthRequest="150">
+                            <Label Text="Job Date" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                <DatePicker 
+                                     Date="{Binding ScheduleDate}"
+                                     FontSize="13"
+                                     HorizontalOptions="FillAndExpand">
+                                </DatePicker>
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+                        <StackLayout.Triggers>
+                            <!--<DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>-->
+                            <!--<DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>-->
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                        </StackLayout.Triggers>
+                    </StackLayout>
+
+
+                    <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+
+                        <!--Start Time-->
+                        <StackLayout HorizontalOptions="StartAndExpand" WidthRequest="150">
+                            <Label Text="Start Time" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                <TimePicker 
+                                    Time="{Binding TimeFrom}"
+                                    FontSize="13"
+                                    HorizontalOptions="FillAndExpand">
+                                </TimePicker>
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+                        <!--End Time-->
+                        <StackLayout HorizontalOptions="EndAndExpand" WidthRequest="150">
+                            <Label Text="End Time" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                <TimePicker 
+                                         Time="{Binding TimeTo}"
+                                         FontSize="13"
+                                         HorizontalOptions="FillAndExpand">
+                                </TimePicker>
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+                        <StackLayout.Triggers>
+                            <!--<DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>-->
+                            <!--<DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>-->
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                        </StackLayout.Triggers>
+                    </StackLayout>
+
+                    <!--<Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                    <Label Text="Customer Details" Padding="20,0,20,0" FontSize="15" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+
+                    -->
+                    <!--Customer Name-->
+                    <!--
+                    <StackLayout  HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+                        <StackLayout Orientation="Horizontal" Spacing="20">
+                            <Label Text="Customer" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                            <Image HorizontalOptions="End" VerticalOptions="Center">
+                                <Image.Source>
+                                    <FontImageSource FontFamily="FontIconSolid" Color="#b66dff" Glyph="" Size="20"></FontImageSource>
+                                </Image.Source>
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.OpenCustomerDetails,Source={x:Reference page}}" CommandParameter="{Binding CustomerDetails}"></TapGestureRecognizer>
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </StackLayout>
+
+                        <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                            <Label Padding="5,10,5,10"  
+                                   FontSize="13"
+                                   HorizontalOptions="FillAndExpand">
+                                <Label.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="CustomerDetails.FirstName" />
+                                        <Binding Path="CustomerDetails.LastName" />
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                    </StackLayout>
+
+                    -->
+                    <!--Location-->
+                    <!--
+                    <StackLayout HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+                        <Label Text="Location" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+
+                        <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                            <Label 
+                                  Padding="5,10,5,10"
+                                  Text="{Binding CustomerDetails.Address}"
+                                  FontSize="13"
+                                  HorizontalOptions="FillAndExpand">
+                            </Label>
+
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <yummy:PancakeView.Shadow>
+                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                            </yummy:PancakeView.Shadow>
+                        </yummy:PancakeView>
+                    </StackLayout>
+
+                    -->
+                    <!--House Details-->
+                    <!--
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label Text="Year Built" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                            <yummy:PancakeView BackgroundColor="White" Padding="10" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                <Label 
+                                             Text="{Binding CustomerDetails.YearBuit}"      
+                                             HorizontalOptions="FillAndExpand"
+                                             FontSize="12"
+                                             VerticalTextAlignment="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.YearBuit}" Value="0">
+                                            <Setter Property="Text" Value=""></Setter>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label Text="Estimate Value" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                            <yummy:PancakeView BackgroundColor="White" Padding="10" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                <Label 
+                                             Text="{Binding CustomerDetails.EstimedValue}"            
+                                             FontSize="12"
+                                             HorizontalOptions="FillAndExpand"
+                                             VerticalTextAlignment="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.EstimedValue}" Value="0">
+                                            <Setter Property="Text" Value=""></Setter>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+
+                        <StackLayout HorizontalOptions="FillAndExpand">
+                            <Label Text="Square Footage" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
+                            <yummy:PancakeView BackgroundColor="White" Padding="10" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                <Label 
+                                               Text="{Binding CustomerDetails.Squirefootage}"               
+                                               FontSize="12"
+                                               HorizontalOptions="FillAndExpand"
+                                               VerticalTextAlignment="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Squirefootage}" Value="0">
+                                            <Setter Property="Text" Value=""></Setter>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <yummy:PancakeView.Border>
+                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                </yummy:PancakeView.Border>
+                                <yummy:PancakeView.Shadow>
+                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                </yummy:PancakeView.Shadow>
+                            </yummy:PancakeView>
+                        </StackLayout>
+                    </StackLayout>-->
+
+                    <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+
+                    <Label Text="Assign" Padding="20,10,20,0" FontSize="15" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center"></Label>
+
+                    <!--Assigned-->
+                    <StackLayout Spacing="20" HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
+
+                        <StackLayout Spacing="15">
+
+                            <!--Services-->
+                            <StackLayout HorizontalOptions="FillAndExpand">
+                                <Label Text="Services" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                    <!--<Picker ItemsSource="{Binding LstServices}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedService,Mode=TwoWay}" 
+                                            Title="Choose Service" 
+                                            FontSize="12"
+                                            HorizontalOptions="FillAndExpand">
+
+                                    </Picker>-->
+
+                                    <combobox:SfComboBox 
+                                        DataSource="{Binding LstServices}" 
+                                        Watermark="Service"
+                                        SelectedItem="{Binding SelectedService,Mode=TwoWay}" 
+                                        TextSize="12"  
+                                        MaximumDropDownHeight="200"
+                                        HeightRequest="40" 
+                                        NoResultsFoundText="No result found"
+                                        NoResultsFoundTextColor="Gray"
+                                        NoResultsFoundFontSize="14"
+                                        AllowFiltering="False"
+                                        IsEditableMode="False"
+                                        ShowClearButton="False"
+                                        TextHighlightMode="MultipleOccurrence"
+                                        HighlightedTextColor="#b66dff"
+                                        HighlightedTextFontAttributes="Bold"
+                                        DisplayMemberPath="Name">
+                                        <combobox:SfComboBox.DropDownHeaderView>
+                                            <Label Text="Services" Padding="5" TextColor="Gray"></Label>
+                                        </combobox:SfComboBox.DropDownHeaderView>
+                                    </combobox:SfComboBox>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                    <yummy:PancakeView.Triggers>
+                                        <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.IsStopUpdateSchedule}" Value="False">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                    </yummy:PancakeView.Triggers>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+
+                            <!--Job Cateory-->
+                            <StackLayout HorizontalOptions="FillAndExpand">
+                                <Label Text="Job Title" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                                <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                    <!--<Picker ItemsSource="{Binding LstEmpCategory}" ItemDisplayBinding="{Binding CategoryName}" SelectedItem="{Binding SelectedCateory,Mode=TwoWay}" SelectedIndexChanged="Picker_SelectedIndexChanged"
+                                    Title="Choose Job Title" 
+                                    FontSize="12"
+                                    HorizontalOptions="FillAndExpand">
+
+                                 </Picker>-->
+
+                                    <combobox:SfComboBox 
+                                           DataSource="{Binding LstEmpCategory}"
+                                           Watermark="Job Title"
+                                           SelectedItem="{Binding SelectedCateory,Mode=TwoWay}" 
+                                           TextSize="14"  
+                                           SelectionChanged="SfComboBox_SelectionChanged"
+                                           MaximumDropDownHeight="200" 
+                                           HeightRequest="40" 
+                                           NoResultsFoundText="No result found"
+                                           NoResultsFoundTextColor="Gray"
+                                           NoResultsFoundFontSize="14"
+                                           AllowFiltering="False"
+                                           IsEditableMode="False"
+                                           ShowClearButton="False"
+                                           TextHighlightMode="MultipleOccurrence"
+                                           HighlightedTextColor="#b66dff"
+                                           HighlightedTextFontAttributes="Bold"
+                                           DisplayMemberPath="CategoryName">
+                                        <combobox:SfComboBox.DropDownHeaderView>
+                                            <Label Text="Job Title" Padding="5" TextColor="Gray"></Label>
+                                        </combobox:SfComboBox.DropDownHeaderView>
+                                    </combobox:SfComboBox>
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+
+                            <!--Choose Employees-->
+                            <StackLayout Spacing="20">
+
+                                <StackLayout HorizontalOptions="FillAndExpand">
+                                    <StackLayout>
+                                        <Label Text="Choose Technicions" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                                        <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                            <StackLayout>
+                                                <Label 
+                                                       Padding="10,12,10,12"
+                                                       FontSize="13"
+                                                       Text="{Binding StrEmployees}"
+                                                   HorizontalOptions="FillAndExpand">
+                                                </Label>
+
+                                                <!--<combobox:SfComboBox x:Name="comboBoxEmps" 
+                                                    DataSource="{Binding LstEmpInOneCategory}"
+                                                    SelectedIndices="{Binding LstEmps}"
+                                                    MultiSelectMode="Token" 
+                                                    TokensWrapMode="Wrap" 
+                                                    Watermark="Select Technicions"
+                                                    TextSize="12" ItemPadding="5"
+                                                    MaximumDropDownHeight="200"
+                                                    AllowFiltering="False"
+                                                    IsEditableMode="False"
+                                                    ShowClearButton="False"
+                                                    TextHighlightMode="MultipleOccurrence"
+                                                    HighlightedTextColor="#b66dff"
+                                                    HighlightedTextFontAttributes="Bold"
+                                                    DisplayMemberPath="FullName">
+                                                    <combobox:SfComboBox.DropDownHeaderView>
+                                                        <Label Text="Select Employees" Padding="5" TextColor="Gray"></Label>
+                                                    </combobox:SfComboBox.DropDownHeaderView>
+                                                </combobox:SfComboBox>-->
+
+                                                <!--<StackLayout>
+                                        <CollectionView x:Name="lstEmps" SelectionMode="None" HeightRequest="80"
+                                                  ItemsSource="{Binding LstEmpInOneCategory}" ItemsLayout="VerticalGrid, 2"
+                                                  VerticalScrollBarVisibility="Never">
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackLayout Spacing="0" Orientation="Horizontal">
+
+                                                        <CheckBox IsChecked="{Binding IsChecked}" ScaleX=".8" ScaleY=".8"></CheckBox>
+
+                                                        <Label Text="{Binding UserName}" FontSize="13" VerticalTextAlignment="Center"></Label>
+
+                                                    </StackLayout>
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+
+                                        <Button Text="Apply"
+                                                Margin="0,10,0,10"
+                                                HorizontalOptions="CenterAndExpand"
+                                                FontSize="12"
+                                                HeightRequest="35"
+                                                FontAttributes="Bold"
+                                                TextTransform="None"
+                                                TextColor="White"
+                                                WidthRequest="100"
+                                                CornerRadius="20"
+                                                BackgroundColor="#d14343"
+                                                Command="{Binding BindingContext.SelectedEmpInOneCategory,Source={x:Reference lstEmps}}" CommandParameter="{Binding LstEmpInOneCategory}"></Button>
+
+                                        <StackLayout.Triggers>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding LstEmpInOneCategory.Count}" Value="0">
+                                                <Setter Property="HeightRequest" Value="0"></Setter>
+                                                <Setter Property="IsVisible" Value="False"></Setter>
+                                            </DataTrigger>
+                                        </StackLayout.Triggers>
+                                    </StackLayout>-->
+
+                                            </StackLayout>
+                                            <yummy:PancakeView.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding BindingContext.OpenEmployeesInOneCategory,Source={x:Reference page}}"></TapGestureRecognizer>
+                                            </yummy:PancakeView.GestureRecognizers>
+                                            <yummy:PancakeView.Border>
+                                                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                            </yummy:PancakeView.Border>
+                                            <yummy:PancakeView.Shadow>
+                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                            </yummy:PancakeView.Shadow>
+                                        </yummy:PancakeView>
+                                    </StackLayout>
+                                </StackLayout>
+
+                                <yummy:PancakeView BackgroundColor="White" Padding="0" Margin="0,0,0,10" CornerRadius="10">
+
+
+                                    <!--<ListView 
+                                            x:Name="MainListView"  
+                                            SelectionMode="None"
+                                            HasUnevenRows="True" 
+                                            HeightRequest="140"
+                                            SeparatorVisibility="None"
+                                            VerticalScrollBarVisibility="Never"
+                                            ItemsSource="{Binding Source={x:Reference comboBoxEmps},Path=SelectedItem}">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ViewCell>
+                                                    <StackLayout>
+                                                        <StackLayout Orientation="Horizontal" Spacing="0" Padding="10,0,20,0" HorizontalOptions="FillAndExpand">
+                                                            <Image HorizontalOptions="Start">
+                                                                <Image.Source>
+                                                                    <FontImageSource FontFamily="FontIconSolid" Color="#b66dff" Glyph="" Size="8"></FontImageSource>
+                                                                </Image.Source>
+                                                            </Image>
+
+                                                            <Label Padding="10"
+                                                                    Text="{Binding FullName}"
+                                                                    FontSize="13" HorizontalTextAlignment="Start"
+                                                                    HorizontalOptions="FillAndExpand">
+                                                            </Label>
+
+                                                        </StackLayout>
+                                                        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                                                    </StackLayout>
+                                                </ViewCell>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>-->
+
+
+                                    <ListView x:Name="lstEmps" SelectionMode="None"
+                                          ItemsSource="{Binding LstEmps}" 
+                                          HasUnevenRows="True" 
+                                          HeightRequest="140"
+                                          SeparatorVisibility="None"
+                                          VerticalScrollBarVisibility="Never">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <ViewCell>
+                                                    <StackLayout Spacing="0">
+                                                        <StackLayout Orientation="Horizontal" Spacing="0" Padding="15,0,10,0" HorizontalOptions="FillAndExpand">
+                                                            <Image HorizontalOptions="Start" VerticalOptions="Center" Margin="0,10,0,0">
+                                                                <Image.Source>
+                                                                    <FontImageSource FontFamily="FontIconSolid" Color="#b66dff" Glyph="" Size="8"></FontImageSource>
+                                                                </Image.Source>
+                                                            </Image>
+
+                                                            <Label Padding="10,10,10,0"
+                                                                    Text="{Binding EmpFullName}"
+                                                                    FontSize="14"
+                                                                   TextColor="#333"
+                                                                   HorizontalTextAlignment="Start"
+                                                                   VerticalTextAlignment="Center"
+                                                                    HorizontalOptions="FillAndExpand">
+                                                            </Label>
+
+                                                            <Label Padding="10,10,10,0"
+                                                                    FontSize="13" 
+                                                                   HorizontalTextAlignment="Start"
+                                                                   VerticalTextAlignment="Center"
+                                                                    HorizontalOptions="End">
+                                                                <Label.Triggers>
+                                                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="1">
+                                                                        <Setter Property="Text" Value="Open"></Setter>
+                                                                        <Setter Property="TextColor" Value="#538dd4"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="2">
+                                                                        <Setter Property="Text" Value="Completed"></Setter>
+                                                                        <Setter Property="TextColor" Value="Green"></Setter>
+                                                                    </DataTrigger>
+                                                                </Label.Triggers>
+                                                            </Label>
+
+                                                            <Image HorizontalOptions="End" Margin="10,10,0,0" IsVisible="False">
+                                                                <Image.Source>
+                                                                    <FontImageSource FontFamily="FontIcon" Color="#b66dff" Glyph="" Size="18"></FontImageSource>
+                                                                </Image.Source>
+                                                                <Image.GestureRecognizers>
+                                                                    <TapGestureRecognizer Command="{Binding BindingContext.RemoveEmployee,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                                                </Image.GestureRecognizers>
+                                                                <Image.Triggers>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding Status}" Value="2">
+                                                                        <Setter Property="IsVisible" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                </Image.Triggers>
+                                                            </Image>
+                                                        </StackLayout>
+
+                                                        <StackLayout Orientation="Horizontal" HeightRequest="20" Margin="33,0,0,0">
+                                                            <Label Text="{Binding ScheduleDate,StringFormat='{0MM-dd-yyyy} '}" FontSize="12" TextColor="Gray"></Label>
+
+                                                            <Label Text="{Binding StartTime,StringFormat='{0hh:mm tt} - '}" FontSize="12" TextColor="Gray"></Label>
+                                                            <Label Text="{Binding EndTime,StringFormat='{0hh:mm tt}'}" FontSize="12" TextColor="Gray"></Label>
+                                                        </StackLayout>
+                                                        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                                                    </StackLayout>
+
+                                                </ViewCell>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                        <ListView.Triggers>
+                                            <DataTrigger TargetType="ListView" Binding="{Binding LstEmps.Count}" Value="0">
+                                                <Setter Property="IsVisible" Value="False"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="ListView" Binding="{Binding LstEmps.Count}" Value="0">
+                                                <Setter Property="HeightRequest" Value="0"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="ListView" Binding="{Binding LstEmps.Count}" Value="1">
+                                                <Setter Property="HeightRequest" Value="55"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="ListView" Binding="{Binding LstEmps.Count}" Value="2">
+                                                <Setter Property="HeightRequest" Value="110"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="ListView" Binding="{Binding LstEmps.Count}" Value="3">
+                                                <Setter Property="HeightRequest" Value="150"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="ListView" Binding="{Binding LstEmps.Count}" Value="4">
+                                                <Setter Property="HeightRequest" Value="200"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="ListView" Binding="{Binding LstEmps.Count}" Value="5">
+                                                <Setter Property="HeightRequest" Value="250"></Setter>
+                                            </DataTrigger>
+                                        </ListView.Triggers>
+                                    </ListView>
+
+                                    <yummy:PancakeView.Border>
+                                        <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                    </yummy:PancakeView.Border>
+                                    <yummy:PancakeView.Shadow>
+                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    </yummy:PancakeView.Shadow>
+                                </yummy:PancakeView>
+                            </StackLayout>
+
+                        </StackLayout>
+
+                        <StackLayout.Triggers>
+                            <!--<DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>-->
+                            <!--<DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>-->
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                        </StackLayout.Triggers>
+                    </StackLayout>
+
+                    <!--After Insert Schedule-->
+                    <StackLayout IsVisible="{Binding IsShowAllSchedule}">
+                        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                        <!--Material-->
+                        <Frame Margin="20" Padding="0" CornerRadius="15" BorderColor="LightGray">
+                            <StackLayout Padding="0" Margin="0">
+                                <Label Text="Materials" Padding="5,10,5,5" FontSize="16" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center"></Label>
+
+                                <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                                <StackLayout x:Name="stkMaterial">
+
+                                    <ListView x:Name="lstItemsServices" SelectionMode="None"
+                                              ItemsSource="{Binding LstItems}"      
+                                              HasUnevenRows="True" 
+                                              SeparatorVisibility="None"
+                                              VerticalScrollBarVisibility="Never">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <ViewCell>
+
+                                                    <StackLayout Orientation="Horizontal" Padding="10,15,10,15" HorizontalOptions="FillAndExpand">
+
+                                                        <StackLayout  HorizontalOptions="FillAndExpand">
+
+                                                            <Label Padding="0"
+                                                                   FontSize="14" TextColor="Black"
+                                                                   Text="{Binding ItemsServicesName}"
+                                                                   VerticalTextAlignment="Center"
+                                                                   HorizontalOptions="FillAndExpand">
+                                                            </Label>
+
+                                                        </StackLayout>
+
+
+                                                        <StackLayout Orientation="Horizontal" HorizontalOptions="End" WidthRequest="100">
+
+                                                            <Label Padding="0"
+                                                                   TextColor="#333"
+                                                                   Text="{Binding Total,StringFormat='${0}'}"
+                                                                   FontSize="14" 
+                                                                   HorizontalTextAlignment="Center" 
+                                                                   VerticalTextAlignment="Center"
+                                                                   HorizontalOptions="FillAndExpand">
+                                                            </Label>
+
+                                                            <Image HorizontalOptions="End" VerticalOptions="Center">
+                                                                <Image.Source>
+                                                                    <FontImageSource FontFamily="FontIcon" Color="#b66dff" Glyph="" Size="18"></FontImageSource>
+                                                                </Image.Source>
+                                                                <Image.GestureRecognizers>
+                                                                    <TapGestureRecognizer Command="{Binding BindingContext.RemoveItem,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                                                </Image.GestureRecognizers>
+                                                                <Image.Triggers>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                </Image.Triggers>
+                                                            </Image>
+                                                        </StackLayout>
+
+                                                        <StackLayout.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding BindingContext.OpenMaterialDetails,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                                        </StackLayout.GestureRecognizers>
+                                                    </StackLayout>
+
+                                                </ViewCell>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                        <ListView.Triggers>
+                                            <DataTrigger TargetType="ListView" Binding="{Binding LstItems.Count}" Value="0">
+                                                <Setter Property="IsVisible" Value="False"></Setter>
+                                            </DataTrigger>
+                                        </ListView.Triggers>
+                                    </ListView>
+
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstItems.Count}" Value="0">
+                                            <Setter Property="HeightRequest" Value="0"></Setter>
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstItems.Count}" Value="1">
+                                            <Setter Property="HeightRequest" Value="50"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstItems.Count}" Value="2">
+                                            <Setter Property="HeightRequest" Value="110"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstItems.Count}" Value="3">
+                                            <Setter Property="HeightRequest" Value="150"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstItems.Count}" Value="4">
+                                            <Setter Property="HeightRequest" Value="200"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstHeight}" Value="1">
+                                            <Setter Property="HeightRequest" Value="230"></Setter>
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
+                                </StackLayout>
+
+                                <!--<Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>-->
+
+                                <StackLayout>
+                                    <Button Text="Add Material"
+                                            Margin="2,0,2,0"
+                                            HorizontalOptions="FillAndExpand"
+                                            FontSize="14"
+                                            FontAttributes="Bold"
+                                            TextTransform="None"
+                                            TextColor="#b66dff"
+                                            CornerRadius="10" BorderColor="#b66dff" BorderWidth="1"
+                                            BackgroundColor="White"
+                                            Command="{Binding BindingContext.SelecteNewItems,Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}">
+                                    </Button>
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <!--<DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>-->
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
+                                </StackLayout>
+                            </StackLayout>
+                        </Frame>
+
+
+                        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                        <!--Material Receipt-->
+                        <Frame Margin="20" Padding="0" CornerRadius="15" BorderColor="LightGray">
+                            <StackLayout Padding="0" Margin="0">
+                                <Label Text="Material Receipts" Padding="5,10,5,5" FontSize="16" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center"></Label>
+
+                                <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                                <StackLayout x:Name="stkMaterialReceipt">
+
+                                    <ListView x:Name="lstMaterialReceipt" SelectionMode="None"
+                                              ItemsSource="{Binding LstMaterialReceipt}" 
+                                              HasUnevenRows="True" 
+                                              SeparatorVisibility="None"
+                                              VerticalScrollBarVisibility="Never">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <ViewCell>
+                                                    <!--<StackLayout Spacing="10">-->
+                                                    <StackLayout Orientation="Horizontal" Padding="10,15,10,15" HorizontalOptions="FillAndExpand">
+
+
+                                                        <StackLayout  HorizontalOptions="FillAndExpand">
+
+                                                            <Label Padding="0"
+                                                                   FontSize="14" TextColor="Black"
+                                                                   Text="{Binding SupplierName}"
+                                                                   HorizontalOptions="FillAndExpand">
+                                                            </Label>
+
+                                                        </StackLayout>
+
+
+                                                        <StackLayout Orientation="Horizontal" HorizontalOptions="End" WidthRequest="100">
+
+                                                            <Label Padding="0"
+                                                                   TextColor="#333"
+                                                                   HorizontalTextAlignment="Center" 
+                                                                   VerticalTextAlignment="Center"
+                                                                   Text="{Binding Cost,StringFormat='${0}'}"
+                                                                   FontSize="14" 
+                                                                   HorizontalOptions="FillAndExpand">
+                                                            </Label>
+
+                                                            <Image HorizontalOptions="End">
+                                                                <Image.Source>
+                                                                    <FontImageSource FontFamily="FontIcon" Color="#b66dff" Glyph="" Size="18"></FontImageSource>
+                                                                </Image.Source>
+                                                                <Image.GestureRecognizers>
+                                                                    <TapGestureRecognizer Command="{Binding BindingContext.RemoveMaterialReceipt,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                                                </Image.GestureRecognizers>
+                                                                <Image.Triggers>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                </Image.Triggers>
+                                                            </Image>
+
+                                                        </StackLayout>
+                                                        <StackLayout.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding BindingContext.OpenMaterialReceiptDetails,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                                        </StackLayout.GestureRecognizers>
+                                                    </StackLayout>
+
+                                                    <!--<StackLayout Orientation="Horizontal" Margin="0,0,35,0">
+                                                            <StackLayout HorizontalOptions="FillAndExpand" Padding="10">
+                                                                <Label Padding="0" HorizontalTextAlignment="Start"
+                                                                       VerticalTextAlignment="Center"
+                                                                      Text="{Binding Notes}"
+                                                                      FontSize="13" 
+                                                                      HorizontalOptions="FillAndExpand">
+                                                                </Label>
+                                                            </StackLayout>
+
+                                                            <Frame HorizontalOptions="End" Padding="0" Margin="0" CornerRadius="5">
+                                                                <Image Source="{Binding ReceiptPhotoView}" HeightRequest="40" WidthRequest="50" Aspect="Fill"></Image>
+                                                            </Frame>
+                                                        </StackLayout>-->
+
+
+                                                    <!--<Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="Gray"></Line>-->
+
+
+                                                    <!--</StackLayout>-->
+
+                                                </ViewCell>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstMaterialReceipt.Count}" Value="0">
+                                            <Setter Property="HeightRequest" Value="0"></Setter>
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstMaterialReceipt.Count}" Value="1">
+                                            <Setter Property="HeightRequest" Value="50"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstMaterialReceipt.Count}" Value="2">
+                                            <Setter Property="HeightRequest" Value="110"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstMaterialReceipt.Count}" Value="3">
+                                            <Setter Property="HeightRequest" Value="150"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstMaterialReceipt.Count}" Value="4">
+                                            <Setter Property="HeightRequest" Value="200"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstHeight}" Value="1">
+                                            <Setter Property="HeightRequest" Value="230"></Setter>
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
+                                </StackLayout>
+
+                                <!--Add Material Receipt Btn-->
+                                <StackLayout>
+                                    <Button Text="Add Material Receipt"
+                                            Margin="2,0,2,0"
+                                            HorizontalOptions="FillAndExpand"
+                                            VerticalOptions="End"
+                                            FontSize="14"
+                                            FontAttributes="Bold"
+                                            TextTransform="None"
+                                            TextColor="#b66dff"
+                                            CornerRadius="10" BorderColor="#b66dff" BorderWidth="1"
+                                            BackgroundColor="White"
+                                            Command="{Binding BindingContext.SelecteNewMaterialReceipt,Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}">
+                                    </Button>
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <!--<DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>-->
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
+                                </StackLayout>
+                            </StackLayout>
+                            
+                        </Frame>
+
+                        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                        <!--Photos-->
+                        <Frame Margin="20" Padding="0" CornerRadius="15" BorderColor="LightGray">
+
+                            <StackLayout HorizontalOptions="FillAndExpand">
+                                <Label Text="Photos" Padding="5,10,5,5" FontSize="16" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center">
+                                </Label>
+                                <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+
+                                <StackLayout>
+
+                                    <StackLayout Orientation="Horizontal" HeightRequest="60" Margin="10" HorizontalOptions="FillAndExpand">
+                                        <CollectionView x:Name="colPhotos" ItemsSource="{Binding LstATwoPictures}" WidthRequest="200">
+                                            <CollectionView.ItemsLayout>
+                                                <GridItemsLayout Orientation="Horizontal" Span="1" HorizontalItemSpacing="20"></GridItemsLayout>
+                                            </CollectionView.ItemsLayout>
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Frame Padding="0" Margin="0" CornerRadius="10" BorderColor="Gray" HorizontalOptions="CenterAndExpand">
+                                                        <Image Source="{Binding FullFileName}"
+                                                                  HeightRequest="60"
+                                                                  WidthRequest="80"
+                                                                  Aspect="Fill"
+                                                                  HorizontalOptions="FillAndExpand">
+                                                        </Image>
+                                                    </Frame>
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+
+                                        <Label Text="{Binding PhotosCount,StringFormat='+ {0}'}" WidthRequest="100" FontSize="18" HorizontalOptions="StartAndExpand" VerticalOptions="Center"></Label>
+                                        <StackLayout.Triggers>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding LstATwoPictures.Count}" Value="0">
+                                                <Setter Property="IsVisible" Value="False"></Setter>
+                                            </DataTrigger>
+                                        </StackLayout.Triggers>
+                                    </StackLayout>
+
+                                    <Label Text="No Photos Found" IsVisible="False" TextColor="Gray" Margin="20,10,20,10">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding LstATwoPictures.Count}" Value="0">
+                                                <Setter Property="IsVisible" Value="True"></Setter>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                                    <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                                    <StackLayout>
+                                        <Button Text="Show More"
+                                                 Margin="2,0,2,0"
+                                                 HorizontalOptions="FillAndExpand"
+                                                 FontSize="14"
+                                                 FontAttributes="Bold"
+                                                 TextTransform="None"
+                                                 TextColor="#b66dff"
+                                                 CornerRadius="10" 
+                                                 BackgroundColor="White"
+                                                 Clicked="Button_Clicked_2">
+                                        </Button>
+                                        <StackLayout.Triggers>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding LstAllPictures.Count}" Value="0">
+                                                <Setter Property="Opacity" Value=".4"></Setter>
+                                                <Setter Property="IsEnabled" Value="False"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding LstAllPictures.Count}" Value="1">
+                                                <Setter Property="Opacity" Value=".4"></Setter>
+                                                <Setter Property="IsEnabled" Value="False"></Setter>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="StackLayout" Binding="{Binding LstAllPictures.Count}" Value="2">
+                                                <Setter Property="Opacity" Value=".4"></Setter>
+                                                <Setter Property="IsEnabled" Value="False"></Setter>
+                                            </DataTrigger>
+                                        </StackLayout.Triggers>
+                                    </StackLayout>
+
+                                </StackLayout>
+
+                            </StackLayout>
+
+                        </Frame>
+
+                        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                        
+                        <!--Services-->
+                        <Frame Margin="20" Padding="0" CornerRadius="15" BorderColor="LightGray">
+                            <StackLayout Padding="0" Margin="0">
+                                <Label Text="Services" Padding="5,10,5,5" FontSize="16" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center"></Label>
+
+                                <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                                <StackLayout x:Name="stkFreeServices">
+
+                                    <ListView x:Name="lstFreeServices" SelectionMode="None"
+                                               ItemsSource="{Binding LstFreeServices}" 
+                                               HasUnevenRows="True" 
+                                               SeparatorVisibility="None"
+                                               VerticalScrollBarVisibility="Never">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <ViewCell>
+                                                    <!--<StackLayout Spacing="10">-->
+                                                    <StackLayout Orientation="Horizontal" Padding="10,15,10,15" HorizontalOptions="FillAndExpand">
+
+
+                                                        <StackLayout  HorizontalOptions="FillAndExpand">
+
+                                                            <Label Padding="0"
+                                                                    FontSize="14" TextColor="Black"
+                                                                    Text="{Binding ItemsServicesName}"
+                                                                    HorizontalOptions="FillAndExpand">
+                                                            </Label>
+
+                                                        </StackLayout>
+
+
+                                                        <StackLayout Orientation="Horizontal" HorizontalOptions="End" WidthRequest="100">
+
+                                                            <Label Padding="0"
+                                                                    TextColor="#333"
+                                                                    HorizontalTextAlignment="Center" 
+                                                                    VerticalTextAlignment="Center"
+                                                                    Text="{Binding Total,StringFormat='${0}'}"
+                                                                    FontSize="14" 
+                                                                    HorizontalOptions="FillAndExpand">
+                                                            </Label>
+
+                                                            <Image HorizontalOptions="End">
+                                                                <Image.Source>
+                                                                    <FontImageSource FontFamily="FontIcon" Color="#b66dff" Glyph="" Size="18"></FontImageSource>
+                                                                </Image.Source>
+                                                                <Image.GestureRecognizers>
+                                                                    <TapGestureRecognizer Command="{Binding BindingContext.RemoveService,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                                                </Image.GestureRecognizers>
+                                                                <Image.Triggers>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                                                        <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                    </DataTrigger>
+                                                                </Image.Triggers>
+                                                            </Image>
+
+                                                        </StackLayout>
+                                                        <StackLayout.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding BindingContext.OpenServiceDetails,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
+                                                        </StackLayout.GestureRecognizers>
+                                                    </StackLayout>
+
+                                                </ViewCell>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstFreeServices.Count}" Value="0">
+                                            <Setter Property="HeightRequest" Value="0"></Setter>
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstFreeServices.Count}" Value="1">
+                                            <Setter Property="HeightRequest" Value="50"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstFreeServices.Count}" Value="2">
+                                            <Setter Property="HeightRequest" Value="110"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstFreeServices.Count}" Value="3">
+                                            <Setter Property="HeightRequest" Value="150"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstFreeServices.Count}" Value="4">
+                                            <Setter Property="HeightRequest" Value="200"></Setter>
+                                        </DataTrigger>
+
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding LstHeight}" Value="1">
+                                            <Setter Property="HeightRequest" Value="230"></Setter>
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
+                                </StackLayout>
+
+                                <!--Add Free Services Btn-->
+                                <StackLayout>
+                                     <Button Text="Add Free Services"
+                                             Margin="2,0,2,0"
+                                             HorizontalOptions="FillAndExpand"
+                                             VerticalOptions="End"
+                                             FontSize="14"
+                                             FontAttributes="Bold"
+                                             TextTransform="None"
+                                             TextColor="#b66dff"
+                                             CornerRadius="10" BorderColor="#b66dff" BorderWidth="1"
+                                             BackgroundColor="White"
+                                             Command="{Binding BindingContext.SelecteNewFreeService,Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}">
+                                    </Button>
+                                    <StackLayout.Triggers>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <!--<DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>-->
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
+                                </StackLayout>
+                            </StackLayout>
+
+                        </Frame>
+
+
+                        <!--<Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                        <Label Text="Sheet Color"
+                           Padding="20,10,20,10"
+                           FontSize="15" 
+                           TextColor="#262626"
+                           FontAttributes="Bold"
+                           HorizontalOptions="CenterAndExpand"
+                           VerticalTextAlignment="Center"></Label>
+
+                        <StackLayout Padding="20,0,20,0">
+                            <CollectionView x:Name="lstColors" SelectionMode="None" HeightRequest="80"
+                                      ItemsSource="{Binding LstColors}" ItemsLayout="VerticalGrid, 3"
+                                      VerticalScrollBarVisibility="Never">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackLayout Spacing="0" Orientation="Horizontal">
+
+                                            <RadioButton GroupName="ColorOne" IsChecked="{Binding IsChecked}" Value="{Binding SelectedColor,Mode=TwoWay}" ScaleX=".9" ScaleY=".9"></RadioButton>
+
+                                            <Frame CornerRadius="10" HeightRequest="0" WidthRequest="40" BackgroundColor="{Binding ColorHex}" Margin="0,5,0,5" Padding="0,10,0,10"></Frame>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <StackLayout.Triggers>
+                                <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                </DataTrigger>
+                                <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                </DataTrigger>
+                                <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                </DataTrigger>
+                                <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                </DataTrigger>
+                            </StackLayout.Triggers>
+                        </StackLayout>-->
+
+                        <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+
+                        <Frame BorderColor="LightGray" HorizontalOptions="FillAndExpand" Padding="0" CornerRadius="15" Margin="20,20,20,50">
+                            <StackLayout>
+                                <Label Text="Note" FontSize="15" TextColor="#262626" Padding="5,10,5,5" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center"></Label>
+
+                                <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+
+                                <Editor Placeholder="Enter Note" Text="{Binding ScheduleDetails.Notes}" Margin="10" HeightRequest="70" FontSize="13">
+                                    <Editor.Triggers>
+                                        <!--<DataTrigger TargetType="Editor" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>-->
+                                        <DataTrigger TargetType="Editor" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Editor" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Editor" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Editor" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                            <Setter Property="IsEnabled" Value="False"></Setter>
+                                        </DataTrigger>
+                                    </Editor.Triggers>
+                                </Editor>
+                            </StackLayout>
+                            
+                        </Frame>
+                    </StackLayout>
+
+                </StackLayout>
+
+            </ScrollView>
+
+            <StackLayout VerticalOptions="EndAndExpand" BackgroundColor="White" Margin="0,10,0,0" Padding="20,10,20,10" HorizontalOptions="FillAndExpand">
+                <StackLayout Orientation="Horizontal" Spacing="20" HeightRequest="40" HorizontalOptions="CenterAndExpand">
+                    <Button Text="Submit"
+                             FontSize="12"
+                             FontAttributes="Bold"
+                             TextTransform="None"
+                             TextColor="White"
+                             WidthRequest="80"
+                             CornerRadius="10"
+                             BackgroundColor="#b66dff"
+                             Command="{Binding BindingContext.SelectedSubmitSchedule,Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}"></Button>
+                    <Button Text="Close" 
+                             WidthRequest="80"
+                             FontSize="12" 
+                             TextColor="#b66dff"
+                             BorderColor="#b66dff"
+                             TextTransform="None"
+                             CornerRadius="10"
+                             BorderWidth="1" 
+                             BackgroundColor="White"
+                             Clicked="Button_Clicked"></Button>
+                </StackLayout>
+
+                <StackLayout.Triggers>
+                    <!--<DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>-->
+                    <!--<DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>-->
+                    <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                    <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                    <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                </StackLayout.Triggers>
+            </StackLayout>
+
+            <!--After Insert Schedule-->
+            <yummy:PancakeView CornerRadius="100"
+                               BackgroundColor="#8f1fff" 
+                               Padding="5" 
+                               VerticalOptions="End"
+                               HorizontalOptions="End" 
+                               Margin="30">
+                <xct:Expander>
+                    <xct:Expander.Header>
+                        <Image Margin="8">
+                            <Image.Source>
+                                <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="20"></FontImageSource>
+                            </Image.Source>
+                        </Image>
+                    </xct:Expander.Header>
+                    <StackLayout Spacing="30" Margin="0,8">
+                        <!--Images-->
+                        <Image IsVisible="{Binding ShowImages}">
+                            <Image.Source>
+                                <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="20"></FontImageSource>
+                            </Image.Source>
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                </DataTrigger>
+                            </Image.Triggers>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.OpenImages,Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}"></TapGestureRecognizer>
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <!--Invoices-->
+                        <Image>
+                            <Image.Source>
+                                <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="20"></FontImageSource>
+                            </Image.Source>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.CreateScheduleInvoice,Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}"></TapGestureRecognizer>
+                            </Image.GestureRecognizers>
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding SchedulePage}" Value="0">
+                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding SchedulePage}" Value="1">
+                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding EmployeePermission.ActiveInvoice}" Value="False">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                    <Setter Property="Opacity" Value=".5"></Setter>
+                                </DataTrigger>
+                            </Image.Triggers>
+                        </Image>
+
+                        <!--Estimates-->
+                        <Image>
+                            <Image.Source>
+                                <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="20"></FontImageSource>
+                            </Image.Source>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.CreateScheduleEstimate,Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}"></TapGestureRecognizer>
+                            </Image.GestureRecognizers>
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding SchedulePage}" Value="0">
+                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding SchedulePage}" Value="1">
+                                    <Setter Property="IsVisible" Value="True"></Setter>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding EmployeePermission.ActiveEstimate}" Value="False">
+                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                    <Setter Property="Opacity" Value=".5"></Setter>
+                                </DataTrigger>
+                            </Image.Triggers>
+                        </Image>
+
+                        <!--Menu for Schedule Date-->
+                        <Image>
+                            <Image.Source>
+                                <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="20"></FontImageSource>
+                            </Image.Source>
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                    <Setter Property="IsEnabled" Value="True"></Setter>
+                                </DataTrigger>
+                            </Image.Triggers>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding BindingContext.SelectJobDetails,Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}"></TapGestureRecognizer>
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <StackLayout.Triggers>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                            <!--<DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.Recurring}" Value="True">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>-->
+                            <!--<DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding ScheduleDetails.ShowCheckBtn}" Value="2">
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>-->
+                        </StackLayout.Triggers>
+
+                    </StackLayout>
+                </xct:Expander>
+                <yummy:PancakeView.Shadow>
+                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                </yummy:PancakeView.Shadow>
+                <yummy:PancakeView.Triggers>
+                    <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                    <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding ScheduleDetails.OneScheduleDate.Id}" Value="0">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                </yummy:PancakeView.Triggers>
+            </yummy:PancakeView>
+
+            <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+            </ActivityIndicator>
+        </Grid>
+    </StackLayout>
+</Controls:CustomsPage>

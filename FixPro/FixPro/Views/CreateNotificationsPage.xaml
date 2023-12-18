@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:Controls="clr-namespace:FixPro.Controls"
+                      xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                      xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                      xmlns:vm="clr-namespace:FixPro.ViewModels"
+                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                      x:Name="page"
+                      BackgroundColor="#f8f5fa"
+             x:Class="FixPro.Views.CreateNotificationsPage">
+    
+    <Controls:CustomsPage.BindingContext>
+        <vm:HomeViewModel></vm:HomeViewModel>
+    </Controls:CustomsPage.BindingContext>
+
+    <StackLayout>
+        <!--Toolbar-->
+        <StackLayout>
+            <Controls:ToolBar Title="Create Notifications" HasBackButton="True" Margin="0,8,0,0"></Controls:ToolBar>
+        </StackLayout>
+
+        <Frame BorderColor="LightGray" HorizontalOptions="FillAndExpand" CornerRadius="5" Padding="10" HeightRequest="35" Margin="20,5,20,0">
+            <Entry Placeholder="Enter Header" Text="{Binding HeaderNotify}" FontSize="13">
+
+            </Entry>
+        </Frame>
+
+        <Frame BorderColor="LightGray" HorizontalOptions="FillAndExpand" CornerRadius="5" Padding="10" HeightRequest="180" Margin="20,10,20,0">
+            <Editor Placeholder="Enter Content" Text="{Binding ContentNotify}" FontSize="13">
+
+            </Editor>
+        </Frame>
+
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Start" Margin="20,20,20,0">
+            <Label Text="All Employees" VerticalTextAlignment="Center"></Label>
+            <CheckBox x:Name="chBxAllEmployees" ScaleX=".8" ScaleY=".8" CheckedChanged="chBxAllEmployees_CheckedChanged">
+                
+            </CheckBox>
+        </StackLayout>
+
+        <StackLayout Padding="0" VerticalOptions="Start">
+
+            <yummy:PancakeView 
+                        VerticalOptions="FillAndExpand"    
+                        Padding="20,10,20,0"
+                        Margin="20,0,20,0"
+                        CornerRadius="5"
+                        BackgroundColor="White" 
+                        HorizontalOptions="FillAndExpand">
+                <StackLayout>
+
+                    <CollectionView x:Name="lstEmployees" Margin="10" ItemsSource="{Binding LstEmpInAccountId}" SelectionMode="None" VerticalScrollBarVisibility="Never">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="1" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding FirstName}" 
+                                                     FontSize="13" 
+                                                     HorizontalOptions="FillAndExpand" 
+                                                     VerticalTextAlignment="Center"></Label>
+                                            <Label Text="{Binding LastName}" 
+                                                     FontSize="13" 
+                                                     HorizontalOptions="FillAndExpand" 
+                                                     VerticalTextAlignment="Center">
+                                            </Label>
+                                        </StackLayout>
+                                       
+                                        <CheckBox x:Name="chBxChooseEmployees" 
+                                                  HorizontalOptions="EndAndExpand" 
+                                                  IsChecked="{Binding IsChecked}" 
+                                                  ScaleX=".8" ScaleY=".8">
+                                            <CheckBox.Triggers>
+                                                <!--<DataTrigger TargetType="CheckBox" Binding="{Binding Source={x:Reference chBxAllEmployees}, Path=IsChecked}" Value="False">
+                                                    <Setter Property="IsChecked" Value="False"></Setter>
+                                                </DataTrigger>-->
+                                                <DataTrigger TargetType="CheckBox" Binding="{Binding Source={x:Reference chBxAllEmployees}, Path=IsChecked}" Value="True">
+                                                    <Setter Property="IsChecked" Value="True"></Setter>
+                                                </DataTrigger>
+                                            </CheckBox.Triggers>
+                                        </CheckBox>
+                                    </StackLayout>
+
+                                    <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </StackLayout>
+
+                <yummy:PancakeView.Border>
+                    <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
+                </yummy:PancakeView.Border>
+                <yummy:PancakeView.Shadow>
+                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                </yummy:PancakeView.Shadow>
+            </yummy:PancakeView>
+        </StackLayout>
+
+        <Button Text="Send" Margin="20,10,20,20"
+                   HorizontalOptions="FillAndExpand"
+                HeightRequest="40"
+                   TextColor="White"
+                   BackgroundColor="#b66dff"
+                   CornerRadius="5"
+                   Command="{Binding BindingContext.SelectedSendNotifications,Source={x:Reference page}}"></Button>
+
+        <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+        </ActivityIndicator>
+    </StackLayout>
+
+</Controls:CustomsPage>
