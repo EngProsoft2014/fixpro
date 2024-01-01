@@ -103,6 +103,17 @@ namespace FixPro.Views.PopupPages
             await PopupNavigation.Instance.PopAsync();
         }
 
+        private void TapGestureRecognizer_Tapped_1(object sender, EventArgs e)
+        {
+            if (stkManuallyAddress.IsVisible == false)
+            {
+                stkManuallyAddress.IsVisible = true;
+            }
+            else
+            {
+                stkManuallyAddress.IsVisible = false;
+            }
+        }
         //public static async Task<List<SuggestionAddress>> GetPlacesAutocompleteAsync(string search)
         //{
         //    var request = string.Format("https://maps.googleapis.com/maps/api/place/queryautocomplete/xml?input= + {0} + &language={1}&key={2}",
@@ -154,115 +165,120 @@ namespace FixPro.Views.PopupPages
         //    return ListsuggestionsAddress;
         //}
 
-        public static async Task<List<SuggestionAddressModel>> GetPlacesAutocompleteAsync(string search)
-        {
-            string[] MAddress = new string[3];
-            GoogleApi.Entities.Places.AutoComplete.Request.PlacesAutoCompleteRequest request = new GoogleApi.Entities.Places.AutoComplete.Request.PlacesAutoCompleteRequest();
 
-            request.Input = search;
+        //=============================================================================
 
-            //if (App.Lang == "ar")
-            //{
-            //    request.Language = GoogleApi.Entities.Common.Enums.Language.Arabic;
-            //}
-            //else
-            //{
-            request.Language = GoogleApi.Entities.Common.Enums.Language.English;
-            //}
 
-            request.Key = "AIzaSyBrriO9GGKoeIAIiS3L8asTps80-sXzQgo";
 
-            var response = GoogleApi.GooglePlaces.AutoComplete.Query(request, null);
+        //public static async Task<List<SuggestionAddressModel>> GetPlacesAutocompleteAsync(string search)
+        //{
+        //    string[] MAddress = new string[3];
+        //    GoogleApi.Entities.Places.AutoComplete.Request.PlacesAutoCompleteRequest request = new GoogleApi.Entities.Places.AutoComplete.Request.PlacesAutoCompleteRequest();
 
-            List<SuggestionAddressModel> ListsuggestionsAddress = new List<SuggestionAddressModel>();
-            SuggestionAddressModel suggestionAddress;
+        //    request.Input = search;
 
-            foreach (var item in response.Predictions)
-            {
-                var _request2 = new GoogleApi.Entities.Places.Details.Request.PlacesDetailsRequest
-                {
-                    Key = request.Key,
-                    PlaceId = item.PlaceId.ToString(),
-                    //Region = "EG",
-                    //Language = App.Lang == "ar" ? GoogleApi.Entities.Common.Enums.Language.Arabic : GoogleApi.Entities.Common.Enums.Language.English
-                    Language = GoogleApi.Entities.Common.Enums.Language.English,
-                };
+        //    //if (App.Lang == "ar")
+        //    //{
+        //    //    request.Language = GoogleApi.Entities.Common.Enums.Language.Arabic;
+        //    //}
+        //    //else
+        //    //{
+        //    request.Language = GoogleApi.Entities.Common.Enums.Language.English;
+        //    //}
 
-                var _response2 = GoogleApi.GooglePlaces.Details.Query(_request2);
+        //    request.Key = "AIzaSyBrriO9GGKoeIAIiS3L8asTps80-sXzQgo";
 
-                string[] ArrAdd = new string[7];
-                //int i = 0;
-                foreach (var itemAdd in _response2.Result.AddressComponents)
-                {
-                    switch (itemAdd.Types.FirstOrDefault())
-                    {
-                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Street_Number:
-                            {
-                                ArrAdd[0] = itemAdd.LongName;
-                            }
-                            break;
-                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Route:
-                            {
-                                ArrAdd[1] = itemAdd.LongName;
-                            }
-                            break;
-                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Administrative_Area_Level_3:
-                            {
-                                ArrAdd[2] = itemAdd.LongName;
-                            }
-                            break;
-                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Administrative_Area_Level_2:
-                            {
-                                ArrAdd[3] = itemAdd.LongName;
-                            }
-                            break;
-                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Administrative_Area_Level_1:
-                            {
-                                ArrAdd[4] = itemAdd.LongName;
-                            }
-                            break;
-                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Country:
-                            {
-                                ArrAdd[5] = itemAdd.LongName;
-                            }
-                            break;
-                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Postal_Code:
-                            {
-                                ArrAdd[6] = itemAdd.LongName;
-                            }
-                            break;
-                    }
-                    //ArrAdd[i] = itemAdd.LongName;
-                    //i++;
-                }
+        //    var response = GoogleApi.GooglePlaces.AutoComplete.Query(request, null);
 
-                suggestionAddress = new SuggestionAddressModel
-                {
-                    PalceId = _response2.Result.PlaceId,
-                    Latitude = _response2.Result.Geometry.Location.Latitude,
-                    Longitude = _response2.Result.Geometry.Location.Longitude,
-                    FullAddress = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2] + " " + ArrAdd[3] + " " + ArrAdd[4] + " " + ArrAdd[5],
-                    FullAddressAr = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2] + " " + ArrAdd[3] + " " + ArrAdd[4] + " " + ArrAdd[5],
-                    MainAddress = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2],
-                    SubAddress = ArrAdd[3] + " " + ArrAdd[4],
-                    Street = ArrAdd[1],
-                    StreetAr = ArrAdd[1],
-                    Locality = ArrAdd[2],
-                    LocalityAr = ArrAdd[2],
-                    State = ArrAdd[3],
-                    StateAr = ArrAdd[3],
-                    City = ArrAdd[4],
-                    CityAr = ArrAdd[4],
-                    Country = ArrAdd[5],
-                    CountryAr = ArrAdd[5],
-                    Zip = ArrAdd[6],
-                };
+        //    List<SuggestionAddressModel> ListsuggestionsAddress = new List<SuggestionAddressModel>();
+        //    SuggestionAddressModel suggestionAddress;
 
-                ListsuggestionsAddress.Add(suggestionAddress);
-            }
+        //    foreach (var item in response.Predictions)
+        //    {
+        //        var _request2 = new GoogleApi.Entities.Places.Details.Request.PlacesDetailsRequest
+        //        {
+        //            Key = request.Key,
+        //            PlaceId = item.PlaceId.ToString(),
+        //            //Region = "EG",
+        //            //Language = App.Lang == "ar" ? GoogleApi.Entities.Common.Enums.Language.Arabic : GoogleApi.Entities.Common.Enums.Language.English
+        //            Language = GoogleApi.Entities.Common.Enums.Language.English,
+        //        };
 
-            return ListsuggestionsAddress;
-        }
+        //        var _response2 = GoogleApi.GooglePlaces.Details.Query(_request2);
+
+        //        string[] ArrAdd = new string[7];
+        //        //int i = 0;
+        //        foreach (var itemAdd in _response2.Result.AddressComponents)
+        //        {
+        //            switch (itemAdd.Types.FirstOrDefault())
+        //            {
+        //                case GoogleApi.Entities.Common.Enums.AddressComponentType.Street_Number:
+        //                    {
+        //                        ArrAdd[0] = itemAdd.LongName;
+        //                    }
+        //                    break;
+        //                case GoogleApi.Entities.Common.Enums.AddressComponentType.Route:
+        //                    {
+        //                        ArrAdd[1] = itemAdd.LongName;
+        //                    }
+        //                    break;
+        //                case GoogleApi.Entities.Common.Enums.AddressComponentType.Administrative_Area_Level_3:
+        //                    {
+        //                        ArrAdd[2] = itemAdd.LongName;
+        //                    }
+        //                    break;
+        //                case GoogleApi.Entities.Common.Enums.AddressComponentType.Administrative_Area_Level_2:
+        //                    {
+        //                        ArrAdd[3] = itemAdd.LongName;
+        //                    }
+        //                    break;
+        //                case GoogleApi.Entities.Common.Enums.AddressComponentType.Administrative_Area_Level_1:
+        //                    {
+        //                        ArrAdd[4] = itemAdd.LongName;
+        //                    }
+        //                    break;
+        //                case GoogleApi.Entities.Common.Enums.AddressComponentType.Country:
+        //                    {
+        //                        ArrAdd[5] = itemAdd.LongName;
+        //                    }
+        //                    break;
+        //                case GoogleApi.Entities.Common.Enums.AddressComponentType.Postal_Code:
+        //                    {
+        //                        ArrAdd[6] = itemAdd.LongName;
+        //                    }
+        //                    break;
+        //            }
+        //            //ArrAdd[i] = itemAdd.LongName;
+        //            //i++;
+        //        }
+
+        //        suggestionAddress = new SuggestionAddressModel
+        //        {
+        //            PalceId = _response2.Result.PlaceId,
+        //            Latitude = _response2.Result.Geometry.Location.Latitude,
+        //            Longitude = _response2.Result.Geometry.Location.Longitude,
+        //            FullAddress = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2] + " " + ArrAdd[3] + " " + ArrAdd[4] + " " + ArrAdd[5],
+        //            FullAddressAr = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2] + " " + ArrAdd[3] + " " + ArrAdd[4] + " " + ArrAdd[5],
+        //            MainAddress = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2],
+        //            SubAddress = ArrAdd[3] + " " + ArrAdd[4],
+        //            Street = ArrAdd[1],
+        //            StreetAr = ArrAdd[1],
+        //            Locality = ArrAdd[2],
+        //            LocalityAr = ArrAdd[2],
+        //            State = ArrAdd[3],
+        //            StateAr = ArrAdd[3],
+        //            City = ArrAdd[4],
+        //            CityAr = ArrAdd[4],
+        //            Country = ArrAdd[5],
+        //            CountryAr = ArrAdd[5],
+        //            Zip = ArrAdd[6],
+        //        };
+
+        //        ListsuggestionsAddress.Add(suggestionAddress);
+        //    }
+
+        //    return ListsuggestionsAddress;
+        //}
 
 
         private void SearchBar_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -352,25 +368,6 @@ namespace FixPro.Views.PopupPages
                 }
             }
 
-            //if (App.Lang == "ar")
-            //{
-            //    Listed.FullAddress = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2] + " " + ArrAdd[3] + " " + ArrAdd[4] + " " + ArrAdd[5];
-            //    Listed.Street = ArrAdd[1];
-            //    Listed.Locality = ArrAdd[2];
-            //    Listed.State = ArrAdd[3];
-            //    Listed.City = ArrAdd[4].Replace("Governorate", "");
-            //    Listed.Country = ArrAdd[5];
-            //}
-            //else
-            //{
-            //    Listed.FullAddressAr = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2] + " " + ArrAdd[3] + " " + ArrAdd[4] + " " + ArrAdd[5];
-            //    Listed.StreetAr = ArrAdd[1];
-            //    Listed.LocalityAr = ArrAdd[2];
-            //    Listed.StateAr = ArrAdd[3];
-            //    Listed.CityAr = ArrAdd[4];
-            //    Listed.CountryAr = ArrAdd[5];
-            //}
-
             searchBar.Text = Listed.FullAddress;
             countryListView.IsVisible = false;
 
@@ -387,5 +384,105 @@ namespace FixPro.Views.PopupPages
             await PopupNavigation.Instance.PopAsync();
         }
 
+
+        public static async Task<List<SuggestionAddressModel>> GetPlacesAutocompleteAsync(string search)
+        {
+            GoogleApi.Entities.Places.AutoComplete.Request.PlacesAutoCompleteRequest request = new GoogleApi.Entities.Places.AutoComplete.Request.PlacesAutoCompleteRequest();
+            request.Input = search;
+            request.Key = "AIzaSyBrriO9GGKoeIAIiS3L8asTps80-sXzQgo";
+
+            var response = await GoogleApi.GooglePlaces.AutoComplete.QueryAsync(request, null);
+
+            List<Task<GoogleApi.Entities.Places.Details.Response.PlacesDetailsResponse>> detailsTasks = new List<Task<GoogleApi.Entities.Places.Details.Response.PlacesDetailsResponse>>();
+
+            foreach (var prediction in response.Predictions)
+            {
+                var detailsRequest = new GoogleApi.Entities.Places.Details.Request.PlacesDetailsRequest
+                {
+                    Key = request.Key,
+                    PlaceId = prediction.PlaceId.ToString(),
+                    Language = GoogleApi.Entities.Common.Enums.Language.English
+                };
+
+                detailsTasks.Add(GoogleApi.GooglePlaces.Details.QueryAsync(detailsRequest));
+            }
+
+            var detailsResponses = await Task.WhenAll(detailsTasks);
+
+            var suggestions = detailsResponses.Select(detailsResponse =>
+            {
+                var addressComponents = detailsResponse.Result.AddressComponents;
+
+                string[] ArrAdd = new string[7];
+
+                foreach (var itemAdd in addressComponents)
+                {
+                    switch (itemAdd.Types.FirstOrDefault())
+                    {
+                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Street_Number:
+                            {
+                                ArrAdd[0] = itemAdd.LongName;
+                            }
+                            break;
+                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Route:
+                            {
+                                ArrAdd[1] = itemAdd.LongName;
+                            }
+                            break;
+                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Administrative_Area_Level_3:
+                            {
+                                ArrAdd[2] = itemAdd.LongName;
+                            }
+                            break;
+                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Administrative_Area_Level_2:
+                            {
+                                ArrAdd[3] = itemAdd.LongName;
+                            }
+                            break;
+                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Administrative_Area_Level_1:
+                            {
+                                ArrAdd[4] = itemAdd.LongName;
+                            }
+                            break;
+                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Country:
+                            {
+                                ArrAdd[5] = itemAdd.LongName;
+                            }
+                            break;
+                        case GoogleApi.Entities.Common.Enums.AddressComponentType.Postal_Code:
+                            {
+                                ArrAdd[6] = itemAdd.LongName;
+                            }
+                            break;
+                    }
+                }
+
+                return new SuggestionAddressModel
+                {
+                    PalceId = detailsResponse.Result.PlaceId,
+                    Latitude = detailsResponse.Result.Geometry.Location.Latitude,
+                    Longitude = detailsResponse.Result.Geometry.Location.Longitude,
+                    FullAddress = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2] + " " + ArrAdd[3] + " " + ArrAdd[4] + " " + ArrAdd[5],
+                    FullAddressAr = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2] + " " + ArrAdd[3] + " " + ArrAdd[4] + " " + ArrAdd[5],
+                    MainAddress = ArrAdd[0] + " " + ArrAdd[1] + " " + ArrAdd[2],
+                    SubAddress = ArrAdd[3] + " " + ArrAdd[4],
+                    Street = ArrAdd[1],
+                    StreetAr = ArrAdd[1],
+                    Locality = ArrAdd[2],
+                    LocalityAr = ArrAdd[2],
+                    State = ArrAdd[3],
+                    StateAr = ArrAdd[3],
+                    City = ArrAdd[4],
+                    CityAr = ArrAdd[4],
+                    Country = ArrAdd[5],
+                    CountryAr = ArrAdd[5],
+                    Zip = ArrAdd[6],
+                };
+            }).ToList();
+
+            return suggestions;
+        }
+
+       
     }
 }

@@ -138,6 +138,20 @@
 
                             <Line  X1="400" HorizontalOptions="CenterAndExpand" Margin="0,10,0,10" BackgroundColor="LightGray"></Line>
 
+
+                            <StackLayout Spacing="0" Padding="20,0,20,0">
+                                <Label Text="Branch" FontSize="13" FontAttributes="Bold" TextColor="#333333"></Label>
+                                <Picker ItemsSource="{Binding LstBranches}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding OneBranches}" SelectedIndexChanged="Picker_SelectedIndexChanged"
+                                        Title="Choose Branches"
+                                        FontAttributes="Italic"
+                                        TextColor="#b66dff"
+                                        FontSize="15"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalTextAlignment="Center">
+                                </Picker>
+                            </StackLayout>
+
+
                             <!--<StackLayout Padding="20,0,20,0" Spacing="0">
                                 <Label Text="Account Type" FontFamily="AlmaraiRegular" FontSize="13" FontAttributes="Bold" TextColor="Gray"></Label>
                                 <Label Text="{Binding Login.TypeOfLevel}" FontSize="16" FontAttributes="Italic" Padding="10,0,0,0" TextColor="#2A35B3">

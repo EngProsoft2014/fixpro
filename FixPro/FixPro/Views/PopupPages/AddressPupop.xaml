@@ -26,6 +26,30 @@
             HasBackgroundAnimation="True"/>
     </pages:PopupPage.Animation>
 
+    <pages:PopupPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Entry">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal"/>
+                            <VisualState x:Name="Valid">
+                                <VisualState.Setters>
+                                    <Setter Property="TextColor" Value="#424242" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Invalid">
+                                <VisualState.Setters>
+                                    <Setter Property="TextColor" Value="Red" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </pages:PopupPage.Resources>
+
     <yummy:PancakeView  BackgroundColor="#FFFFFF" VerticalOptions="FillAndExpand">
         <StackLayout>
             <StackLayout Orientation="Horizontal" VerticalOptions="Center" Padding="20">
@@ -40,7 +64,13 @@
             </StackLayout>
 
             <StackLayout Padding="20,0,20,0">
-                <Entry x:Name="searchBar" Placeholder="Enter Address" FontFamily="AlmaraiRegular" Keyboard="Text" ClearButtonVisibility="WhileEditing" TextChanged="SearchBar_OnTextChanged"></Entry>
+                <Entry x:Name="searchBar" 
+                       Placeholder="Enter Address"
+                       FontFamily="AlmaraiRegular"
+                       Keyboard="Text"
+                       ClearButtonVisibility="WhileEditing"
+                       TextChanged="SearchBar_OnTextChanged">
+                </Entry>
                 <ListView x:Name="countryListView" HorizontalOptions="FillAndExpand" IsVisible="False" CachingStrategy="RecycleElement" ItemTapped="ListView_OnItemTapped">
                     <ListView.RowHeight>
                         70
@@ -75,6 +105,164 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+
+
+                <StackLayout>
+                    <StackLayout Padding="20,10,20,0" Orientation="Horizontal" Spacing="20">
+                        <Label Text="Manually enter address" FontSize="14" TextColor="Black">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding Source={x:Reference stkManuallyAddress},Path=IsVisible}" Value="True">
+                                    <Setter Property="TextColor" Value="#3680f7"></Setter>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Image>
+                            <Image.Source>
+                                <FontImageSource FontFamily="FontIconSolid" Color="Black" Glyph="" Size="15"></FontImageSource>
+                            </Image.Source>
+
+                            <Image.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding Source={x:Reference stkManuallyAddress},Path=IsVisible}" Value="True">
+                                    <Setter Property="Source">
+                                        <Setter.Value>
+                                            <FontImageSource FontFamily="FontIconSolid" Color="#3680f7" Glyph="" Size="15"></FontImageSource>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Image.Triggers>
+                        </Image>
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"></TapGestureRecognizer>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+
+                    <StackLayout x:Name="stkManuallyAddress" IsVisible="False">
+                        <yummy:PancakeView 
+                                   VerticalOptions="FillAndExpand"    
+                                   Padding="20,10,20,10" 
+                                   Margin="20,10,20,10"
+                                   CornerRadius="10"
+                                   BackgroundColor="White" 
+                                   HorizontalOptions="FillAndExpand">
+                            <StackLayout>
+
+                                <StackLayout Spacing="0">
+                                    <Label Text="Street" TextTransform="Uppercase" TextColor="#bfbfbf" FontSize="14"></Label>
+                                    <Editor x:Name="entryStreet"
+                                           FontSize="14"
+                                           HeightRequest="70"
+                                           TextColor="Black"
+                                           Keyboard="Text"
+                                           xct:SetFocusOnEntryCompletedBehavior.NextElement="{x:Reference entryCity}">
+                                        <Editor.Behaviors>
+                                            <xct:TextValidationBehavior MinimumLength="1"
+                                                            Flags="ValidateOnValueChanging"
+                                                            x:Name="entryStreetBehv">
+                                            </xct:TextValidationBehavior>
+                                        </Editor.Behaviors>
+                                    </Editor>
+                                    <Label Text="Please enter Street !!" 
+                                           TextColor="Red"
+                                           FontSize="13" 
+                                           IsVisible="{Binding IsNotValid, Source={x:Reference entryStreetBehv}}"></Label>
+                                </StackLayout>
+
+                                <StackLayout Spacing="0">
+                                    <Label Text="City" TextTransform="Uppercase" TextColor="#bfbfbf" FontSize="14"></Label>
+                                    <Entry x:Name="entryCity"
+                                           FontSize="14"
+                                           TextColor="Black"
+                                           Keyboard="Text"
+                                           xct:SetFocusOnEntryCompletedBehavior.NextElement="{x:Reference entryState}">
+                                        <Entry.Behaviors>
+                                            <xct:TextValidationBehavior MinimumLength="1"
+                                                            MaximumLength="50"
+                                                            Flags="ValidateOnValueChanging"
+                                                            x:Name="entryCityBehv">
+                                            </xct:TextValidationBehavior>
+                                        </Entry.Behaviors>
+                                    </Entry>
+                                    <Label Text="Please enter valid City !!" 
+                                           TextColor="Red"
+                                           FontSize="13" 
+                                           IsVisible="{Binding IsNotValid, Source={x:Reference entryCityBehv}}"></Label>
+                                </StackLayout>
+                                <StackLayout Spacing="0">
+                                    <Label Text="State/Province" TextTransform="Uppercase" TextColor="#bfbfbf" FontSize="13"></Label>
+                                    <Entry x:Name="entryState"
+                                           FontSize="14"
+                                           TextColor="Black"
+                                           Keyboard="Text"
+                                           xct:SetFocusOnEntryCompletedBehavior.NextElement="{x:Reference entryPostalCode}">
+                                        <Entry.Behaviors>
+                                            <xct:TextValidationBehavior MinimumLength="1"
+                                                            MaximumLength="50"
+                                                            Flags="ValidateOnValueChanging"
+                                                            x:Name="entryStateBehv">
+                                            </xct:TextValidationBehavior>
+                                        </Entry.Behaviors>
+                                    </Entry>
+                                    <Label Text="Please enter valid State !!" 
+                                           TextColor="Red"
+                                           FontSize="13"
+                                           IsVisible="{Binding IsNotValid, Source={x:Reference entryStateBehv}}"></Label>
+                                </StackLayout>
+
+
+                                <StackLayout Spacing="0">
+                                    <Label Text="Postal Code" TextColor="#bfbfbf" FontSize="13"></Label>
+                                    <Entry x:Name="entryPostalCode"
+                                           Placeholder="Postal Code"
+                                           FontSize="14"
+                                           Keyboard="Numeric"
+                                           xct:SetFocusOnEntryCompletedBehavior.NextElement="{x:Reference entryCountry}">
+                                        <Entry.Behaviors>
+                                            <xct:NumericValidationBehavior  MinimumValue="5.0"
+                                                                MaximumValue="7.0"
+                                                                Flags="ValidateOnUnfocusing"
+                                                                x:Name="entryPostalCodeBehv">
+                                            </xct:NumericValidationBehavior>
+                                        </Entry.Behaviors>
+                                    </Entry>
+                                    <Label Text="Please enter valid Postal Code !!" 
+                                             TextColor="Red"
+                                             FontSize="13"
+                                             IsVisible="{Binding IsNotValid, Source={x:Reference entryPostalCodeBehv}}"></Label>
+                                </StackLayout>
+                                
+                                <StackLayout Spacing="0">
+                                    <Label Text="Country" TextColor="#bfbfbf" FontSize="13"></Label>
+                                    <Entry x:Name="entryCountry"
+                                           Placeholder="Country"
+                                           FontSize="14"
+                                           Keyboard="Text">
+                                        <Entry.Behaviors>
+                                            <xct:TextValidationBehavior MinimumLength="1"
+                                                                         MaximumLength="50"
+                                                                         Flags="ValidateOnValueChanging"
+                                                                         x:Name="entryCountryBehv">
+                                            </xct:TextValidationBehavior>
+                                        </Entry.Behaviors>
+                                    </Entry>
+                                    <Label Text="please enter valid Country !!" 
+                                           TextColor="Red"
+                                           FontSize="13"
+                                           IsVisible="{Binding IsNotValid, Source={x:Reference entryCountryBehv}}"></Label>
+                                </StackLayout>
+
+                             
+                            </StackLayout>
+
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                        </yummy:PancakeView>
+
+                    </StackLayout>
+
+                </StackLayout>
+              
+
             </StackLayout>
         </StackLayout>
     </yummy:PancakeView>

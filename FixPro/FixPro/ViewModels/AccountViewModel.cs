@@ -14,6 +14,9 @@ using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Stripe;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FixPro.ViewModels
 {
@@ -41,6 +44,40 @@ namespace FixPro.ViewModels
                 }
             }
         }
+        BranchesModel _OneBranches;
+        public BranchesModel OneBranches
+        {
+            get
+            {
+                return _OneBranches;
+            }
+            set
+            {
+                _OneBranches = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("OneBranches"));
+                }
+            }
+        }
+
+        ObservableCollection<BranchesModel> _LstBranches;
+        public ObservableCollection<BranchesModel> LstBranches
+        {
+            get
+            {
+                return _LstBranches;
+            }
+            set
+            {
+                _LstBranches = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("LstBranches"));
+                }
+            }
+        }
+
 
         bool _IsBusy;
         public bool IsBusy
@@ -79,18 +116,22 @@ namespace FixPro.ViewModels
         Helpers.GenericRepository ORep = new Helpers.GenericRepository();
         public ICommand SelecteCamAccountPhoto { get; set; }
         public ICommand SelectePickAccountPhoto { get; set; }
+        public ICommand SelectBranch { get; set; }
 
         public AccountViewModel()
         {
             SelecteCamAccountPhoto = new Command(OnSelecteCamAccountPhoto);
             SelectePickAccountPhoto = new Command(OnSelectePickAccountPhoto);
+            SelectBranch = new Command<BranchesModel>(OnSelectBranch);
 
             Init();
         }
 
-        void Init()
+        async void Init()
         {
             Login = new EmployeeModel();
+            OneBranches = new BranchesModel();
+            LstBranches = new ObservableCollection<BranchesModel>();
 
             Login.Id = Helpers.Settings.UserId != null ? int.Parse(Helpers.Settings.UserId) : 0;
             Login.UserName = Helpers.Settings.UserName != null ? Helpers.Settings.UserName : "";
@@ -104,6 +145,8 @@ namespace FixPro.ViewModels
             {
                 Login.CreateDate = Convert.ToDateTime(Helpers.Settings.CreateDate);
             }
+
+            await GetBranches();
 
             try
             {
@@ -125,6 +168,33 @@ namespace FixPro.ViewModels
             }
 
             Login.OldPicture = Controls.StaticMembers.OldProfileImageSt;
+        }
+
+        //Get All Branches
+        async Task GetBranches()
+        {
+            IsBusy = true;
+            UserDialogs.Instance.ShowLoading();
+            string UserToken = await _service.UserToken();
+            var json = await ORep.GetAsync<ObservableCollection<BranchesModel>>(string.Format("api/Employee/GetEmpolyeeBranches?" + "AccountId=" + Helpers.Settings.AccountId + "&" + "EmpId=" + Helpers.Settings.UserId), UserToken);
+
+            if (json != null)
+            {
+                LstBranches = json;
+                OneBranches = LstBranches.Where(x => x.Id == int.Parse(Helpers.Settings.BranchId)).FirstOrDefault();
+            }
+
+            UserDialogs.Instance.HideLoading();
+            IsBusy = false;
+        }
+
+
+        void OnSelectBranch(BranchesModel model)
+        {
+            IsBusy = true;
+            OneBranches = model;
+            Helpers.Settings.BranchId = model.Id.ToString();
+            IsBusy = false;
         }
 
         //Pick Photo

@@ -1592,7 +1592,7 @@ namespace FixPro.ViewModels
         {
             IsBusy = true;
             UserDialogs.Instance.ShowLoading();
-            var ViewModel = new SchedulesViewModel(model.Id, model.OneScheduleDate.Id);
+            var ViewModel = new SchedulesViewModel(model.Id, model.ScheduleDateId);
             var page = new Views.SchedulePages.NewSchedulePage();
             page.BindingContext = ViewModel;
             await App.Current.MainPage.Navigation.PushAsync(page);

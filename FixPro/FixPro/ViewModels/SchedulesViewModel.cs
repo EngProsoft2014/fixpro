@@ -2515,6 +2515,11 @@ namespace FixPro.ViewModels
                 {
                     await App.Current.MainPage.DisplayAlert("Alert", "Faild for Delete this Material.", "Ok");
                 }
+                else
+                {
+                    LstItems.Remove(item);
+                    ScheduleDetails.LstScheduleItemsServices.Remove(item);
+                }
             }
             else //Remove invoice item or Estimate item
             {
@@ -2572,7 +2577,6 @@ namespace FixPro.ViewModels
             {
                 LstMaterialReceipt.Remove(item);
                 ScheduleDetails.LstMaterialReceipt.Remove(item);
-
             }
 
             UserDialogs.Instance.HideLoading();
