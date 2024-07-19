@@ -224,7 +224,7 @@ namespace FixPro
             {
                 if (Helpers.Settings.UserName != "" && Helpers.Settings.Password != "")
                 {
-                    if (!string.IsNullOrEmpty(arg1) && arg1 != Helpers.Settings.PlayerId)
+                    if (!string.IsNullOrEmpty(arg1) && arg1 != Helpers.Settings.PlayerId && arg2 == Helpers.Settings.UserName)
                     {
                         //await SignalRNotservice();
                         Helpers.Settings.UserName = "";
