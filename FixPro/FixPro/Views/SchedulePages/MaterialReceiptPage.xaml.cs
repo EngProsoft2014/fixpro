@@ -17,7 +17,7 @@ namespace FixPro.Views.SchedulePages
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MaterialReceiptPage : Controls.CustomsPage
     {
-        ScheduleItemsServicesViewModel ViewModel { get => BindingContext as ScheduleItemsServicesViewModel; set => BindingContext = value; }
+        ScheduleMaterialReceiptViewModel ViewModel { get => BindingContext as ScheduleMaterialReceiptViewModel; set => BindingContext = value; }
 
         public MaterialReceiptPage()
 		{
@@ -28,7 +28,11 @@ namespace FixPro.Views.SchedulePages
         {
             InitializeComponent();
 
-            comxLstSuppliers.Text = model.SupplierName;
+            ViewModel.OneSupplier.Id = model.SupplierId.Value;
+            ViewModel.OneSupplier.FirstName = model.SupplierName;
+
+            comxLstSuppliers.Title = model.SupplierName;
+            comxLstSuppliers.SelectedItem = ViewModel.OneSupplier;
             entryCost.Text = model.Cost.ToString();
             edtNotes.Text = model.Notes;
             imgReceipt.Source = model.ReceiptPhotoView;
@@ -75,6 +79,17 @@ namespace FixPro.Views.SchedulePages
             await App.Current.MainPage.Navigation.PushAsync(new AddSchedulePhotoPupop());
         }
 
+        private void comxLstSuppliers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectedOption = (sender as Picker).SelectedItem;
+            if(selectedOption != null)
+                ViewModel?.SelectSupplier.Execute(selectedOption);
+        }
 
+        private void comxLstSuppliers_SelectionChanged(object sender, Syncfusion.XForms.ComboBox.SelectionChangedEventArgs e)
+        {
+            var selectedOption = (sender as SfComboBox).SelectedItem;
+            ViewModel?.SelectSupplier.Execute(selectedOption);
+        }
     }
 }

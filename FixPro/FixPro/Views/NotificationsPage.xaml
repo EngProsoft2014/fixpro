@@ -22,7 +22,7 @@
         <!--Toolbar-->
         <StackLayout>
 
-            <StackLayout Orientation="Horizontal" Spacing="0" Margin="0,10,0,0" Padding="15,5,15,10" VerticalOptions="FillAndExpand">
+            <StackLayout Orientation="Horizontal" Spacing="0" Padding="{OnPlatform iOS='20,50,20,10', Android='15,15,15,10'}" VerticalOptions="FillAndExpand">
                 <Image x:Name="imgBack" HorizontalOptions="Start">
                     <Image.Source>
                         <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
@@ -66,7 +66,7 @@
                                 <yummy:PancakeView  CornerRadius="20"  BackgroundColor="#b66dff">
                                     <StackLayout Orientation="Horizontal" WidthRequest="400" Spacing="0">
                                         <StackLayout HorizontalOptions="Start" VerticalOptions="Center">
-                                            <yummy:PancakeView Margin="15" Padding="8" CornerRadius="50" HeightRequest="20" WidthRequest="20" BackgroundColor="white">
+                                            <yummy:PancakeView Margin="15" Padding="8" CornerRadius="{OnPlatform Android=50,iOS=18}" HeightRequest="20" WidthRequest="20" BackgroundColor="white">
                                                 <Image>
                                                     <Image.Source>
                                                         <FontImageSource FontFamily="FontIconSolid" Glyph="" Size="30" Color="#8f1fff"></FontImageSource>
@@ -124,7 +124,7 @@
             </StackLayout>
 
             <StackLayout IsVisible="False" Margin="0,100,0,0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                <Image Source="noresult.png" Aspect="AspectFill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" ></Image>
+                <Image Source="noresult.png" HeightRequest="250" Aspect="AspectFill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" ></Image>
                 <StackLayout.Triggers>
                     <DataTrigger TargetType="StackLayout" Binding="{Binding Messages.Count}" Value="0">
                         <Setter Property="IsVisible" Value="True"></Setter>

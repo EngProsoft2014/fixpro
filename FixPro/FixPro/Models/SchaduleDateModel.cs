@@ -25,6 +25,7 @@ namespace FixPro.Models
         public int? CreateOrginal_Custom { get; set; }
         public string CustomerName { get; set; }
         public string CustomerPhone { get; set; }
+        public string CustomerEmail { get; set; }
         public string GoogleReviewLink { get; set; }
         public string Notes { get; set; }
         public bool? Active { get; set; }

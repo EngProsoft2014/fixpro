@@ -20,7 +20,7 @@
         <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
             <!--<Controls:ToolBar Title="Customers" HasBackButton="True" TranslationX="20" HorizontalOptions="FillAndExpand"></Controls:ToolBar>-->
 
-            <StackLayout Orientation="Horizontal" Spacing="0" Padding="15,10,15,10" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <StackLayout Orientation="Horizontal" Spacing="0" Padding="{OnPlatform iOS='15,50,15,10', Android='15,10,15,10'}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
 
                 <Image x:Name="imgBack">
                     <Image.Source>
@@ -33,14 +33,14 @@
 
                 <Label x:Name="lblTitle" Text="Customers" HeightRequest="30"
                         VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
-                        HorizontalOptions="EndAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                        HorizontalOptions="{OnPlatform Android=EndAndExpand ,iOS=EndAndExpand}" HorizontalTextAlignment="{OnPlatform Android=Center,iOS=Center}" VerticalTextAlignment="Center"/>
             </StackLayout>
 
             <Label 
                    Text="{Binding BranchName}" 
                    TextColor="#b66dff"
                    FontSize="13"
-                   Margin="0,0,20,0"
+                   Margin="{OnPlatform Android='0,0,20,0',iOS='0,40,20,0'}"
                    VerticalTextAlignment="Center"
                    HorizontalOptions="End"></Label>
         </StackLayout>
@@ -52,14 +52,14 @@
 
                 <StackLayout Margin="30,0,30,0" Spacing="20">
                     <!--search bar Phone or Address-->
-                    <yummy:PancakeView BackgroundColor="White" HeightRequest="42" CornerRadius="25" HorizontalOptions="FillAndExpand">
+                    <yummy:PancakeView BackgroundColor="White" HeightRequest="42" CornerRadius="{OnPlatform Android=25,iOS=20}" HorizontalOptions="FillAndExpand">
                         <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
                             <SearchBar x:Name="srchPhoneOrAddress" 
                                        Text="{Binding PhoneView}" 
-                                       Placeholder="Search by Phone"
+                                       Placeholder="Search by Phone or Address"
                                        HorizontalOptions="FillAndExpand"
-                                       FontSize="13"
-                                       Keyboard="Telephone"
+                                       FontSize="13" 
+                                       Keyboard="Text"
                                        VerticalTextAlignment="Center"
                                        TextChanged="srchPhone_TextChanged">
                             </SearchBar>
@@ -69,28 +69,9 @@
                             <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                         </yummy:PancakeView.Border>
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="2" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                     </yummy:PancakeView>
-
-                    <!--Address-->
-                    <!--<yummy:PancakeView BackgroundColor="White" HeightRequest="42" CornerRadius="25" HorizontalOptions="FillAndExpand">
-                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
-                            <SearchBar x:Name="srchAddress"
-                                       Placeholder="Search by Address" 
-                                       HorizontalOptions="FillAndExpand"
-                                       FontSize="13"
-                                       VerticalTextAlignment="Center"
-                                       TextChanged="srchAddress_TextChanged">
-                            </SearchBar>
-                        </StackLayout>
-                        <yummy:PancakeView.Border>
-                            <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
-                        </yummy:PancakeView.Border>
-                        <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="2" Opacity="1"></yummy:DropShadow>
-                        </yummy:PancakeView.Shadow>
-                    </yummy:PancakeView>-->
 
                 </StackLayout>
 
@@ -125,7 +106,7 @@
                                                     <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
                                                 </yummy:PancakeView.Border>
                                                 <yummy:PancakeView.Shadow>
-                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                 </yummy:PancakeView.Shadow>
                                             </yummy:PancakeView>
 
@@ -181,27 +162,28 @@
                 </StackLayout>
 
                 <!--No Data-->
-                <StackLayout x:Name="stkNoData" Padding="0,50,0,0" IsVisible="False" HeightRequest="100" HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
-                    <Image Source="noresult.png" Aspect="AspectFill"></Image>
+                <StackLayout x:Name="stkNoData" Padding="0,200,0,300" IsVisible="False" HeightRequest="100" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Image Source="noresult.png" Aspect="AspectFill" VerticalOptions="FillAndExpand"></Image>
                     <StackLayout.Triggers>
                         <MultiTrigger TargetType="StackLayout">
                             <MultiTrigger.Conditions>
                                 <BindingCondition Binding="{Binding LstCustomers.Count}" Value="0" />
+                                <BindingCondition Binding="{Binding Source={x:Reference lstCustomers}, Path=ItemsSource}" Value="0" />
                             </MultiTrigger.Conditions>
                             <Setter Property="IsVisible" Value="True"></Setter>
                         </MultiTrigger>
                     </StackLayout.Triggers>
                 </StackLayout>
             </StackLayout>
-            <yummy:PancakeView CornerRadius="100"
+            <yummy:PancakeView CornerRadius="{OnPlatform Android=100,iOS=25}"
                                BackgroundColor="#8f1fff" 
                                Padding="5" 
                                VerticalOptions="End"
                                HorizontalOptions="End" 
-                               Margin="30"
+                               Margin="{OnPlatform Android= 30, iOS='30,30,30,50'}"
                                HeightRequest="40"
                                WidthRequest="40">
-                <Label TranslationY="-8"
+                <Label TranslationY="{OnPlatform Android=-8,iOS=-2}"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center"
@@ -209,10 +191,10 @@
                         TextColor="White"
                         FontSize="40"></Label>
                 <yummy:PancakeView.Shadow>
-                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                 </yummy:PancakeView.Shadow>
                 <yummy:PancakeView.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding BindingContext.CreateNewCustomer,Source={x:Reference page}}" ></TapGestureRecognizer>
+                    <TapGestureRecognizer Command="{Binding BindingContext.CreateNewCustomerFromSchedule,Source={x:Reference page}}" ></TapGestureRecognizer>
                 </yummy:PancakeView.GestureRecognizers>
             </yummy:PancakeView>
         </Grid>

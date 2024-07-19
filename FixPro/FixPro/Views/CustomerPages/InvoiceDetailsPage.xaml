@@ -17,7 +17,7 @@
 
     <StackLayout>
         <!--Toolbar-->
-        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="20,10,20,10">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="{OnPlatform iOS='20,50,10,10', Android='20,10,10,10'}">
 
             <Image x:Name="imgBack">
                 <Image.Source>
@@ -30,7 +30,7 @@
 
             <Label x:Name="lblTitle" Text="Invoice Details" HeightRequest="30"
                         VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
-                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="{OnPlatform Android=Center,iOS=End}" VerticalTextAlignment="Center"/>
 
 
             <Label 
@@ -42,7 +42,7 @@
         </StackLayout>
 
         <Grid VerticalOptions="FillAndExpand">
-            <ScrollView Margin="0,0,0,60">
+            <ScrollView Margin="0,0,0,100">
                 <StackLayout HorizontalOptions="FillAndExpand">
                     <!--Customer Details-->
                     <StackLayout HorizontalOptions="CenterAndExpand" Spacing="2" Margin="0,5,0,20">
@@ -73,7 +73,7 @@
 
                             <Label Text="Discount" FontSize="14" TextColor="#b66dff" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
 
-                            <yummy:PancakeView BackgroundColor="Gray" Padding="15,0,15,0" CornerRadius="40" HorizontalOptions="End">
+                            <yummy:PancakeView BackgroundColor="Gray" Padding="15,0,15,0" CornerRadius="{OnPlatform Android=40,iOS=10}" HorizontalOptions="End">
                                 <!--<Label x:Name="lblDiscount" Text="{Binding Discount,StringFormat='%{0}'}" FontSize="14" TextColor="White" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
 
                                 </Label>-->
@@ -95,14 +95,14 @@
                                     </Label>
                                 </StackLayout>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="3" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=3,iOS=5}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
 
                         </StackLayout>
 
                         <StackLayout x:Name="stkEditDiscount" IsVisible="False" Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Margin="0,5,0,0" HeightRequest="35">
-                            <yummy:PancakeView CornerRadius="10" Padding="5,0,5,0">
+                            <yummy:PancakeView CornerRadius="10" Padding="{OnPlatform Android='5,0,5,0', iOS='10,5,10,5'}">
                                 <Entry x:Name="entryDiscount"
                                        Placeholder="Discount"
                                        Keyboard="Numeric"
@@ -126,7 +126,7 @@
                                                 HeightRequest="20"
                                                 WidthRequest="50"
                                                 BackgroundColor="#b66dff"
-                                                CornerRadius="30">
+                                                CornerRadius="{OnPlatform Android=30,iOS=10}">
 
                                 <Label x:Name="lblSave" Text="Save" FontSize="14" TextColor="White" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                                 </Label>
@@ -152,13 +152,16 @@
                             <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveInvoice}" Value="False">
                                 <Setter Property="IsEnabled" Value="False"></Setter>
                             </DataTrigger>
-                            <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveEditPrice}" Value="False">
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveEditEstimate_Invoice}" Value="False">
                                 <Setter Property="IsEnabled" Value="False"></Setter>
                             </DataTrigger>
                         </StackLayout.Triggers>
                     </StackLayout>
 
                     <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray" Margin="0,0,0,10"></Line>
+
+                    <!--Send Email-->
+                    <Button Text="Send Email" TextColor="#b66dff" BackgroundColor="Transparent" Command="{Binding BindingContext.SelectSendEmailInvoice,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></Button>
 
                     <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="FillAndExpand" Padding="20,0,20,10">
 
@@ -194,10 +197,11 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
+
 
                         <!--Invoice Date-->
                         <StackLayout HorizontalOptions="Start" WidthRequest="150">
@@ -212,7 +216,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -232,7 +236,7 @@
                             <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveInvoice}" Value="False">
                                 <Setter Property="IsEnabled" Value="False"></Setter>
                             </DataTrigger>
-                            <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveEditPrice}" Value="False">
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveEditEstimate_Invoice}" Value="False">
                                 <Setter Property="IsEnabled" Value="False"></Setter>
                             </DataTrigger>
                         </StackLayout.Triggers>
@@ -247,7 +251,7 @@
                             <StackLayout HorizontalOptions="FillAndExpand">
                                 <StackLayout>
                                     <Label Text="Schedule Dates" FontSize="15" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
-                                    <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                    <yummy:PancakeView BackgroundColor="White" IsEnabled="{Binding IsShowScheduleDates}" Padding="10,0,10,0" CornerRadius="10">
                                         <StackLayout>
                                             <Label 
                                            Padding="10,12,10,12"
@@ -286,7 +290,7 @@
                                             <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                         </yummy:PancakeView.Border>
                                         <yummy:PancakeView.Shadow>
-                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                         </yummy:PancakeView.Shadow>
                                     </yummy:PancakeView>
                                 </StackLayout>
@@ -376,7 +380,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -384,7 +388,7 @@
                         <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray"></Line>
                     </StackLayout>
 
-                    
+
                     <StackLayout Orientation="Horizontal" Padding="20,10,20,10" Spacing="20">
                         <Label Text="Items / Services" FontSize="15" TextColor="#262626" FontAttributes="Bold" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
@@ -415,7 +419,7 @@
                             <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveInvoice}" Value="False">
                                 <Setter Property="IsEnabled" Value="False"></Setter>
                             </DataTrigger>
-                            <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveEditPrice}" Value="False">
+                            <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveEditEstimate_Invoice}" Value="False">
                                 <Setter Property="IsEnabled" Value="False"></Setter>
                             </DataTrigger>
                         </StackLayout.Triggers>
@@ -456,7 +460,7 @@
                                                             <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                         </yummy:PancakeView.Border>
                                                         <yummy:PancakeView.Shadow>
-                                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                         </yummy:PancakeView.Shadow>
                                                     </yummy:PancakeView>
 
@@ -475,7 +479,7 @@
                                                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                             </yummy:PancakeView.Border>
                                                             <yummy:PancakeView.Shadow>
-                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                             </yummy:PancakeView.Shadow>
                                                         </yummy:PancakeView>
                                                     </StackLayout>
@@ -496,7 +500,7 @@
                                                             <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                         </yummy:PancakeView.Border>
                                                         <yummy:PancakeView.Shadow>
-                                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                         </yummy:PancakeView.Shadow>
                                                     </yummy:PancakeView>
 
@@ -579,7 +583,7 @@
                                                 <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveInvoice}" Value="False">
                                                     <Setter Property="IsVisible" Value="False"></Setter>
                                                 </DataTrigger>
-                                                <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveEditPrice}" Value="False">
+                                                <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveEditEstimate_Invoice}" Value="False">
                                                     <Setter Property="IsVisible" Value="False"></Setter>
                                                 </DataTrigger>
                                             </StackLayout.Triggers>
@@ -652,7 +656,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
 
@@ -680,7 +684,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
 
@@ -711,7 +715,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
 
@@ -739,7 +743,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -767,7 +771,7 @@
                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                             </yummy:PancakeView.Border>
                             <yummy:PancakeView.Shadow>
-                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                             </yummy:PancakeView.Shadow>
                         </yummy:PancakeView>
 
@@ -778,8 +782,8 @@
                     <!--Prices-->
                     <!--<StackLayout Orientation="Horizontal" Spacing="15" HorizontalOptions="CenterAndExpand" Padding="20,5,20,10">-->
 
-                        <!--Sub Total-->
-                        <!--StackLayout>
+                    <!--Sub Total-->
+                    <!--StackLayout>
                             <Label Text="Sub Total" FontSize="13" TextColor="#b66dff" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
                             <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
                                 <Label 
@@ -793,13 +797,13 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>-->
 
-                        <!--% Tax-->
-                        <!--<StackLayout>
+                    <!--% Tax-->
+                    <!--<StackLayout>
                             <Label Text="% Tax" FontSize="13" TextColor="#b66dff" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
                             <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
                                 <Label 
@@ -812,14 +816,14 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>-->
 
 
-                        <!--$ Net-->
-                        <!--<StackLayout>
+                    <!--$ Net-->
+                    <!--<StackLayout>
                             <Label Text="$ Net" FontSize="13" TextColor="#b66dff" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
                             <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
                                 <Label 
@@ -832,13 +836,13 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>-->
 
-                        <!--$ Paid-->
-                        <!--<StackLayout>
+                    <!--$ Paid-->
+                    <!--<StackLayout>
                             <Label Text="$ Paid" FontSize="13" TextColor="#b66dff" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
                             <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
                                 <Label 
@@ -860,13 +864,13 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>-->
 
-                        <!--$ Total Due-->
-                        <!--<StackLayout>
+                    <!--$ Total Due-->
+                    <!--<StackLayout>
                             <Label Text="$ Total Due" FontSize="13" TextColor="#b66dff" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
                             <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
                                 <Label 
@@ -879,7 +883,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -889,7 +893,7 @@
 
                     <Label Text="Note" FontSize="15" TextColor="#262626" Padding="20,0,20,10" FontAttributes="Bold" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                    <Frame BorderColor="LightGray" HorizontalOptions="FillAndExpand" Padding="10" HeightRequest="60" Margin="20,0,20,20">
+                    <Frame BorderColor="LightGray" HasShadow="False" HorizontalOptions="FillAndExpand" Padding="10" HeightRequest="60" Margin="20,0,20,20">
                         <Editor Placeholder="Enter Note" Text="{Binding OneInvoice.Notes}" FontSize="13">
                             <Editor.Triggers>
                                 <DataTrigger TargetType="Editor" Binding="{Binding OneInvoice.Status}" Value="2">
@@ -907,7 +911,7 @@
                                 <DataTrigger TargetType="Editor" Binding="{Binding EmployeePermission.ActiveInvoice}" Value="False">
                                     <Setter Property="IsEnabled" Value="False"></Setter>
                                 </DataTrigger>
-                                <DataTrigger TargetType="Editor" Binding="{Binding EmployeePermission.ActiveEditPrice}" Value="False">
+                                <DataTrigger TargetType="Editor" Binding="{Binding EmployeePermission.ActiveEditEstimate_Invoice}" Value="False">
                                     <Setter Property="IsEnabled" Value="False"></Setter>
                                 </DataTrigger>
                             </Editor.Triggers>
@@ -931,7 +935,59 @@
                 </ScrollView.Triggers>
             </ScrollView>
 
-            <yummy:PancakeView CornerRadius="100"
+
+
+            <StackLayout x:Name="stkResponButtons" Orientation="Horizontal" BackgroundColor="White" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Padding="{OnPlatform Android=10,iOS='10,10,10,50'}">
+
+                <StackLayout Orientation="Horizontal" Spacing="20" HorizontalOptions="CenterAndExpand">
+
+                    <Button Text="Cancel"
+                            HeightRequest="40"
+                            BackgroundColor="White"
+                            FontAttributes="Bold"
+                            FontSize="13" 
+                            CornerRadius="10"
+                            TextTransform="None"
+                                WidthRequest="{OnPlatform iOS=100}"
+                            TextColor="Gray"
+                            BorderColor="Gray"
+                            BorderWidth="1"
+                            Clicked="Button_Clicked"></Button>
+
+                    <Button Text="Submit" 
+                            HeightRequest="40"
+                            BackgroundColor="#8f1fff"
+                            FontAttributes="Bold"
+                                WidthRequest="{OnPlatform iOS=100}"
+                            FontSize="13" 
+                            CornerRadius="10"
+                            TextTransform="None"
+                            TextColor="White"
+                            Command="{Binding BindingContext.SubmitInvoice,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></Button>
+                </StackLayout>
+                <StackLayout.Triggers>
+                    <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                    <DataTrigger TargetType="StackLayout" Binding="{Binding OneInvoice.Status}" Value="2">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                    <DataTrigger TargetType="StackLayout" Binding="{Binding OneInvoice.Status}" Value="1">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                    <DataTrigger TargetType="StackLayout" Binding="{Binding WithContract}" Value="True">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                    <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveInvoice}" Value="False">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                    <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveEditEstimate_Invoice}" Value="False">
+                        <Setter Property="IsVisible" Value="False"></Setter>
+                    </DataTrigger>
+                </StackLayout.Triggers>
+            </StackLayout>
+
+            <yummy:PancakeView CornerRadius="{OnPlatform Android=100, iOS=23}"
                                BackgroundColor="#b66dff" 
                                Padding="5" 
                                VerticalOptions="End"
@@ -960,7 +1016,7 @@
                                 </DataTrigger>
                             </Image.Triggers>
                         </Image>
-                        
+
                         <!--Credit-->
                         <Image>
                             <Image.Source>
@@ -983,7 +1039,7 @@
                     </StackLayout>
                 </xct:Expander>
                 <yummy:PancakeView.Shadow>
-                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                 </yummy:PancakeView.Shadow>
                 <yummy:PancakeView.Triggers>
                     <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding EmployeePermission.UserRole}" Value="1">
@@ -1001,56 +1057,13 @@
                     <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding EmployeePermission.ActiveInvoice}" Value="False">
                         <Setter Property="IsVisible" Value="False"></Setter>
                     </DataTrigger>
-                    <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding EmployeePermission.ActiveEditPrice}" Value="False">
+                    <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding EmployeePermission.ActiveEditEstimate_Invoice}" Value="False">
                         <Setter Property="IsVisible" Value="False"></Setter>
                     </DataTrigger>
                 </yummy:PancakeView.Triggers>
             </yummy:PancakeView>
 
 
-            <StackLayout x:Name="stkResponButtons" Orientation="Horizontal" Spacing="35" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="10">
-                <Button Text="Cancel"
-                    HeightRequest="40"
-                    BackgroundColor="White"
-                    FontAttributes="Bold"
-                    FontSize="13" 
-                    CornerRadius="10"
-                    TextTransform="None"
-                    TextColor="Gray"
-                    BorderColor="Gray"
-                    BorderWidth="1"
-                    Clicked="Button_Clicked"></Button>
-
-                <Button Text="Submit" 
-                    HeightRequest="40"
-                    BackgroundColor="#8f1fff"
-                    FontAttributes="Bold"
-                    FontSize="13" 
-                    CornerRadius="10"
-                    TextTransform="None"
-                    TextColor="White"
-                    Command="{Binding BindingContext.SubmitInvoice,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></Button>
-                <StackLayout.Triggers>
-                    <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.UserRole}" Value="1">
-                        <Setter Property="IsVisible" Value="False"></Setter>
-                    </DataTrigger>
-                    <DataTrigger TargetType="StackLayout" Binding="{Binding OneInvoice.Status}" Value="2">
-                        <Setter Property="IsVisible" Value="False"></Setter>
-                    </DataTrigger>
-                    <DataTrigger TargetType="StackLayout" Binding="{Binding OneInvoice.Status}" Value="1">
-                        <Setter Property="IsVisible" Value="False"></Setter>
-                    </DataTrigger>
-                    <DataTrigger TargetType="StackLayout" Binding="{Binding WithContract}" Value="True">
-                        <Setter Property="IsVisible" Value="False"></Setter>
-                    </DataTrigger>
-                    <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveInvoice}" Value="False">
-                        <Setter Property="IsVisible" Value="False"></Setter>
-                    </DataTrigger>
-                    <DataTrigger TargetType="StackLayout" Binding="{Binding EmployeePermission.ActiveEditPrice}" Value="False">
-                        <Setter Property="IsVisible" Value="False"></Setter>
-                    </DataTrigger>
-                </StackLayout.Triggers>
-            </StackLayout>
             <!--<Grid.Triggers>
                 <DataTrigger TargetType="Grid" Binding="{Binding EmployeePermission.ActiveInvoice}" Value="False">
                     <Setter Property="IsEnabled" Value="False"></Setter>
@@ -1059,6 +1072,7 @@
                     <Setter Property="IsEnabled" Value="False"></Setter>
                 </DataTrigger>
             </Grid.Triggers>-->
+
         </Grid>
         <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
 

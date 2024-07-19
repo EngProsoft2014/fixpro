@@ -72,25 +72,23 @@ namespace FixPro.Views.SchedulePages
         }
 
 
-        private async void map_MapClicked(object sender, MapClickedEventArgs e)
+        //private void SfComboBox_SelectionChanged(object sender, Syncfusion.XForms.ComboBox.SelectionChangedEventArgs e)
+        //{
+        //    var selectedOption = (sender as SfComboBox).SelectedItem;
+        //    if(selectedOption != null)
+        //    {
+        //        ViewModel.SelectedEmpCategory.Execute(selectedOption);
+        //    }
+
+        //}
+
+        private void Picker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(ViewModel?.ScheduleDetails?.Id != 0)
+            var selectedOption = (sender as Picker).SelectedItem;
+            if (selectedOption != null)
             {
-                //var location = new Location(double.Parse(ViewModel.CustomerDetails.locationlatitude), double.Parse(ViewModel.CustomerDetails.locationlongitude));
-
-                var location = new Location(31.199629, 29.918674);
-
-                var options = new MapLaunchOptions { NavigationMode = NavigationMode.Driving };
-
-                await Xamarin.Essentials.Map.OpenAsync(location, options);
+                ViewModel.SelectedEmpCategory.Execute(selectedOption);
             }
-
-        }
-
-        private void SfComboBox_SelectionChanged(object sender, Syncfusion.XForms.ComboBox.SelectionChangedEventArgs e)
-        {
-            var selectedOption = (sender as SfComboBox).SelectedItem;
-            ViewModel.SelectedEmpCategory.Execute(selectedOption);
         }
 
 

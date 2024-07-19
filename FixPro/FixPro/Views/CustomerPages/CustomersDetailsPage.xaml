@@ -22,7 +22,7 @@
             <Controls:ToolBar Title="Customer Details" HasBackButton="True" Margin="0" Padding="0"></Controls:ToolBar>
 
 
-            <tabView:SfTabView x:Name="MainTabs" TabWidth="90" HorizontalOptions="CenterAndExpand"
+            <tabView:SfTabView x:Name="MainTabs" TabWidth="{OnPlatform Android=90,iOS=100}" HorizontalOptions="CenterAndExpand"
                                EnableVirtualization="True"
                                TabHeaderBackgroundColor="White" 
                                TabHeight="60" 
@@ -54,63 +54,91 @@
                             <ContentView x:Name="TabInformation">
                                 <ScrollView Padding="0,10,0,30">
                                     <StackLayout>
-                                        <yummy:PancakeView BackgroundColor="White" CornerRadius="10" HorizontalOptions="Center" Margin="0,10,0,20" Padding="25,15,25,15">
-                                            <StackLayout>
-                                                <Image Source="avatar.png"
+                                        <StackLayout Orientation="Horizontal" Margin="0,10,0,20" HorizontalOptions="FillAndExpand">
+                                            <yummy:PancakeView BackgroundColor="White" HorizontalOptions="EndAndExpand" CornerRadius="10" Padding="25,15,25,15">
+                                                <StackLayout>
+                                                    <Image Source="avatar.png"
                                                        Aspect="Fill" 
                                                        HeightRequest="100" 
                                                        WidthRequest="100"></Image>
-                                                <StackLayout HorizontalOptions="Center" Spacing="2">
+                                                    <StackLayout HorizontalOptions="Center" Spacing="2">
 
-                                                    <Label 
+                                                        <Label 
                                                            FontAttributes="Bold" 
                                                            FontSize="14"
                                                            HorizontalTextAlignment="Center"
                                                            TextColor="#8f1fff">
-                                                        <Label.Text>
-                                                            <MultiBinding StringFormat="{}{0} {1}">
-                                                                <Binding Path="CustomerDetails.FirstName" />
-                                                                <Binding Path="CustomerDetails.LastName" />
-                                                            </MultiBinding>
-                                                        </Label.Text>
-                                                    </Label>
+                                                            <Label.Text>
+                                                                <MultiBinding StringFormat="{}{0} {1}">
+                                                                    <Binding Path="CustomerDetails.FirstName" />
+                                                                    <Binding Path="CustomerDetails.LastName" />
+                                                                </MultiBinding>
+                                                            </Label.Text>
+                                                        </Label>
 
-                                                    <!--<Label Text="{Binding CustomerDetails.Since,StringFormat='Since: {0:MM-dd-yyyy}'}"
+                                                        <!--<Label Text="{Binding CustomerDetails.Since,StringFormat='Since: {0:MM-dd-yyyy}'}"
                                                            FontSize="9"
                                                            HorizontalTextAlignment="Center"
                                                            TextColor="Gray"></Label>-->
 
-                                                    <Label Text="{Binding CustomerDetails.CustomerCategory.CategoryName}"
+                                                        <Label Text="{Binding CustomerDetails.CustomerCategory.CategoryName}"
                                                            FontSize="13"
                                                            HorizontalTextAlignment="Center"
                                                            TextColor="Black"></Label>
 
-                                                    <Label Text="{Binding CustomerDetails.Email}"
+                                                        <Label Text="{Binding CustomerDetails.Email}"
                                                            FontSize="10"
                                                            HorizontalTextAlignment="Center"
                                                            TextColor="Black"></Label>
 
-                                                    <Label Text="{Binding Discount,StringFormat='Discount: %{0}'}"
+                                                        <Label Text="{Binding Discount,StringFormat='Discount: %{0}'}"
                                                            FontSize="10"
                                                            HorizontalTextAlignment="Center"
                                                            TextColor="Black">
-                                                        <Label.Triggers>
-                                                            <DataTrigger TargetType="Label" Binding="{Binding Discount}" Value="0">
-                                                                <Setter Property="IsVisible" Value="False"></Setter>
-                                                            </DataTrigger>
-                                                        </Label.Triggers>
-                                                    </Label>
+                                                            <Label.Triggers>
+                                                                <DataTrigger TargetType="Label" Binding="{Binding Discount}" Value="0">
+                                                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                                                </DataTrigger>
+                                                            </Label.Triggers>
+                                                        </Label>
 
+                                                    </StackLayout>
                                                 </StackLayout>
-                                            </StackLayout>
 
-                                            <yummy:PancakeView.Border>
-                                                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
-                                            </yummy:PancakeView.Border>
-                                            <yummy:PancakeView.Shadow>
-                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
-                                            </yummy:PancakeView.Shadow>
-                                        </yummy:PancakeView>
+                                                <yummy:PancakeView.Border>
+                                                    <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+                                                </yummy:PancakeView.Border>
+                                                <yummy:PancakeView.Shadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
+                                                </yummy:PancakeView.Shadow>
+                                                <yummy:PancakeView.Triggers>
+                                                    <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding Source={x:Reference btnEdit}, Path=IsVisible}" Value="False">
+                                                        <Setter Property="HorizontalOptions" Value="CenterAndExpand"></Setter>
+                                                    </DataTrigger>
+                                                </yummy:PancakeView.Triggers>
+                                            </yummy:PancakeView>
+
+                                            <Button Text="Edit" IsVisible="False" x:Name="btnEdit"
+                                                    HorizontalOptions="End"
+                                                    Padding="0,2,0,2"
+                                                    Margin="0,0,10,0"
+                                                    FontSize="13"
+                                                    BackgroundColor="White"
+                                                    BorderColor="#b66dff"
+                                                    BorderWidth="1" 
+                                                    CornerRadius="5"
+                                                    VerticalOptions="End" 
+                                                    WidthRequest="70"
+                                                    HeightRequest="35"
+                                                    Command="{Binding BindingContext.UpdateCustomer, Source={x:Reference page}}"
+                                                    CommandParameter="{Binding CustomerDetails}">
+                                                <Button.Triggers>
+                                                    <DataTrigger TargetType="Button" Binding="{Binding EmployeePermission.ActiveEditCustomer}" Value="True">
+                                                        <Setter Property="IsVisible" Value="True"></Setter>
+                                                    </DataTrigger>
+                                                </Button.Triggers>
+                                            </Button>
+                                        </StackLayout>
 
                                         <StackLayout>
                                             <Label Text="Contact" TextColor="#b66dff" FontAttributes="Bold" HorizontalOptions="StartAndExpand" Padding="20,0,20,5"></Label>
@@ -253,7 +281,7 @@
                                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                 </yummy:PancakeView.Border>
                                                 <yummy:PancakeView.Shadow>
-                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                 </yummy:PancakeView.Shadow>
                                             </yummy:PancakeView>-->
 
@@ -284,7 +312,7 @@
                                                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                             </yummy:PancakeView.Border>
                                                             <yummy:PancakeView.Shadow>
-                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                             </yummy:PancakeView.Shadow>
                                                         </yummy:PancakeView>
                                                     </StackLayout>
@@ -306,7 +334,7 @@
                                                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                             </yummy:PancakeView.Border>
                                                             <yummy:PancakeView.Shadow>
-                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                             </yummy:PancakeView.Shadow>
                                                         </yummy:PancakeView>
                                                     </StackLayout>
@@ -329,7 +357,7 @@
                                                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                             </yummy:PancakeView.Border>
                                                             <yummy:PancakeView.Shadow>
-                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                             </yummy:PancakeView.Shadow>
                                                         </yummy:PancakeView>
                                                     </StackLayout>
@@ -358,7 +386,7 @@
                                                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                             </yummy:PancakeView.Border>
                                                             <yummy:PancakeView.Shadow>
-                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                             </yummy:PancakeView.Shadow>
                                                         </yummy:PancakeView>
                                                     </StackLayout>
@@ -384,7 +412,7 @@
                                                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                                 </yummy:PancakeView.Border>
                                                                 <yummy:PancakeView.Shadow>
-                                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                                 </yummy:PancakeView.Shadow>
                                                             </yummy:PancakeView>
                                                         </StackLayout>
@@ -408,7 +436,7 @@
                                                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                                 </yummy:PancakeView.Border>
                                                                 <yummy:PancakeView.Shadow>
-                                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                                 </yummy:PancakeView.Shadow>
                                                             </yummy:PancakeView>
                                                         </StackLayout>
@@ -432,7 +460,7 @@
                                                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                                 </yummy:PancakeView.Border>
                                                                 <yummy:PancakeView.Shadow>
-                                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                                 </yummy:PancakeView.Shadow>
                                                             </yummy:PancakeView>
                                                         </StackLayout>
@@ -456,7 +484,7 @@
                                                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                             </yummy:PancakeView.Border>
                                                             <yummy:PancakeView.Shadow>
-                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                             </yummy:PancakeView.Shadow>
                                                         </yummy:PancakeView>
                                                     </StackLayout>
@@ -467,7 +495,7 @@
                                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                 </yummy:PancakeView.Border>
                                                 <yummy:PancakeView.Shadow>
-                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                 </yummy:PancakeView.Shadow>
                                             </yummy:PancakeView>
 
@@ -647,7 +675,7 @@
                                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                 </yummy:PancakeView.Border>
                                                 <yummy:PancakeView.Shadow>
-                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                 </yummy:PancakeView.Shadow>
                                             </yummy:PancakeView>-->
 
@@ -676,7 +704,7 @@
                                                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                             </yummy:PancakeView.Border>
                                                             <yummy:PancakeView.Shadow>
-                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                             </yummy:PancakeView.Shadow>
                                                         </yummy:PancakeView>
                                                     </StackLayout>
@@ -720,7 +748,7 @@
                                                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                             </yummy:PancakeView.Border>
                                                             <yummy:PancakeView.Shadow>
-                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                             </yummy:PancakeView.Shadow>
                                                         </yummy:PancakeView>
                                                     </StackLayout>
@@ -760,7 +788,7 @@
                                                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                             </yummy:PancakeView.Border>
                                                             <yummy:PancakeView.Shadow>
-                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                             </yummy:PancakeView.Shadow>
                                                         </yummy:PancakeView>
                                                     </StackLayout>
@@ -769,38 +797,12 @@
                                                         <Label Text="Source" TextColor="Black" FontSize="13" HorizontalOptions="StartAndExpand"></Label>
                                                         <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
                                                             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
-                                                                <Label 
+                                                                <Label Text="{Binding CustomerDetails.CampaignDTO.Lable}"
                                                                        TextColor="#8f1fff"
                                                                        FontSize="12"
                                                                        Margin="5,12,5,12"
                                                                        HorizontalOptions="FillAndExpand"
                                                                        VerticalTextAlignment="Center">
-                                                                    <Label.Triggers>
-                                                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Source}" Value="1">
-                                                                            <Setter Property="Text" Value="UnKnown"></Setter>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Source}" Value="2">
-                                                                            <Setter Property="Text" Value="Door Hanger"></Setter>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Source}" Value="3">
-                                                                            <Setter Property="Text" Value="Facebook"></Setter>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Source}" Value="4">
-                                                                            <Setter Property="Text" Value="Twitter"></Setter>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Source}" Value="5">
-                                                                            <Setter Property="Text" Value="Youtube"></Setter>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Source}" Value="6">
-                                                                            <Setter Property="Text" Value="Yelp"></Setter>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Source}" Value="7">
-                                                                            <Setter Property="Text" Value="Google"></Setter>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger TargetType="Label" Binding="{Binding CustomerDetails.Source}" Value="8">
-                                                                            <Setter Property="Text" Value="Other"></Setter>
-                                                                        </DataTrigger>
-                                                                    </Label.Triggers>
                                                                 </Label>
                                                             </StackLayout>
 
@@ -808,7 +810,7 @@
                                                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                             </yummy:PancakeView.Border>
                                                             <yummy:PancakeView.Shadow>
-                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                             </yummy:PancakeView.Shadow>
                                                         </yummy:PancakeView>
                                                     </StackLayout>
@@ -818,7 +820,7 @@
                                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                 </yummy:PancakeView.Border>
                                                 <yummy:PancakeView.Shadow>
-                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                 </yummy:PancakeView.Shadow>
                                             </yummy:PancakeView>
 
@@ -866,7 +868,7 @@
                                                                                 <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
                                                                             </yummy:PancakeView.Border>
                                                                             <yummy:PancakeView.Shadow>
-                                                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
                                                                             </yummy:PancakeView.Shadow>
                                                                         </yummy:PancakeView>
 
@@ -912,7 +914,7 @@
                                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                 </yummy:PancakeView.Border>
                                                 <yummy:PancakeView.Shadow>
-                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                 </yummy:PancakeView.Shadow>-->
 
 
@@ -938,6 +940,21 @@
                                             <StackLayout.Triggers>
                                                 <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerDetails.LstCustomersCustomField.Count}" Value="0">
                                                     <Setter Property="IsVisible" Value="False"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerDetails.LstCustomersCustomField.Count}" Value="1">
+                                                    <Setter Property="HeightRequest" Value="120"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerDetails.LstCustomersCustomField.Count}" Value="2">
+                                                    <Setter Property="HeightRequest" Value="200"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerDetails.LstCustomersCustomField.Count}" Value="3">
+                                                    <Setter Property="HeightRequest" Value="320"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerDetails.LstCustomersCustomField.Count}" Value="4">
+                                                    <Setter Property="HeightRequest" Value="430"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="StackLayout" Binding="{Binding CustomerDetails.LstCustomersCustomField.Count}" Value="5">
+                                                    <Setter Property="HeightRequest" Value="560"></Setter>
                                                 </DataTrigger>
                                             </StackLayout.Triggers>
                                         </StackLayout>
@@ -985,7 +1002,7 @@
                                                                         <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
                                                                     </yummy:PancakeView.Border>
                                                                     <yummy:PancakeView.Shadow>
-                                                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                                     </yummy:PancakeView.Shadow>
                                                                 </yummy:PancakeView>
 
@@ -1026,8 +1043,8 @@
                                     </StackLayout>
 
                                     <!--No Data-->
-                                    <StackLayout x:Name="stkNoData2" Padding="0,50,0,0" IsVisible="False" HeightRequest="100" HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
-                                        <Image Source="noresult.png" Aspect="AspectFill"></Image>
+                                    <StackLayout x:Name="stkNoData2" Padding="0,200,0,300" IsVisible="False" HeightRequest="100" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                        <Image Source="noresult.png" Aspect="AspectFill" VerticalOptions="FillAndExpand"></Image>
                                         <StackLayout.Triggers>
                                             <MultiTrigger TargetType="StackLayout">
                                                 <MultiTrigger.Conditions>
@@ -1095,7 +1112,7 @@
                                                                         <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
                                                                     </yummy:PancakeView.Border>
                                                                     <yummy:PancakeView.Shadow>
-                                                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                                     </yummy:PancakeView.Shadow>
                                                                     <yummy:PancakeView.GestureRecognizers>
                                                                         <TapGestureRecognizer Command="{Binding BindingContext.SelecteEstimateDetails,Source={x:Reference page}}" CommandParameter="{Binding}"></TapGestureRecognizer>
@@ -1108,7 +1125,7 @@
                                                                         <Label Text="Convert to Invoice" FontSize="12" TextColor="White" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
                                                                     </StackLayout>
                                                                     <yummy:PancakeView.Shadow>
-                                                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                                     </yummy:PancakeView.Shadow>
                                                                     <yummy:PancakeView.BackgroundGradientStops>
                                                                         <yummy:GradientStopCollection>
@@ -1157,7 +1174,7 @@
                                                                         <Label Text="Go Invoice" FontSize="12" TextColor="White" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
                                                                     </StackLayout>
                                                                     <yummy:PancakeView.Shadow>
-                                                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                                     </yummy:PancakeView.Shadow>
                                                                     <yummy:PancakeView.BackgroundGradientStops>
                                                                         <yummy:GradientStopCollection>
@@ -1196,8 +1213,8 @@
                                     </StackLayout>
 
                                     <!--No Data-->
-                                    <StackLayout x:Name="stkNoData3" Padding="0,50,0,0" IsVisible="False" HeightRequest="100" HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
-                                        <Image Source="noresult.png" Aspect="AspectFill"></Image>
+                                    <StackLayout x:Name="stkNoData3" Padding="0,200,0,300" IsVisible="False" HeightRequest="100" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                        <Image Source="noresult.png" Aspect="AspectFill" VerticalOptions="FillAndExpand"></Image>
                                         <StackLayout.Triggers>
                                             <MultiTrigger TargetType="StackLayout">
                                                 <MultiTrigger.Conditions>
@@ -1208,15 +1225,15 @@
                                         </StackLayout.Triggers>
                                     </StackLayout>
 
-                                    <yummy:PancakeView CornerRadius="100"
+                                    <yummy:PancakeView CornerRadius="{OnPlatform Android=100,iOS=25}"
                                                        BackgroundColor="#8f1fff" 
                                                        Padding="5" 
                                                        HorizontalOptions="End" 
-                                                       Margin="30"
+                                                       Margin="{OnPlatform Android= 30, iOS='30,30,30,50'}"
                                                        VerticalOptions ="End"
                                                        HeightRequest="40"
                                                        WidthRequest="40">
-                                        <Label TranslationY="-8"
+                                        <Label TranslationY="{OnPlatform Android=-8,iOS=-2}"
                                                 VerticalOptions="Center"
                                                 HorizontalTextAlignment="Center"
                                                 VerticalTextAlignment="Center"
@@ -1224,7 +1241,7 @@
                                                 TextColor="White"
                                                 FontSize="40"></Label>
                                         <yummy:PancakeView.Shadow>
-                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                         </yummy:PancakeView.Shadow>
                                         <yummy:PancakeView.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding BindingContext.SelectCustToCreateEstimatePage,Source={x:Reference page}}" ></TapGestureRecognizer>
@@ -1280,7 +1297,7 @@
                                                                         <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
                                                                     </yummy:PancakeView.Border>
                                                                     <yummy:PancakeView.Shadow>
-                                                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                                                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                                                     </yummy:PancakeView.Shadow>
                                                                 </yummy:PancakeView>
 
@@ -1317,8 +1334,8 @@
                                     </StackLayout>
 
                                     <!--No Data-->
-                                    <StackLayout x:Name="stkNoData4" Padding="0,50,0,0" IsVisible="False" HeightRequest="100" HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
-                                        <Image Source="noresult.png" Aspect="AspectFill"></Image>
+                                    <StackLayout x:Name="stkNoData4" Padding="0,200,0,300" IsVisible="False" HeightRequest="100" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                        <Image Source="noresult.png" Aspect="AspectFill" VerticalOptions="FillAndExpand"></Image>
                                         <StackLayout.Triggers>
                                             <MultiTrigger TargetType="StackLayout">
                                                 <MultiTrigger.Conditions>
@@ -1329,15 +1346,15 @@
                                         </StackLayout.Triggers>
                                     </StackLayout>
 
-                                    <yummy:PancakeView CornerRadius="100"
+                                    <yummy:PancakeView CornerRadius="{OnPlatform Android=100,iOS=25}"
                                                        BackgroundColor="#8f1fff" 
                                                        Padding="5" 
                                                        HorizontalOptions="End" 
-                                                       Margin="30"
+                                                       Margin="{OnPlatform Android= 30, iOS='30,30,30,50'}"
                                                        VerticalOptions="End"
                                                        HeightRequest="40"
                                                        WidthRequest="40">
-                                        <Label TranslationY="-8"
+                                        <Label TranslationY="{OnPlatform Android=-8,iOS=-2}"
                                                 VerticalOptions="Center"
                                                 HorizontalTextAlignment="Center"
                                                 VerticalTextAlignment="Center"
@@ -1345,7 +1362,7 @@
                                                 TextColor="White"
                                                 FontSize="40"></Label>
                                         <yummy:PancakeView.Shadow>
-                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                         </yummy:PancakeView.Shadow>
                                         <yummy:PancakeView.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding BindingContext.SelectCustToCreateInvoicePage,Source={x:Reference page}}" ></TapGestureRecognizer>

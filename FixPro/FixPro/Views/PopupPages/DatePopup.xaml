@@ -72,7 +72,7 @@
                     </syncfusion:SfCalendar.Triggers>
                 </syncfusion:SfCalendar>
 
-                <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="EndAndExpand" Padding="10">
+                <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand" Padding="10" Spacing="20">
                     <Button Text="Cancel" TextTransform="None" BackgroundColor="Transparent" FontAttributes="Bold" FontSize="16" TextColor="#b66dff" Clicked="Button_Clicked"></Button>
                     <Button Text="OK" BackgroundColor="Transparent" FontAttributes="Bold" FontSize="16" TextColor="#b66dff" x:Name="btnOk" Clicked="btnOk_Clicked"></Button>
                 </StackLayout>

@@ -36,7 +36,8 @@ namespace FixPro.Views.SchedulePages
                 ViewModel.IsBusy = true;
                 UserDialogs.Instance.ShowLoading();
                 var popupView = new SchedulesViewModel(ViewModel.ScheduleDetails.Id, ViewModel.ScheduleDetails.OneScheduleDate.Id);
-                var page = new Views.SchedulePages.NewSchedulePage();
+                //var page = new Views.SchedulePages.NewSchedulePage();
+                var page = new Views.SchedulePages.ScheduleDetailsPage();
                 page.BindingContext = popupView;
                 await App.Current.MainPage.Navigation.PushAsync(page);
                 App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
@@ -47,6 +48,13 @@ namespace FixPro.Views.SchedulePages
             return true;
         }
 
+        private void actIndLoading_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (actIndLoading.IsRunning == true)
+                this.IsEnabled = false;
+            else
+                this.IsEnabled = true;
+        }
 
     }
 }

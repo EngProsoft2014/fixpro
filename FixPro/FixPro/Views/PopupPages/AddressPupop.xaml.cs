@@ -1,4 +1,5 @@
 ﻿using FixPro.Models;
+using GoogleApi.Entities.Translate.Common.Enums;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Twilio.Http;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -103,17 +106,6 @@ namespace FixPro.Views.PopupPages
             await PopupNavigation.Instance.PopAsync();
         }
 
-        private void TapGestureRecognizer_Tapped_1(object sender, EventArgs e)
-        {
-            if (stkManuallyAddress.IsVisible == false)
-            {
-                stkManuallyAddress.IsVisible = true;
-            }
-            else
-            {
-                stkManuallyAddress.IsVisible = false;
-            }
-        }
         //public static async Task<List<SuggestionAddress>> GetPlacesAutocompleteAsync(string search)
         //{
         //    var request = string.Format("https://maps.googleapis.com/maps/api/place/queryautocomplete/xml?input= + {0} + &language={1}&key={2}",
@@ -164,11 +156,6 @@ namespace FixPro.Views.PopupPages
 
         //    return ListsuggestionsAddress;
         //}
-
-
-        //=============================================================================
-
-
 
         //public static async Task<List<SuggestionAddressModel>> GetPlacesAutocompleteAsync(string search)
         //{
@@ -281,6 +268,18 @@ namespace FixPro.Views.PopupPages
         //}
 
 
+        //void TapGestureRecognizer_Tapped_2(System.Object sender, System.EventArgs e)
+        //{
+        //    if (stkManuallyAddress.IsVisible == false)
+        //    {
+        //        stkManuallyAddress.IsVisible = true;
+        //    }
+        //    else
+        //    {
+        //        stkManuallyAddress.IsVisible = false;
+        //    }
+        //}
+
         private void SearchBar_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             countryListView.IsVisible = true;
@@ -317,12 +316,13 @@ namespace FixPro.Views.PopupPages
 
             var _request2 = new GoogleApi.Entities.Places.Details.Request.PlacesDetailsRequest
             {
-                Key = "AIzaSyBrriO9GGKoeIAIiS3L8asTps80-sXzQgo",
+                //Key = "AIzaSyCAFJVJ3OVKxJHSKPBljAlHTah2QzWUcBY",
+                Key = Device.iOS == "iOS" ? "AIzaSyDY-9LWg_lY41hlxBA2-ngBydMGYaXxKA4" : Controls.StartData.Com_MainObj.AddressAutoCompleteKey,
                 PlaceId = Listed.PalceId,
                 //Language = App.Lang == "ar" ? GoogleApi.Entities.Common.Enums.Language.English : GoogleApi.Entities.Common.Enums.Language.Arabic
             };
 
-            var _response2 = GoogleApi.GooglePlaces.Details.Query(_request2);
+            var _response2 = await GoogleApi.GooglePlaces.Details.QueryAsync(_request2);
 
             string[] ArrAdd = new string[7];
 
@@ -389,7 +389,8 @@ namespace FixPro.Views.PopupPages
         {
             GoogleApi.Entities.Places.AutoComplete.Request.PlacesAutoCompleteRequest request = new GoogleApi.Entities.Places.AutoComplete.Request.PlacesAutoCompleteRequest();
             request.Input = search;
-            request.Key = "AIzaSyBrriO9GGKoeIAIiS3L8asTps80-sXzQgo";
+            //request.Key = "AIzaSyCAFJVJ3OVKxJHSKPBljAlHTah2QzWUcBY";
+            request.Key = Device.iOS == "iOS" ? "AIzaSyDY-9LWg_lY41hlxBA2-ngBydMGYaXxKA4" : Controls.StartData.Com_MainObj.AddressAutoCompleteKey;
 
             var response = await GoogleApi.GooglePlaces.AutoComplete.QueryAsync(request, null);
 
@@ -483,6 +484,35 @@ namespace FixPro.Views.PopupPages
             return suggestions;
         }
 
-       
+        private void TapGestureRecognizer_Tapped_1(object sender, EventArgs e)
+        {
+            if (stkManuallyAddress.IsVisible == false)
+            {
+                stkManuallyAddress.IsVisible = true;
+                searchBar.IsVisible = false;
+                countryListView.IsVisible = false;
+            }
+            else
+            {
+                stkManuallyAddress.IsVisible = false;
+                searchBar.IsVisible = true;
+            }
+        }
+
+        private async void Button_Clicked(object sender, EventArgs e)
+        {
+            SuggestionAddressModel Listed = new SuggestionAddressModel();
+            Listed.Street = entryStreet.Text;
+            Listed.City = entryCity.Text;
+            Listed.State = entryState.Text;
+            Listed.Zip = entryPostalCode.Text;
+            Listed.Country = entryCountry.Text;
+            Listed.FullAddress = entryStreet.Text + " " + entryState.Text + " " + entryCity.Text + " " + entryCountry.Text + " " + entryPostalCode.Text;
+
+            DidClose?.Invoke(Listed);
+
+            await PopupNavigation.Instance.PopAsync();
+        }
+
     }
 }

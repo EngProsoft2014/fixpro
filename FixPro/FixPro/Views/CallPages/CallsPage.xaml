@@ -16,7 +16,7 @@
 
     <StackLayout>
         <!--Toolbar-->
-        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="20,10,20,10">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="{OnPlatform iOS='20,50,20,10', Android='20,10,20,10'}">
 
             <Image x:Name="imgBack">
                 <Image.Source>
@@ -93,7 +93,7 @@
                                                 </yummy:GradientStopCollection>
                                             </yummy:PancakeView.BackgroundGradientStops>
                                             <yummy:PancakeView.Shadow>
-                                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="10" Opacity="1"></yummy:DropShadow>
+                                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                                             </yummy:PancakeView.Shadow>
                                         </yummy:PancakeView>
 
@@ -173,8 +173,8 @@
             </StackLayout>
 
             <!--No Data-->
-            <StackLayout x:Name="stkNoData" Padding="0,50,0,0" IsVisible="False" HeightRequest="100" HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
-                <Image Source="noresult.png" Aspect="AspectFill"></Image>
+            <StackLayout x:Name="stkNoData" Padding="0,200,0,300" IsVisible="False" HeightRequest="250" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <Image Source="noresult.png" Aspect="AspectFill" VerticalOptions="FillAndExpand"></Image>
                 <StackLayout.Triggers>
                     <MultiTrigger TargetType="StackLayout">
                         <MultiTrigger.Conditions>
@@ -185,15 +185,15 @@
                 </StackLayout.Triggers>
             </StackLayout>
 
-            <yummy:PancakeView CornerRadius="100"
+            <yummy:PancakeView CornerRadius="{OnPlatform Android=100, iOS=25}"
                                BackgroundColor="#8f1fff" 
                                Padding="5" 
                                VerticalOptions="End"
                                HorizontalOptions="End" 
-                               Margin="30"
+                               Margin="{OnPlatform Android= 30, iOS='30,30,30,50'}"
                                HeightRequest="40"
                                WidthRequest="40">
-                <Label TranslationY="-8"
+                <Label TranslationY="{OnPlatform Android=-8, iOS=-3}"
                     VerticalOptions="Center"
                     HorizontalTextAlignment="Center"
                     VerticalTextAlignment="Center"
@@ -201,7 +201,7 @@
                     TextColor="White"
                     FontSize="40"></Label>
                 <yummy:PancakeView.Shadow>
-                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                 </yummy:PancakeView.Shadow>
                 <yummy:PancakeView.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding BindingContext.CreateNewCall,Source={x:Reference page}}" ></TapGestureRecognizer>

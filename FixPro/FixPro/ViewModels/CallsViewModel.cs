@@ -17,6 +17,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using GoogleApi.Entities.Maps.AerialView.Common.Enums;
+using System.Reflection.Emit;
+using Syncfusion.SfCalendar.XForms;
 
 namespace FixPro.ViewModels
 {
@@ -291,6 +294,7 @@ namespace FixPro.ViewModels
             CreateNewCustomer = new Command(OnCreateNewCustomer);
             ResetCalls = new Command(OnResetCalls);
 
+
             await GetCalls();
 
             if (Controls.StaticMembers.CreateOrDetailsCall == 1)
@@ -305,63 +309,54 @@ namespace FixPro.ViewModels
         //Get One Customer Detials
         async void GetOneCustomerDetials(int? CustId)
         {
-            UserDialogs.Instance.ShowLoading();
-
-            string UserToken = await _service.UserToken();
-
-            //string json = await Helpers.Utility.CallWebApi(string.Format("api/Customers/GetOneCustDetails?" + "CustId=" + CustId));
-
-            var json = await ORep.GetAsync<CustomersModel>(string.Format("api/Customers/GetOneCustDetails?" + "CustId=" + CustId), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                //CustomersModel Customer = JsonConvert.DeserializeObject<CustomersModel>(json);
+                UserDialogs.Instance.ShowLoading();
 
-                //CustomerDetails = Customer;
+                string UserToken = await _service.UserToken();
 
-                CustomerDetails = json;
+                var json = await ORep.GetAsync<CustomersModel>(string.Format("api/Customers/GetOneCustDetails?" + "CustId=" + CustId), UserToken);
+
+                if (json != null)
+                {
+                    CustomerDetails = json;
+                }
+
+                UserDialogs.Instance.HideLoading();
             }
-
-            UserDialogs.Instance.HideLoading();
         }
 
         //Get Reasons
         async Task GetReasons()
         {
-            //string json = await Helpers.Utility.CallWebApi(string.Format("api/Calls/GetReasons?" + "AccountId=" + Helpers.Settings.AccountId));
-            string UserToken = await _service.UserToken();
-
-            var json = await ORep.GetAsync<ObservableCollection<ReasonModel>>(string.Format("api/Calls/GetReasons?" + "AccountId=" + Helpers.Settings.AccountId),UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                //List<ReasonModel> Reasons = JsonConvert.DeserializeObject<List<ReasonModel>>(json);
+                string UserToken = await _service.UserToken();
 
-                //LstReasons = new ObservableCollection<ReasonModel>(Reasons);
+                var json = await ORep.GetAsync<ObservableCollection<ReasonModel>>(string.Format("api/Calls/GetReasons?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
 
-                LstReasons = json;
-
-                OneReason = LstReasons.Where(x => x.Id == OneCall.ReasonId).FirstOrDefault();
+                if (json != null)
+                {
+                    LstReasons = json;
+                    OneReason = LstReasons.Where(x => x.Id == OneCall.ReasonId).FirstOrDefault();
+                }
             }
         }
 
         //Get Campaigns
         async Task GetCampaigns()
         {
-            //string json = await Helpers.Utility.CallWebApi(string.Format("api/Calls/GetCampaigns?" + "AccountId=" + Helpers.Settings.AccountId));
-            string UserToken = await _service.UserToken();
-
-            var json = await ORep.GetAsync<ObservableCollection<CampaignModel>>(string.Format("api/Calls/GetCampaigns?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                //List<CampaignModel> Campaigns = JsonConvert.DeserializeObject<List<CampaignModel>>(json);
+                string UserToken = await _service.UserToken();
 
-                //LstCampaigns = new ObservableCollection<CampaignModel>(Campaigns);
+                var json = await ORep.GetAsync<ObservableCollection<CampaignModel>>(string.Format("api/Calls/GetCampaigns?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
 
-                LstCampaigns = json;
-
-                OneCampaign = LstCampaigns.Where(x => x.Id == OneCall.CampaignId).FirstOrDefault();
+                if (json != null)
+                {
+                    LstCampaigns = json;
+                    OneCampaign = LstCampaigns.Where(x => x.Id == OneCall.CampaignId).FirstOrDefault();
+                }
             }
         }
 
@@ -369,73 +364,48 @@ namespace FixPro.ViewModels
         //Get Calls
         async Task GetCalls()
         {
-            UserDialogs.Instance.ShowLoading();
-
-            string UserToken = await _service.UserToken();
-            //string json = await Helpers.Utility.CallWebApi(string.Format("api/Calls/GetAllCalls?" + "AccountId=" + Helpers.Settings.AccountId));
-
-            var json = await ORep.GetAsync<ObservableCollection<CallModel>>(string.Format("api/Calls/GetAllCalls?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                //List<CallModel> Calls = JsonConvert.DeserializeObject<List<CallModel>>(json);
+                UserDialogs.Instance.ShowLoading();
 
-                //LstCalls = new ObservableCollection<CallModel>(Calls);
-                LstCalls = json;
+                string UserToken = await _service.UserToken();
 
-                TotalCalls = LstCalls.Count;
+                var json = await ORep.GetAsync<ObservableCollection<CallModel>>(string.Format("api/Calls/GetAllCalls?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
+
+                if (json != null)
+                {
+                    LstCalls = json;
+                    TotalCalls = LstCalls.Count;
+                }
+
+                UserDialogs.Instance.HideLoading();
             }
 
-            UserDialogs.Instance.HideLoading();
         }
 
         async void OnSelectCallDetails(CallModel model)
         {
             IsBusy = true;
-
-            try
-            {
-                if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
-                {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
-                }
-                else
-                {
-                    UserDialogs.Instance.ShowLoading();
-
-                    Controls.StaticMembers.CreateOrDetailsCall = 1; //For Get Reasons and Campaigns
-                    var ViewModel = new CallsViewModel(model);
-                    var page = new Views.CallPages.NewCallPage();
-                    page.BindingContext = ViewModel;
-                    await App.Current.MainPage.Navigation.PushAsync(page);
-
-                    UserDialogs.Instance.HideLoading();
-                }
-            }
-            catch (Exception)
-            {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
-            }
-
+            UserDialogs.Instance.ShowLoading();
+            Controls.StaticMembers.CreateOrDetailsCall = 1; //For Get Reasons and Campaigns
+            var ViewModel = new CallsViewModel(model);
+            var page = new Views.CallPages.NewCallPage();
+            page.BindingContext = ViewModel;
+            await App.Current.MainPage.Navigation.PushAsync(page);
+            UserDialogs.Instance.HideLoading();
             IsBusy = false;
         }
 
         async void OnCreateNewCall()
         {
             IsBusy = true;
-
             UserDialogs.Instance.ShowLoading();
-
             Controls.StaticMembers.CreateOrDetailsCall = 1; //For Get Reasons and Campaigns
             var ViewModel = new CallsViewModel();
             var page = new Views.CallPages.NewCallPage();
             page.BindingContext = ViewModel;
             await App.Current.MainPage.Navigation.PushAsync(page);
-
             UserDialogs.Instance.HideLoading();
-
             IsBusy = false;
         }
 
@@ -443,16 +413,13 @@ namespace FixPro.ViewModels
         {
             IsBusy = true;
             UserDialogs.Instance.ShowLoading();
-
             Controls.StaticMembers.WayCreateCust = 1;
             var ViewModel = new CustomersViewModel(true);
             var page = new Views.CustomerPages.CreateNewCustomerPage();
             page.BindingContext = ViewModel;
             await App.Current.MainPage.Navigation.PushAsync(page);
             await PopupNavigation.Instance.PopAsync();
-
             UserDialogs.Instance.HideLoading();
-
             IsBusy = false;
         }
 
@@ -464,8 +431,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -478,7 +445,7 @@ namespace FixPro.ViewModels
 
                         //string json = await Helpers.Utility.CallWebApi(string.Format("api/Calls/GetFilterCalls?" + "StartDate=" + call.StartDate + "&" + "EndDate=" + call.EndDate + "&" + "PhoneNum=" + call.PhoneNum + "&" + "ReasonId=" + call.ReasonId + "&" + "CampaignId=" + call.CampaignId + "&" + "EmployeeId=" + call.CreateUser + "&" + "SchTitle=" + call.ScheduleTitle));
 
-                        var json = await ORep.GetAsync<ObservableCollection<CallModel>>(string.Format("api/Calls/GetFilterCalls?" + "StartDate=" + call.StartDate + "&" + "EndDate=" + call.EndDate + "&" + "PhoneNum=" + call.PhoneNum + "&" + "ReasonId=" + call.ReasonId + "&" + "CampaignId=" + call.CampaignId + "&" + "EmployeeId=" + call.CreateUser + "&" + "SchTitle=" + call.ScheduleTitle),UserToken);
+                        var json = await ORep.GetAsync<ObservableCollection<CallModel>>(string.Format("api/Calls/GetFilterCalls?" + "StartDate=" + call.StartDate + "&" + "EndDate=" + call.EndDate + "&" + "PhoneNum=" + call.PhoneNum + "&" + "ReasonId=" + call.ReasonId + "&" + "CampaignId=" + call.CampaignId + "&" + "EmployeeId=" + call.CreateUser + "&" + "SchTitle=" + call.ScheduleTitle), UserToken);
 
                         if (json != null)
                         {
@@ -497,10 +464,9 @@ namespace FixPro.ViewModels
                     await App.Current.MainPage.Navigation.PushAsync(page);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -514,8 +480,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -530,7 +496,11 @@ namespace FixPro.ViewModels
                     OneCall.ReasonId = OneReason != null ? OneReason.Id : 0;
                     OneCall.CampaignId = OneCampaign != null ? OneCampaign.Id : 0;
 
-                    if (string.IsNullOrEmpty(model.PhoneNum))
+                    if (model.CustomerId == 0 || model.CustomerId == null)
+                    {
+                        await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required: Choose Customer.", "Ok");
+                    }
+                    else if(string.IsNullOrEmpty(model.PhoneNum))
                     {
                         await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required: Phone.", "Ok");
                     }
@@ -550,26 +520,12 @@ namespace FixPro.ViewModels
                     {
                         if (OneCall != null)
                         {
-                            //var Json = "";
-                            //if (model.Id == 0)
-                            //{
-                            //    UserDialogs.Instance.ShowLoading();
-                            //    Json = await Helpers.Utility.PostData("api/Calls/PostCall", JsonConvert.SerializeObject(OneCall));
-                            //    UserDialogs.Instance.HideLoading();
-                            //}
-                            //else
-                            //{
-                            //    UserDialogs.Instance.ShowLoading();
-                            //    Json = await Helpers.Utility.PutPosData("api/Calls/PutCall", JsonConvert.SerializeObject(OneCall));
-                            //    UserDialogs.Instance.HideLoading();
-                            //}
-
                             var json = "";
 
                             if (model.Id == 0)
                             {
                                 UserDialogs.Instance.ShowLoading();
-                                json = await ORep.PostDataAsync("api/Calls/PostCall", OneCall,UserToken);
+                                json = await ORep.PostDataAsync("api/Calls/PostCall", OneCall, UserToken);
                                 UserDialogs.Instance.HideLoading();
                             }
                             else
@@ -581,7 +537,7 @@ namespace FixPro.ViewModels
 
                             if (json != "Bad Request" && json != "api not responding")
                             {
-                                await App.Current.MainPage.DisplayAlert("Project Services", "Succes for Save Call.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("FixPro", "Call saved successfully", "Ok");
 
                                 CallModel Call = JsonConvert.DeserializeObject<CallModel>(json);
 
@@ -590,22 +546,19 @@ namespace FixPro.ViewModels
                                 page.BindingContext = ViewModel;
                                 await App.Current.MainPage.Navigation.PushAsync(page);
                                 App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
-                                //App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                             }
                             else
                             {
-                                await App.Current.MainPage.DisplayAlert("Alert", "Faild for add or edit Call.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("Alert", "Failed to add or edit this call", "Ok");
                             }
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
-
 
             IsBusy = false;
         }
@@ -617,33 +570,31 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
                     UserDialogs.Instance.ShowLoading();
-                    //var json = await Helpers.Utility.DeleteItem(string.Format("api/Calls/DeleteCall/{0}", CallId));
                     string UserToken = await _service.UserToken();
 
-                    var json = await ORep.DeleteStrItemAsync(string.Format("api/Calls/DeleteCall/{0}", CallId),UserToken);
+                    var json = await ORep.DeleteStrItemAsync(string.Format("api/Calls/DeleteCall/{0}", CallId), UserToken);
 
                     if (json != null && json != "api not responding")
                     {
-                        await App.Current.MainPage.DisplayAlert("Project Services", "Succes Delete Call.", "Ok");
+                        await App.Current.MainPage.DisplayAlert("FixPro", "Call deleted successfully", "Ok");
                         await App.Current.MainPage.Navigation.PushAsync(new MainPage());
                     }
                     else
                     {
-                        await App.Current.MainPage.DisplayAlert("Alert", "Failed Delete Call.", "Ok");
+                        await App.Current.MainPage.DisplayAlert("Alert", "Deleting the call failed!", "Ok");
                     }
                     UserDialogs.Instance.HideLoading();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -652,16 +603,13 @@ namespace FixPro.ViewModels
         async void OnSelectGoJob(CallModel model)
         {
             IsBusy = true;
-
             UserDialogs.Instance.ShowLoading();
-
             var ViewModel = new SchedulesViewModel(model.ScheduleId.Value, model.ScheduleDateId.Value);
-            var page = new Views.SchedulePages.NewSchedulePage();
+            //var page = new NewSchedulePage();
+            var page = new ScheduleDetailsPage();
             page.BindingContext = ViewModel;
             await App.Current.MainPage.Navigation.PushAsync(page);
-
             UserDialogs.Instance.HideLoading();
-
             IsBusy = false;
         }
 
@@ -685,7 +633,7 @@ namespace FixPro.ViewModels
             }
             else
             {
-                await App.Current.MainPage.DisplayAlert("Alert", "Sorry, This Call Don't Have Customer Details.", "Ok");
+                await App.Current.MainPage.DisplayAlert("Alert", "Customer details aren’t found in this call!", "Ok");
             }
 
             UserDialogs.Instance.HideLoading();
@@ -701,8 +649,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -713,13 +661,13 @@ namespace FixPro.ViewModels
                     UserDialogs.Instance.HideLoading();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
         }
+
     }
 }

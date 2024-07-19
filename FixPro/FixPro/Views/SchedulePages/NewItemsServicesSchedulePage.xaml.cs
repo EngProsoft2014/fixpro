@@ -19,6 +19,7 @@ namespace FixPro.Views.SchedulePages
     {
         ScheduleItemsServicesViewModel ViewModel { get => BindingContext as ScheduleItemsServicesViewModel; set => BindingContext = value; }
 
+    
         public NewItemsServicesSchedulePage()
 		{
 			InitializeComponent ();
@@ -27,17 +28,21 @@ namespace FixPro.Views.SchedulePages
         public NewItemsServicesSchedulePage(ScheduleItemsServicesModel model)
         {
             InitializeComponent();
-           
-            cobxLstItems.Text = model.ItemsServicesName;
+
+            //cobxLstItems.Text = model.ItemsServicesName;
+
+            entryName.Text = model.ItemsServicesName;
             entryCost.Text = model.CostRate.ToString();
             entryQty.Text = model.Quantity.ToString();
             edtDescription.Text = model.ItemServiceDescription;
 
-            cobxLstItems.IsEnabled = false;
+            //cobxLstItems.IsEnabled = false;
+            entryName.IsReadOnly = true;
             entryCost.IsReadOnly = true;
             entryQty.IsReadOnly = true;
             edtDescription.IsReadOnly = true;
-            stkBtns.IsVisible = false;  
+            stkBtns.IsVisible = false;
+            YumAddItemService.IsVisible = false;
         }
 
         private void actIndLoading_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -53,15 +58,21 @@ namespace FixPro.Views.SchedulePages
             await App.Current.MainPage.Navigation.PopAsync();  
         }
 
-        private void SfComboBox_SelectionChanged(object sender, Syncfusion.XForms.ComboBox.SelectionChangedEventArgs e)
-        {
-            var selectedOption = (sender as SfComboBox).SelectedItem;
-            ViewModel.SelectedItemForGetCost.Execute(selectedOption);
-        }
+        //private void SfComboBox_SelectionChanged(object sender, Syncfusion.XForms.ComboBox.SelectionChangedEventArgs e)
+        //{
+        //    var selectedOption = (sender as SfComboBox).SelectedItem;
+        //    ViewModel.SelectedItemForGetCost.Execute(selectedOption);
+        //}
 
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             await App.Current.MainPage.Navigation.PopAsync();
+        }
+
+        private void Entry_Focused(object sender, FocusEventArgs e)
+        {
+            var selectedOption = (sender as Entry).Text;
+            ViewModel?.OpenFilterMaterial.Execute(selectedOption);
         }
     }
 }

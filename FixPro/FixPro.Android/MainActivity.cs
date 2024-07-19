@@ -46,9 +46,12 @@ namespace FixPro.Droid
         protected async override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            //Xamarin.FormsMaps.Init(this, savedInstanceState);
 
+            Xamarin.FormsMaps.Init(this, savedInstanceState);
             //Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity = this;
             //Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
+
 
             Rg.Plugins.Popup.Popup.Init(this);
             UserDialogs.Init(this);
@@ -70,11 +73,13 @@ namespace FixPro.Droid
                 ActivityCompat.RequestPermissions(this, new[] { Manifest.Permission.ReadExternalStorage }, requestCode);
             }
 
+
+
             //await CrossPermissions.Current.RequestPermissionAsync<CameraPermission>();
             //await CrossPermissions.Current.RequestPermissionAsync<StoragePermission>();
 
-            string DeviceId = Android.Provider.Settings.Secure.GetString(Android.App.Application.Context.ContentResolver, Android.Provider.Settings.Secure.AndroidId);
-            Helpers.Settings.DeviceId = DeviceId;
+            //string DeviceId = Android.Provider.Settings.Secure.GetString(Android.App.Application.Context.ContentResolver, Android.Provider.Settings.Secure.AndroidId);
+            //Helpers.Settings.DeviceId = DeviceId;
 
             //if (Intent.Data != null)
             //{
@@ -106,7 +111,7 @@ namespace FixPro.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
 
-            
+
             try
             {
                 if (Connectivity.NetworkAccess != NetworkAccess.Internet)
@@ -123,12 +128,17 @@ namespace FixPro.Droid
                     StartService(new Intent(this, typeof(AndroidLocationService)));
                     serviceIntent = new Intent(this, typeof(AndroidLocationService));
                     SetServiceMethods();
+
+                    //bool answer = await App.Current.MainPage.DisplayAlert("Location Track Permission", "Allow to Collcet and track your location in the following cases :\r\n\r\n- always in use \r\n- when the app is not in use\r\n\r\nto assign you to a job next to you?", "Yes", "No");
+                    //if (answer)
+                    //{
+
+                    //}
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
         }

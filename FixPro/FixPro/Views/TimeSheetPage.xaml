@@ -16,10 +16,10 @@
 
     <StackLayout VerticalOptions="FillAndExpand">
 
-        <StackLayout VerticalOptions="Start" HeightRequest="260">
+        <StackLayout VerticalOptions="Start" HeightRequest="260" Padding="{OnPlatform iOS='0,50,0,0'}">
             <!--Toolbar-->
             <StackLayout>
-                <StackLayout x:Name="stkNoInternet" 
+                <!--<StackLayout x:Name="stkNoInternet" 
                      Orientation="Horizontal" 
                      Spacing="15" 
                      HorizontalOptions="CenterAndExpand" 
@@ -32,7 +32,7 @@
                         </Image.Source>
                     </Image>
                     <Label Text="Waiting for network" TextColor="#9E2F2F" FontSize="12"></Label>
-                </StackLayout>
+                </StackLayout>-->
 
 
                 <StackLayout Orientation="Horizontal" Spacing="0" Padding="15,5,15,10" VerticalOptions="FillAndExpand">
@@ -65,7 +65,7 @@
                         </Image.GestureRecognizers>
                     </Image>
 
-                    <yummy:PancakeView BackgroundColor="White" HorizontalOptions="FillAndExpand" HeightRequest="60" CornerRadius="50" Margin="50,0,50,0">
+                    <yummy:PancakeView BackgroundColor="White" HorizontalOptions="FillAndExpand" HeightRequest="60" CornerRadius="{OnPlatform Android=50,iOS=25}" Margin="50,0,50,0">
                         <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                             <Label x:Name="lblDate" Text="{Binding Date}" FontSize="16"></Label>
                             <Image>
@@ -78,7 +78,7 @@
                             </StackLayout.GestureRecognizers>
                         </StackLayout>
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="10" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=10,iOS=5}" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                     </yummy:PancakeView>
 
@@ -94,7 +94,7 @@
                 </StackLayout>
 
                 <yummy:PancakeView.Shadow>
-                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                 </yummy:PancakeView.Shadow>
             </yummy:PancakeView>
 
@@ -102,7 +102,7 @@
 
                 <!--In-->
                 <Grid>
-                    <yummy:PancakeView x:Name="yumCheckIn" HeightRequest="70" WidthRequest="130" CornerRadius="10,40,10,40" BackgroundColor="#b66dff">
+                    <yummy:PancakeView x:Name="yumCheckIn" HeightRequest="70" WidthRequest="130" CornerRadius="{OnPlatform Android='10,40,10,40',iOS='5,30,5,30'}" BackgroundColor="#b66dff">
                         <StackLayout VerticalOptions="Center">
                             <Label x:Name="lblCheckIn" Text="Check In" FontSize="14" TextColor="White" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
                         </StackLayout>
@@ -113,11 +113,11 @@
                             <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
                         </yummy:PancakeView.Border>
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                     </yummy:PancakeView>
 
-                    <Frame  CornerRadius="20" VerticalOptions="End" HorizontalOptions="End"
+                    <Frame  CornerRadius="{OnPlatform Android=20,iOS=10}" VerticalOptions="End" HorizontalOptions="End"
                             BackgroundColor="#debdff"
                             BorderColor="#b66dff"
                             HeightRequest="20"
@@ -142,7 +142,7 @@
 
                 <!--Logo-->
                 <Grid>
-                    <yummy:PancakeView HeightRequest="70" WidthRequest="35" CornerRadius="100" Padding="12" BackgroundColor="White">
+                    <yummy:PancakeView HeightRequest="70" WidthRequest="35" CornerRadius="{OnPlatform Android=100,iOS=30}" Padding="12" BackgroundColor="White">
                         <Image VerticalOptions="Center"
                                Source="Logo.png"
                                Aspect="Fill"></Image>
@@ -150,14 +150,14 @@
                             <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
                         </yummy:PancakeView.Border>
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                     </yummy:PancakeView>
                 </Grid>
 
                 <!--Out-->
                 <Grid>
-                    <yummy:PancakeView x:Name="yumCheckOut" HeightRequest="70" WidthRequest="130" CornerRadius="40,10,40,10" BackgroundColor="#eedeff">
+                    <yummy:PancakeView x:Name="yumCheckOut" HeightRequest="70" WidthRequest="130" CornerRadius="{OnPlatform Android='40,10,40,10',iOS='30,5,30,5'}" BackgroundColor="#eedeff">
                         <StackLayout VerticalOptions="Center">
                             <Label x:Name="lblCheckOut" Text="Check Out" FontSize="14" TextColor="Black" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
                         </StackLayout>
@@ -168,11 +168,11 @@
                             <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
                         </yummy:PancakeView.Border>
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                     </yummy:PancakeView>
 
-                    <Frame  CornerRadius="20" VerticalOptions="End" HorizontalOptions="End"
+                    <Frame  CornerRadius="{OnPlatform Android=20,iOS=10}" VerticalOptions="End" HorizontalOptions="End"
                             BackgroundColor="#debdff"
                             HeightRequest="20"
                             WidthRequest="20"
@@ -198,7 +198,7 @@
             </StackLayout>
 
             <!--Search Bar-->
-            <yummy:PancakeView BackgroundColor="White" HeightRequest="42" Margin="30,10,30,10" Padding="0" CornerRadius="25" HorizontalOptions="FillAndExpand">
+            <yummy:PancakeView BackgroundColor="White" HeightRequest="42" Margin="30,10,30,10" Padding="0" CornerRadius="{OnPlatform Android=25,iOS=20}" HorizontalOptions="FillAndExpand">
                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                     <SearchBar x:Name="srcBarEmployee"
                            Placeholder="Search"    
@@ -213,7 +213,7 @@
                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                 </yummy:PancakeView.Border>
                 <yummy:PancakeView.Shadow>
-                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                 </yummy:PancakeView.Shadow>
             </yummy:PancakeView>
 
@@ -242,7 +242,7 @@
                                                    VerticalTextAlignment="Center"
                                                    Padding="20,7,20,7"></Label>
                                         <yummy:PancakeView.Shadow>
-                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                         </yummy:PancakeView.Shadow>
                                         <yummy:PancakeView.Triggers>
                                             <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding MytimeSheet}" Value="1">
@@ -291,9 +291,10 @@
                                         <Button Text="CheckIn" 
                                                 FontSize="11" 
                                                 Padding="0"
+                                                WidthRequest="{OnPlatform iOS=70}"
                                                 TextTransform="None"
                                                 FontAttributes="Bold"
-                                                CornerRadius="20"                  
+                                                CornerRadius="{OnPlatform Android=25,iOS=18}"                  
                                                 HeightRequest="35" 
                                                 TextColor="White"
                                                 BorderColor="#b66dff"
@@ -312,9 +313,10 @@
                                         <Button Text="Checkout"
                                                 FontSize="11" 
                                                 Padding="0"
+                                                WidthRequest="{OnPlatform iOS=70}"
                                                 TextTransform="None"
                                                 FontAttributes="Bold"
-                                                CornerRadius="20"
+                                                CornerRadius="{OnPlatform Android=25,iOS=18}" 
                                                 HeightRequest="35" 
                                                 TextColor="Black"
                                                 BorderColor="#b66dff"
@@ -344,9 +346,10 @@
                                         <Button Text="CheckIn" 
                                                 FontSize="11" IsVisible="False"
                                                 Padding="0"
+                                                WidthRequest="{OnPlatform iOS=70}"
                                                 TextTransform="None"
                                                 FontAttributes="Bold"
-                                                CornerRadius="20"                  
+                                                CornerRadius="{OnPlatform Android=25,iOS=18}"                  
                                                 HeightRequest="35" 
                                                 TextColor="White"
                                                 BorderColor="#8f1fff"
@@ -364,9 +367,10 @@
                                         <Button Text="CheckOut" 
                                                 FontSize="11" IsVisible="False"
                                                 Padding="0"
+                                                WidthRequest="{OnPlatform iOS=70}"
                                                 TextTransform="None"
                                                 FontAttributes="Bold"
-                                                CornerRadius="20"                  
+                                                CornerRadius="{OnPlatform Android=25,iOS=18}"                  
                                                 HeightRequest="35" 
                                                 TextColor="White"
                                                 BorderColor="#8f1fff"
@@ -423,7 +427,7 @@
                                             <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
                                         </yummy:PancakeView.Border>
                                         <yummy:PancakeView.Shadow>
-                                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                                         </yummy:PancakeView.Shadow>
                                     </yummy:PancakeView>
 
@@ -491,8 +495,8 @@
         </StackLayout>
 
         <!--No Data-->
-        <StackLayout x:Name="stkNoData" Padding="0,50,0,0" IsVisible="False" HorizontalOptions="CenterAndExpand" VerticalOptions="End">
-            <Image Source="noresult.png" Aspect="AspectFill"></Image>
+        <StackLayout x:Name="stkNoData" Margin="0,100,0,200" IsVisible="False" HeightRequest="150" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Image Source="noresult.png" Aspect="AspectFill" VerticalOptions="FillAndExpand"></Image>
             <StackLayout.Triggers>
                 <MultiTrigger TargetType="StackLayout">
                     <MultiTrigger.Conditions>

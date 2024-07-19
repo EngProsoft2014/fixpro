@@ -33,23 +33,29 @@ namespace FixPro.Helpers
         //#endif
         public static readonly string ServerUrlIIS = "http://192.168.1.4:8012/";
 
-        //public static readonly string ServerUrlDel = "https://localhost:44371/";
 
-        //public static readonly string PathServerImages = "https://localhost:44371/PJTest/";
+        public static readonly string PathServerScheduleImages = $"https://app.fixprous.com/ScheduleAttachments_";
 
-        public static readonly string PathServerImages = "https://fixpro.engprosoft.net/ScheduleAttachments/";
+        public static readonly string PathServerProfileImages = $"https://app.fixprous.com/EmployeePic_";
 
-        public static readonly string PathServerProfileImages = "https://fixpro.engprosoft.net/EmployeePic/";
-
-        public static readonly string PathServerEstimateSignture = "https://fixpro.engprosoft.net/EstimateSignture/";
+        public static readonly string PathServerEstimateSignture = $"https://app.fixprous.com/EstimateSignture_";
         
+        public static readonly string PathServerScheduleMatrialReceiptPictures = $"https://app.fixprous.com/ScheduleMaterialReceipt_";
+
+        public static readonly string PathServerMapTracking = $"https://app.fixprous.com/XMLData_";
+
 
         //public static readonly string ServerUrl = "https://projectservicesapi.engprosoft.com/";
-        public static readonly string ServerUrl = "https://fixproapi.engprosoft.net/";
+        public static string ServerUrl = "https://fixproapi.engprosoft.net/";
+        public static string ServerUrlStatic = "https://fixproapi.engprosoft.net/";
+
+        //public static string ServerUrl = "https://api.fixprous.com/";
+        //public static string ServerUrlStatic = "https://api.fixprous.com/";
+
 
         //public static readonly string ServerUrl = "https://192.168.1.3:6464/";
 
-        public static readonly string FolderImageProfile = "EmployeePic";
+        //public static readonly string FolderImageProfile = "EmployeePic";
         //public static readonly string FolderImageSchedule = "ImageSchedule";
         //public static readonly string FolderImageTrip = "ImageTrip";
 
@@ -651,6 +657,8 @@ namespace FixPro.Helpers
                 }
             }
         }
+
+        
 
         public static void ClearNavigationStack()
         {

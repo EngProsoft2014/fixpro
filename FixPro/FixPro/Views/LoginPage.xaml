@@ -39,10 +39,10 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <yummy:PancakeView Grid.ColumnSpan="6" Grid.RowSpan="5" CornerRadius="0,0,140,140" HeightRequest="200" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
+            <yummy:PancakeView Grid.ColumnSpan="6" Grid.RowSpan="5" CornerRadius="{OnPlatform Android='0,0,140,140', iOS='0,0,100,100'}" HeightRequest="200" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
 
                 <yummy:PancakeView.Shadow>
-                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="3" Opacity="1"></yummy:DropShadow>
+                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                 </yummy:PancakeView.Shadow>
                 <yummy:PancakeView.BackgroundGradientStops>
                     <yummy:GradientStopCollection>
@@ -53,11 +53,11 @@
                 </yummy:PancakeView.BackgroundGradientStops>
             </yummy:PancakeView>
 
-            <yummy:PancakeView Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1" BackgroundColor="White" CornerRadius="10,10,100,100" Padding="0">
+            <yummy:PancakeView Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1" BackgroundColor="White" CornerRadius="{OnPlatform Android='10,10,100,100', iOS='10,10,65,65'}" Padding="0">
 
                 <Image Source="Logo.png" Aspect="Fill" Margin="25"></Image>
                 <yummy:PancakeView.Shadow>
-                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                 </yummy:PancakeView.Shadow>
             </yummy:PancakeView>
 
@@ -75,13 +75,13 @@
                     </StackLayout>
 
                     <StackLayout Spacing="20">
-                        <Frame Padding="10,0,10,0" CornerRadius="20" BackgroundColor="White" HasShadow="True" HorizontalOptions="FillAndExpand">
-                            <Entry Placeholder="Username" 
+                        <Frame Padding="{OnPlatform Android='10,0,10,0' ,iOS='10,5,10,5'}" CornerRadius="20" BackgroundColor="White" HasShadow="True" HorizontalOptions="FillAndExpand">
+                            <Entry x:Name="entUserName"
+                                   Placeholder="Username" 
                                    FontSize="14"
                                    PlaceholderColor="Gray"
                                    Text="{Binding Login.UserName}"
                                    xct:SetFocusOnEntryCompletedBehavior.NextElement="{x:Reference entPassword}">
-                                
                             </Entry>
                         
                         </Frame>
@@ -90,7 +90,7 @@
                         </Button>-->
 
                         <StackLayout>
-                            <Frame Padding="10,0,10,0" CornerRadius="20" BackgroundColor="White" HasShadow="True" HorizontalOptions="FillAndExpand">
+                            <Frame Padding="{OnPlatform Android='10,0,10,0' ,iOS='10,5,10,5'}" CornerRadius="20" BackgroundColor="White" HasShadow="True" HorizontalOptions="FillAndExpand">
                                 <StackLayout Orientation="Horizontal">
                                     <Entry x:Name="entPassword" 
                                            HorizontalOptions="FillAndExpand"
@@ -141,7 +141,7 @@
                 </StackLayout>
               
                 <yummy:PancakeView.Shadow>
-                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="3" Opacity="1"></yummy:DropShadow>
+                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
                 </yummy:PancakeView.Shadow>
             </yummy:PancakeView>
 

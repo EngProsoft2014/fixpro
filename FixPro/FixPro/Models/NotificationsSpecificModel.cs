@@ -6,6 +6,7 @@ namespace FixPro.Models
 {
     public class NotificationsSpecificModel
     {
+        public int? AccountId { get; set; }
         public string app_id { get; set; }
         public string Header { get; set; }
         public string Content { get; set; }

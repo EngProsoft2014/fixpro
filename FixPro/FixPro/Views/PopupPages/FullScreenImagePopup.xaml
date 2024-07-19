@@ -9,7 +9,7 @@
     xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
     xmlns:Helpers="clr-namespace:FixPro.Helpers"
     xmlns:xctViews="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit" 
-    xmlns:vm="clr-namespace:FixPro.ViewModels"
+    xmlns:vm="clr-namespace:FixPro.ViewModels" xmlns:local="clr-namespace:FixPro"
     BackgroundColor="#FFFFFF"
     x:Class="FixPro.Views.PopupPages.FullScreenImagePopup">
     <!--You can set an animation in the xaml file or in the csharp code behind-->
@@ -41,11 +41,15 @@
 
             <yummy:PancakeView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                 <Grid>
-                    <Image x:Name="imgFullScreen" VerticalOptions="FillAndExpand"></Image>
+                    <local:PinchToZoomContainer>
+                        <local:PinchToZoomContainer.Content>
+                            <Image x:Name="imgFullScreen" VerticalOptions="FillAndExpand"></Image>
+                        </local:PinchToZoomContainer.Content>
+                    </local:PinchToZoomContainer>
                 </Grid>
             </yummy:PancakeView>
-            
-            
+
+
         </StackLayout>
     </yummy:PancakeView>
 

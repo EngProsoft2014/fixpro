@@ -12,14 +12,16 @@
     <ContentPage.Content>
         <Grid VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="0,100,0,0">
             <StackLayout Spacing="30">
-                <Image Source="NoInternet.png" Aspect="Fill"/>
+                <Image Source="NoInternet.jpg" Aspect="Fill" HeightRequest="250" WidthRequest="250"/>
 
-                <Button Text="Try Again" 
+                <Label Text="No internet connection" FontSize="22" TextColor="#333" HorizontalOptions="CenterAndExpand"></Label>
+                
+                <Button Text="Retry" 
                     TextTransform="None"
                     BackgroundColor="#eedeff"
                     TextColor="Gray" 
                     BorderColor="#b66dff"
-                    Margin="30,0,30,0"
+                    Margin="30,30,30,0"
                     VerticalOptions="End"
                     Clicked="Button_Clicked"></Button>
             </StackLayout>

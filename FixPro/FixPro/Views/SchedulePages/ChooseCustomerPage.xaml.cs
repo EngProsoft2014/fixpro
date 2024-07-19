@@ -40,13 +40,10 @@ namespace FixPro.Views.SchedulePages
         private void srchPhone_TextChanged(object sender, TextChangedEventArgs e)
         {
             //lstCustomers.ItemsSource = ViewModel.LstCustomers.Where(x => (x.Phone1).Contains(srchPhone.Text));
-            lstCustomers.ItemsSource = ViewModel.LstCustomers.Where(x => (x.Phone1).Contains(srchPhoneOrAddress.Text) || (x.Address.ToLower()).Contains(srchPhoneOrAddress.Text.ToLower()));
+            lstCustomers.ItemsSource = ViewModel.LstCustomers.Where(x => (x.Phone1).Contains(srchPhoneOrAddress.Text) || (x.Address.ToLower()).Contains(srchPhoneOrAddress.Text.ToLower())
+            || (x.FirstName.ToLower() + x.LastName.ToLower()).Contains(srchPhoneOrAddress.Text.ToLower()));
         }
 
-        private void srchAddress_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //lstCustomers.ItemsSource = ViewModel.LstCustomers.Where(x => (x.Address.ToLower()).Contains(srchAddress.Text.ToLower()));
-        }
 
     }
 }

@@ -18,7 +18,7 @@
 
     <Grid Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <yummy:PancakeView x:Name="yummyAddService"  CornerRadius="0" BackgroundColor="White" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <StackLayout Padding="20,20,20,20" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <StackLayout Padding="{OnPlatform iOS='20,60,20,10', Android='20,20,20,20'}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                 <!--Header-->
                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                     <Image HorizontalOptions="Start">
@@ -46,7 +46,7 @@
 
                             <Label Text="Service" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                            <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10" HorizontalOptions="FillAndExpand">
 
                                 <!--<Picker ItemsSource="{Binding LstItemCategory}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedServiceCateory,Mode=TwoWay}" SelectedIndexChanged="Picker_SelectedIndexChanged"
                                         Title="Choose Item/Service"
@@ -79,7 +79,7 @@
                                     <yummy:Border Color="Gray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -89,7 +89,7 @@
                         <StackLayout HorizontalOptions="FillAndExpand" >
                             <Label Text="Cost" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                            <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10">
                                 <Entry x:Name="entryCost"
                                  Text="{Binding ServiceDetails.CostperUnit}"
                                  FontSize="15"
@@ -103,7 +103,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -112,7 +112,7 @@
                         <StackLayout HorizontalOptions="FillAndExpand" >
                             <Label Text="Qty" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                            <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10">
                                 <Entry x:Name="entryQty"
                                 Text="{Binding ServiceDetails.QTYTime}"
                                 FontSize="15"
@@ -125,7 +125,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                             <!--<StackLayout.Triggers>
@@ -140,7 +140,7 @@
                         <StackLayout  HorizontalOptions="FillAndExpand">
                             <Label Text="Description" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" Margin="0,0,0,10" CornerRadius="10">
+                            <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" Margin="0,0,0,10" CornerRadius="10">
                                 <Editor x:Name="edtDescription"
                                     Text="{Binding ServiceDetails.Description}"
                                     Placeholder="Enter Description"
@@ -154,7 +154,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -164,29 +164,31 @@
                 </StackLayout>
 
 
-                <StackLayout x:Name="stkBtns" Orientation="Horizontal" Spacing="20" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="10">
+                <StackLayout x:Name="stkBtns" Orientation="Horizontal" Spacing="20" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="{OnPlatform Android=10,iOS='10,10,10,50'}">
 
                     <Button Text="OK"
-                        BackgroundColor="#b66dff"
-                        FontAttributes="Bold"
-                        FontSize="14" 
-                        CornerRadius="10"
-                        HeightRequest="40"
-                        TextColor="White" 
-                        x:Name="btnOk"
-                        Command="{Binding BindingContext.ApplyService,Source={x:Reference page}}" CommandParameter="{Binding ServiceDetails}">
+                            BackgroundColor="#b66dff"
+                            FontAttributes="Bold"
+                            FontSize="14" 
+                            CornerRadius="10"
+                            HeightRequest="40"
+                            WidthRequest="{OnPlatform iOS=100}"
+                            TextColor="White" 
+                            x:Name="btnOk"
+                            Command="{Binding BindingContext.ApplyService,Source={x:Reference page}}" CommandParameter="{Binding ServiceDetails}">
                     </Button>
                     <Button Text="Cancel" 
-                        TextTransform="None" 
-                        BackgroundColor="Transparent" 
-                        FontAttributes="Bold" 
-                        FontSize="14"
-                        CornerRadius="10"
-                        HeightRequest="40"
-                        BorderColor="#b66dff" 
-                        BorderWidth="1"
-                        TextColor="#b66dff" 
-                        Clicked="Button_Clicked"></Button>
+                            TextTransform="None" 
+                            BackgroundColor="Transparent" 
+                            FontAttributes="Bold" 
+                            FontSize="14"
+                            WidthRequest="{OnPlatform iOS=100}"
+                            CornerRadius="10"
+                            HeightRequest="40"
+                            BorderColor="#b66dff" 
+                            BorderWidth="1"
+                            TextColor="#b66dff" 
+                            Clicked="Button_Clicked"></Button>
                 </StackLayout>
             </StackLayout>
         </yummy:PancakeView>

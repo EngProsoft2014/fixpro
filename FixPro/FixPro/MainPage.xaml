@@ -8,7 +8,7 @@
                      xmlns:density="clr-namespace:Xamarin.DeviceDensity.Plugin;assembly=Xamarin.DeviceDensity.Plugin"
                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
                      xmlns:navigationdrawer="clr-namespace:Syncfusion.SfNavigationDrawer.XForms;assembly=Syncfusion.SfNavigationDrawer.XForms" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-                      x:Name="Page"
+                     x:Name="Page"
                      BackgroundColor="White"
                      x:Class="FixPro.MainPage">
 
@@ -24,7 +24,7 @@
         <navigationdrawer:SfNavigationDrawer.ContentView>
             <StackLayout VerticalOptions="FillAndExpand">
                 <!--Toolbar-->
-                <StackLayout Orientation="Horizontal" Padding="20,20,20,10">
+                <StackLayout Orientation="Horizontal" Padding="{OnPlatform iOS='20,55,20,10', Android='20,20,20,10'}">
                     <Image HorizontalOptions="Start">
                         <Image.Source>
                             <FontImageSource FontFamily="FontIconSolid" Color="Black" Glyph="" Size="20"></FontImageSource>
@@ -65,7 +65,9 @@
                             </Image.Source>
                         </Image>
 
-                        <Frame  CornerRadius="20" TranslationY="-10"
+                        <Frame  CornerRadius="{OnPlatform Android=20, iOS=25}" 
+                                HasShadow="False"
+                                TranslationY="-10"
                                 BackgroundColor="Transparent"
                                 HeightRequest="12"
                                 WidthRequest="12"
@@ -98,7 +100,7 @@
                 </StackLayout>
 
                 <!--Logo Big Photo-->
-                <yummy:PancakeView Margin="80,0,80,0" HeightRequest="70" BackgroundColor="Transparent" Padding="0">
+                <yummy:PancakeView x:Name="yumImgLogo" TranslationY="1000" Margin="80,0,80,0" HeightRequest="70" BackgroundColor="Transparent" Padding="0">
                     <Image Source="WordLogo.png" Aspect="Fill" Margin="10"></Image>
                 </yummy:PancakeView>
 
@@ -131,7 +133,7 @@
                     </yummy:PancakeView>-->
 
                     <!--Time Sheets-->
-                    <yummy:PancakeView Grid.ColumnSpan="4" Grid.RowSpan="3" CornerRadius="50,0,0,150" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
+                    <yummy:PancakeView x:Name="yumTimeSheet" Scale="0" Grid.ColumnSpan="4" Grid.RowSpan="3" CornerRadius="50,0,0,150" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
                         <StackLayout Orientation="Vertical" TranslationX="-10" VerticalOptions="CenterAndExpand" Spacing="20">
                             <Image>
                                 <Image.Source>
@@ -143,7 +145,7 @@
                         </StackLayout>
 
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                         <yummy:PancakeView.BackgroundGradientStops>
                             <yummy:GradientStopCollection>
@@ -161,7 +163,7 @@
                     </yummy:PancakeView>
 
                     <!--Customers-->
-                    <yummy:PancakeView Grid.Column="4" Grid.ColumnSpan="4" Grid.RowSpan="3" CornerRadius="0,50,150,0" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
+                    <yummy:PancakeView x:Name="yumCustomers" Scale="0" Grid.Column="4" Grid.ColumnSpan="4" Grid.RowSpan="3" CornerRadius="0,50,150,0" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
                         <StackLayout Orientation="Vertical" TranslationX="10" VerticalOptions="CenterAndExpand" Spacing="15">
                             <Image>
                                 <Image.Source>
@@ -174,7 +176,7 @@
                         </StackLayout>
 
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                         <yummy:PancakeView.Border>
                             <!--<yummy:Border Color="#9E2F2F" Thickness="2"></yummy:Border>-->
@@ -192,7 +194,7 @@
                     </yummy:PancakeView>
 
                     <!--Schedules-->
-                    <yummy:PancakeView Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="3" Grid.RowSpan="3" CornerRadius="0,150,50,0" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
+                    <yummy:PancakeView x:Name="yumSchedules" Scale="0" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="3" Grid.RowSpan="3" CornerRadius="0,150,50,0" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
                         <StackLayout Orientation="Vertical" VerticalOptions="CenterAndExpand" Spacing="20">
                             <Image>
                                 <Image.Source>
@@ -212,7 +214,7 @@
                         </StackLayout>
 
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                         <yummy:PancakeView.Border>
                             <!--<yummy:Border Color="#9E2F2F" Thickness="2"></yummy:Border>-->
@@ -235,7 +237,7 @@
                     </yummy:PancakeView>
 
                     <!--Calls-->
-                    <yummy:PancakeView Grid.Column="4" Grid.ColumnSpan="4" Grid.Row="3" Grid.RowSpan="3" CornerRadius="150,0,0,50" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
+                    <yummy:PancakeView x:Name="yumCalls" Scale="0" Grid.Column="4" Grid.ColumnSpan="4" Grid.Row="3" Grid.RowSpan="3" CornerRadius="150,0,0,50" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
                         <StackLayout Orientation="Vertical" VerticalOptions="CenterAndExpand" Spacing="20">
                             <Image>
                                 <Image.Source>
@@ -247,7 +249,7 @@
                         </StackLayout>
 
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                         <yummy:PancakeView.BackgroundGradientStops>
                             <yummy:GradientStopCollection>
@@ -263,7 +265,8 @@
                     </yummy:PancakeView>
                 </Grid>
 
-                <yummy:PancakeView VerticalOptions="End" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" HeightRequest="50" Padding="0">
+
+                <yummy:PancakeView x:Name="imgWave" TranslationY="1000" VerticalOptions="End" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" HeightRequest="{OnPlatform Android=50,iOS=70}" Padding="0">
                     <Image Source="WavesPurple.jpg" Aspect="Fill"></Image>
                 </yummy:PancakeView>
 
@@ -272,10 +275,10 @@
         </navigationdrawer:SfNavigationDrawer.ContentView>
 
         <navigationdrawer:SfNavigationDrawer.DrawerHeaderView>
-            <StackLayout Spacing="10" VerticalOptions="FillAndExpand" Margin="0,50,0,20" BackgroundColor="White">
+            <StackLayout Spacing="10" VerticalOptions="FillAndExpand" Margin="{OnPlatform Android='0,50,0,20',iOS='0,100,0,20'}" BackgroundColor="White">
 
-                <Frame CornerRadius="100" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Padding="0" Margin="0" HeightRequest="80" WidthRequest="80">
-                    <Image Source="{Binding Login.Picture}" HeightRequest="70" WidthRequest="70" Aspect="AspectFill">
+                <Frame CornerRadius="{OnPlatform Android=100,iOS=50}" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Padding="0" Margin="0" HeightRequest="80" WidthRequest="80">
+                    <Image x:Name="AccountImg" Source="{Binding AccountPhoto}" HeightRequest="70" WidthRequest="70" Aspect="AspectFill">
 
                     </Image>
                     <!--<ff:CachedImage x:Name="imgAccount" Source="{Binding Login.Picture}" Aspect="Fill" LoadingPlaceholder="avatar.png" ErrorPlaceholder="avatar.png">

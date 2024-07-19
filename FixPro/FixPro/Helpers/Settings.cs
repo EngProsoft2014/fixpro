@@ -45,6 +45,8 @@ namespace FixPro.Helpers
         private const string CreateDateKey = "CreateDate_key";
         private const string AccountIdKey = "AccountId_key";
         private const string AccountNameKey = "AccountName_key";
+        private const string AccountDayExpiredKey = "AccountDayExpiredKey_key";
+        private const string AccountNameWithSpaceKey = "AccountNameWithSpace_key";
         private const string BranchIdKey = "BranchId_key";
         private const string BranchNameKey = "BranchName_key";
         private const string UserRoleKey = "UserRol_key";
@@ -168,6 +170,30 @@ namespace FixPro.Helpers
             set
             {
                 AppSettings.AddOrUpdateValue(AccountNameKey, value);
+            }
+        }
+
+        public static string AccountDayExpired
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(AccountDayExpiredKey, "");
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(AccountDayExpiredKey, value);
+            }
+        }
+
+        public static string AccountNameWithSpace
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(AccountNameWithSpaceKey, "");
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(AccountNameWithSpaceKey, value);
             }
         }
 

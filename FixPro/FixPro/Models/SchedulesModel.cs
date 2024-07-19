@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Xamarin.Forms;
 
 namespace FixPro.Models
 {
-    public class SchedulesModel
+    public class SchedulesModel : INotifyPropertyChanged
     {
         public int Id { get; set; }
         public int ScheduleDateId { get; set; }
@@ -33,7 +34,23 @@ namespace FixPro.Models
         public int? EmployeeCategoryId { get; set; }
         public string Employees { get; set; }
         public int? CallId { get; set; }
-        public string Notes { get; set; }
+
+        string _Notes;
+        public string Notes
+        {
+            get
+            {
+                return _Notes;
+            }
+            set
+            {
+                _Notes = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Notes"));
+                }
+            }
+        }
         public bool? Active { get; set; }
         public int? CreateUser { get; set; }
         public DateTime? CreateDate { get; set; }
@@ -56,7 +73,9 @@ namespace FixPro.Models
         public List<SchedulePicturesModel> LstSchedulePictures { get; set; }
 
         public List<ScheduleItemsServicesModel> LstFreeServices { get; set; }
-        
+
+        public List<ScheduleItemsServicesModel> LstFirstCreateServices { get; set; }
+
         public string[] ArrStringFrom { get { return Time != null ? Time.Split(':') : "12:00".Split(':'); } }
 
         public string[] ArrStringTo { get { return TimeEnd != null ? TimeEnd.Split(':') : "12:00".Split(':'); } }
@@ -85,5 +104,7 @@ namespace FixPro.Models
         public InvoiceModel InvoiceDTO { get; set; }
 
         public bool IsStopUpdateSchedule { get { return Id != 0 ? false : true; } set { } }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

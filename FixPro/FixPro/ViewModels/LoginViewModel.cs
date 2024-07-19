@@ -17,6 +17,7 @@ using OneSignalSDK.Xamarin;
 using Akavache;
 using FixPro.Services.Data;
 using System.Reactive.Linq;
+using Xamarin.Essentials;
 
 namespace FixPro.ViewModels
 {
@@ -94,96 +95,139 @@ namespace FixPro.ViewModels
         {
             IsBusy = true;
 
-            UserDialogs.Instance.ShowLoading();
-
-            Login = model;
-
-            if(string.IsNullOrEmpty(Login.UserName))
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : User Name.", "Ok");
-            }
-            else if(string.IsNullOrEmpty(Login.Password))
-            {
-                await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Password.", "Ok");
-            }
-            else
-            {
+                UserDialogs.Instance.ShowLoading();
 
-                var MLogin = await ORep.GetAsync<EmployeeModel>("api/Login/GetLogin?" + "UserName=" + model.UserName + "&" + "Password=" + model.Password);
+                Login = model;
 
-                if (MLogin.Id == 0)
+                if (string.IsNullOrEmpty(Login.UserName))
                 {
-                    await App.Current.MainPage.DisplayAlert("Alert", "Wrong Username Or Password.", "Ok");
+                    await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : User Name.", "Ok");
+                }
+                else if (string.IsNullOrEmpty(Login.Password))
+                {
+                    await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Password.", "Ok");
                 }
                 else
                 {
 
-                    if (MLogin.ActiveAccount == true)
+                    var MLogin = await ORep.GetLoginAsync<EmployeeModel>("api/Login/GetLogin?" + "UserName=" + model.UserName + "&" + "Password=" + model.Password + "&" + "PlayerId=" + Helpers.Settings.PlayerId);
+
+                    if (MLogin.EmployeeStatus?.Contains("Try Again") == true)//UserName Or Password is Wrong
                     {
-                        if (MLogin.ActiveMobileLogin == true)
-                        {
-                            Helpers.Settings.UserId = MLogin.Id.ToString();
-                            Helpers.Settings.AccountId = MLogin.AccountId.ToString();
-                            Helpers.Settings.AccountName = MLogin.AccountName.ToString();
-                            Helpers.Settings.UserName = MLogin.UserName;
-                            Helpers.Settings.UserFristName = MLogin.FirstName;
-                            Helpers.Settings.UserLastName = MLogin.LastName;
-                            Helpers.Settings.Email = MLogin.EmailUserName;
-                            Helpers.Settings.Phone = MLogin.Phone1;
-                            Helpers.Settings.Password = model.Password;
-                            Helpers.Settings.CreateDate = MLogin.CreateDate.ToString();
-                            Helpers.Settings.AccountId = MLogin.AccountId.ToString();
-                            Helpers.Settings.BranchId = MLogin.BrancheId.ToString();
-                            Helpers.Settings.BranchName = MLogin.BranchName;
-                            Helpers.Settings.UserRole = MLogin.UserRole.ToString();
-                            Helpers.Settings.UserEmployees = MLogin.Employees;
-                            Helpers.Settings.TypeTrackingSch_Invo = MLogin.TypeTrackingSch_Invo.ToString();
-
-                            await BlobCache.LocalMachine.InsertObject(ServicesService.UserTokenServiceKey, MLogin.GernToken, DateTimeOffset.Now.AddHours(24));
-
-                            Helpers.Settings.UserPricture = Helpers.Utility.PathServerProfileImages + MLogin.Picture;
-
-                            //await Controls.StartData.CheckPermissionEmployee(); //Check Permission employee
-
-                            await App.Current.MainPage.Navigation.PushAsync(new MainPage());
-
-                            Device.StartTimer(new TimeSpan(0, 0, 3), () =>
-                            {
-                                if (Helpers.Settings.PlayerId != MLogin.OneSignalPlayerId && Helpers.Settings.PlayerId != "0")
-                                {
-                                    // do something every 1 seconds
-                                    Device.BeginInvokeOnMainThread(async () =>
-                                    {
-                                        Controls.StartData.IsRunning = true;
-                                        string UserToken = await _service.UserToken();
-                                        string Re = await ORep.PutDataAsync<string>(string.Format("api/Notifications/PutPlayerId?" + "AccountId=" + Helpers.Settings.AccountId + "&" + "PlayerId=" + Helpers.Settings.PlayerId + "&" + "EmpId=" + Helpers.Settings.UserId), null, UserToken);
-                                        if (Re != "api not responding")
-                                        {
-                                            Helpers.Settings.PlayerId = Re;
-                                            await ((App)Application.Current).RunThread(7);
-                                        }
-                                    });
-
-                                    return false;
-                                }
-                               
-                                return true;
-                                // runs again, or false to stop
-                            });
-                        }
-                        else
-                        {
-                            await App.Current.MainPage.DisplayAlert("Alert", "Sorry, This Username is not Mobile Access", "Ok");
-                        }
+                        await App.Current.MainPage.DisplayAlert("Alert", "Wrong Username Or Password.", "Ok");
+                    }
+                    else if (MLogin.EmployeeStatus?.Contains("Account Is Expired") == true)
+                    {
+                        await App.Current.MainPage.DisplayAlert("Alert", "Account expired", "Ok");
                     }
                     else
                     {
-                        await App.Current.MainPage.DisplayAlert("Alert", "Sorry, Your Account is not active", "Ok");
+
+                        if (MLogin.ActiveAccount == true)
+                        {
+                            if (MLogin.ActiveMobileLogin == true)
+                            {
+
+                                Helpers.Settings.UserId = MLogin.Id.ToString();
+                                Helpers.Settings.AccountId = MLogin.AccountId.ToString();
+                                Helpers.Settings.UserName = MLogin.UserName;
+                                Helpers.Settings.Password = model.Password;
+                                Helpers.Settings.AccountName = MLogin.AccountName.ToString();
+                                Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();//for check one time only in day
+                                Helpers.Settings.AccountNameWithSpace = MLogin.CompanyNameWithSpace.ToString();                
+                                Helpers.Settings.UserFristName = MLogin.FirstName;
+                                Helpers.Settings.UserLastName = MLogin.LastName;
+                                Helpers.Settings.Email = MLogin.EmailUserName;
+                                Helpers.Settings.Phone = MLogin.Phone1; 
+                                Helpers.Settings.CreateDate = MLogin.CreateDate.ToString();
+                                Helpers.Settings.AccountId = MLogin.AccountId.ToString();
+                                Helpers.Settings.BranchId = MLogin.BrancheId.ToString();
+                                Helpers.Settings.BranchName = MLogin.BranchName;
+                                Helpers.Settings.UserRole = MLogin.UserRole.ToString();
+                                Helpers.Settings.UserEmployees = MLogin.Employees;
+                                Helpers.Settings.TypeTrackingSch_Invo = MLogin.TypeTrackingSch_Invo.ToString();
+                                Helpers.Utility.ServerUrl = !string.IsNullOrEmpty(MLogin.AccountSubdomainApiURL) ? MLogin.AccountSubdomainApiURL : Helpers.Utility.ServerUrl;
+
+                                await BlobCache.LocalMachine.InsertObject(ServicesService.UserTokenServiceKey, MLogin.GernToken, DateTimeOffset.Now.AddHours(24));
+
+                                Helpers.Settings.UserPricture = Helpers.Utility.PathServerProfileImages + Helpers.Settings.AccountName + "/" + MLogin.Picture;
+
+                                //await Controls.StartData.CheckPermissionEmployee(); //Check Permission employee
+
+
+                                await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+
+
+
+                                //if (MLogin.OneSignalPlayerId != Helpers.Settings.PlayerId)
+                                //{
+                                //    UpdatePlayerIdModel oUpdatePlayerIdModel = new UpdatePlayerIdModel
+                                //    {
+                                //        AccountId = Helpers.Settings.AccountId,
+                                //        PlayerId = Helpers.Settings.PlayerId = OneSignal.Default.DeviceState.userId != null ? OneSignal.Default.DeviceState.userId.ToString() : null,
+                                //        UserId = Helpers.Settings.UserId,
+                                //    };
+
+                                //    Controls.StartData.IsRunning = true;
+                                //    string UserToken = await _service.UserToken();
+                                //    string Re = await ORep.PostDataAsync("api/Notifications/PostPlayerId", oUpdatePlayerIdModel, UserToken);
+                                //    if (Re != "api not responding")
+                                //    {
+                                //        Helpers.Settings.PlayerId = Re;
+                                //    }
+                                //}
+
+                                //await ((App)Application.Current).SignalRservice();
+
+
+                                //Device.StartTimer(new TimeSpan(0, 0, 3), () =>
+                                //{
+                                //    if (Helpers.Settings.PlayerId != MLogin.OneSignalPlayerId && Helpers.Settings.PlayerId != "0")
+                                //    {
+                                //        UpdatePlayerIdModel oUpdatePlayerIdModel = new UpdatePlayerIdModel
+                                //        {
+                                //            AccountId = Helpers.Settings.AccountId,
+                                //            PlayerId = Helpers.Settings.PlayerId,
+                                //            UserId = Helpers.Settings.UserId,
+                                //        };
+
+                                //        // do something every 1 seconds
+                                //        Device.BeginInvokeOnMainThread(async () =>
+                                //        {
+                                //            Controls.StartData.IsRunning = true;
+                                //            string UserToken = await _service.UserToken();
+                                //            string Re = await ORep.PostDataAsync("api/Notifications/PostPlayerId", oUpdatePlayerIdModel, UserToken);
+                                //            if (Re != "api not responding")
+                                //            {
+                                //                Helpers.Settings.PlayerId = Re;
+                                //                await ((App)Application.Current).RunThread(7);
+                                //            }
+                                //        });
+
+                                //        return false;
+                                //    }
+
+                                //    return true;
+                                //    // runs again, or false to stop
+                                //});
+                            }
+                            else
+                            {
+                                await App.Current.MainPage.DisplayAlert("Alert", "Access denied to login on mobile for this username!", "Ok");
+                            }
+                        }
+                        else
+                        {
+                            await App.Current.MainPage.DisplayAlert("Alert", "Sorry, Your Account is not active", "Ok");
+                        }
                     }
                 }
+
+                UserDialogs.Instance.HideLoading();
             }
 
-            UserDialogs.Instance.HideLoading();
             IsBusy = false;
         }
 

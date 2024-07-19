@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Akavache;
 using System.Reactive.Linq;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 
 namespace FixPro.Services.Data
@@ -51,19 +52,22 @@ namespace FixPro.Services.Data
 
             if (MUserToken == null)
             {
-                if (Helpers.Settings.Phone != "" && Helpers.Settings.Password != "")
+                if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    var loginModel = await ORep.GetAsync<EmployeeModel>("api/Login/GetLogin?" + "UserName=" + Helpers.Settings.UserName + "&" + "Password=" + Helpers.Settings.Password);
-
-                    if (loginModel != null)
+                    if (Helpers.Settings.Phone != "" && Helpers.Settings.Password != "")
                     {
-                        MUserToken = loginModel.GernToken;
+                        var loginModel = await ORep.GetAsync<EmployeeModel>("api/Login/GetLogin?" + "UserName=" + Helpers.Settings.UserName + "&" + "Password=" + Helpers.Settings.Password + "&" + "PlayerId=" + Helpers.Settings.PlayerId);
 
-                        await BlobCache.LocalMachine.InsertObject(UserTokenServiceKey, loginModel.GernToken, DateTimeOffset.Now.AddHours(24));
+                        if (loginModel != null)
+                        {
+                            MUserToken = loginModel.GernToken;
 
-                        return loginModel.GernToken;
+                            await BlobCache.LocalMachine.InsertObject(UserTokenServiceKey, loginModel.GernToken, DateTimeOffset.Now.AddHours(24));
+
+                            return loginModel.GernToken;
+                        }
                     }
-                }
+                }        
             }
             else
             {

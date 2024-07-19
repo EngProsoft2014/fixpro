@@ -82,6 +82,7 @@
                         <Button Text="Apply" 
                                 HorizontalOptions="CenterAndExpand"
                                 HeightRequest="36"
+                                WidthRequest="{OnPlatform iOS=100}"
                                 TextColor="White"
                                 BackgroundColor="#b66dff"
                                 CornerRadius="20"

@@ -31,7 +31,6 @@ using Xamarin.Essentials;
 using Acr.UserDialogs;
 using Stripe;
 using GoogleApi.Entities.Translate.Common.Enums;
-using Org.BouncyCastle.Utilities;
 using System.IO;
 using OneSignalSDK.Xamarin.Core;
 using GoogleApi.Entities.Search.Video.Common;
@@ -41,7 +40,8 @@ using Xamarin.CommunityToolkit.Extensions;
 using Twilio.Types;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
-using Org.BouncyCastle.Bcpg;
+using FixPro.Views.PopupPages;
+
 //using Plugin.Permissions.Abstractions;
 //using Plugin.Permissions;
 
@@ -89,6 +89,22 @@ namespace FixPro.ViewModels
             }
         }
 
+        ObservableCollection<SchedulesModel> _LstSchedulesSearch;
+        public ObservableCollection<SchedulesModel> LstSchedulesSearch
+        {
+            get
+            {
+                return _LstSchedulesSearch;
+            }
+            set
+            {
+                _LstSchedulesSearch = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("LstSchedulesSearch"));
+                }
+            }
+        }
 
         ObservableCollection<ScheduleItemsServicesModel> _LstItems;
         public ObservableCollection<ScheduleItemsServicesModel> LstItems
@@ -103,6 +119,23 @@ namespace FixPro.ViewModels
                 if (PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("LstItems"));
+                }
+            }
+        }
+
+        ObservableCollection<ScheduleItemsServicesModel> _LstItemsInvoice;
+        public ObservableCollection<ScheduleItemsServicesModel> LstItemsInvoice
+        {
+            get
+            {
+                return _LstItemsInvoice;
+            }
+            set
+            {
+                _LstItemsInvoice = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("LstItemsInvoice"));
                 }
             }
         }
@@ -123,7 +156,6 @@ namespace FixPro.ViewModels
                 }
             }
         }
-
 
         ObservableCollection<ScheduleMaterialReceiptModel> _LstMaterialReceipt;
         public ObservableCollection<ScheduleMaterialReceiptModel> LstMaterialReceipt
@@ -428,6 +460,23 @@ namespace FixPro.ViewModels
                 if (PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("LstInvoiceSchaduleDatesActual"));
+                }
+            }
+        }
+
+        CalendarEventCollection _LstScheduleEvevts;
+        public CalendarEventCollection LstScheduleEvevts
+        {
+            get
+            {
+                return _LstScheduleEvevts;
+            }
+            set
+            {
+                _LstScheduleEvevts = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("LstScheduleEvevts"));
                 }
             }
         }
@@ -1164,6 +1213,23 @@ namespace FixPro.ViewModels
             }
         }
 
+        int _ShowDispatch;
+        public int ShowDispatch
+        {
+            get
+            {
+                return _ShowDispatch;
+            }
+            set
+            {
+                _ShowDispatch = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("ShowDispatch"));
+                }
+            }
+        }
+
         bool _ShowEstimateButton;
         public bool ShowEstimateButton
         {
@@ -1228,6 +1294,23 @@ namespace FixPro.ViewModels
                 if (PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("ShowEstimateConvertToInvoice"));
+                }
+            }
+        }
+
+        bool _IsShowSearchByItem;
+        public bool IsShowSearchByItem
+        {
+            get
+            {
+                return _IsShowSearchByItem;
+            }
+            set
+            {
+                _IsShowSearchByItem = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsShowSearchByItem"));
                 }
             }
         }
@@ -1351,6 +1434,23 @@ namespace FixPro.ViewModels
             }
         }
 
+        bool _IsShowScheduleDates;
+        public bool IsShowScheduleDates
+        {
+            get
+            {
+                return _IsShowScheduleDates;
+            }
+            set
+            {
+                _IsShowScheduleDates = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsShowScheduleDates"));
+                }
+            }
+        }
+
         int _PhotosCount;
         public int PhotosCount
         {
@@ -1441,6 +1541,13 @@ namespace FixPro.ViewModels
         public ICommand OpenMaterialReceiptDetails { get; set; }
         public ICommand OutScheduleImage { get; set; }
         public ICommand OpenFullScreenSchImage { get; set; }
+        public ICommand OpenFullScreenSchImageBeforeInsert { get; set; }
+        public ICommand SelectedDispatch { get; set; }
+        public ICommand ChangeTextSearchJobs { get; set; }
+        public ICommand FullScreenNote { get; set; }
+        public ICommand CallCustomer { get; set; }
+        public ICommand MyWay { get; set; }
+
 
 
         public SchedulesViewModel()
@@ -1465,6 +1572,8 @@ namespace FixPro.ViewModels
             SelectedEmployeeAddDate = new EmployeeModel();
 
             LstItems = new ObservableCollection<ScheduleItemsServicesModel>();
+            LstItemsEstimate = new ObservableCollection<ScheduleItemsServicesModel>();
+            LstItemsInvoice = new ObservableCollection<ScheduleItemsServicesModel>();
             LstMaterialReceipt = new ObservableCollection<ScheduleMaterialReceiptModel>();
             LstColors = new ObservableCollection<SheetColorModel>();
             LstEmpCategory = new ObservableCollection<EmployeesCategoryModel>();
@@ -1473,6 +1582,7 @@ namespace FixPro.ViewModels
             StartScheduleOutSide = new Command<SchedulesModel>(OnStartScheduleOutSide);
             EndScheduleOutSide = new Command<SchedulesModel>(OnEndScheduleOutSide);
             RemoveEmployee = new Command<ScheduleEmployeesModel>(OnRemoveEmployee);
+            ChangeTextSearchJobs = new Command<string>(OnChangeTextSearchJobs);
 
             GetPerrmission();
             GetAllSchedules();
@@ -1499,13 +1609,7 @@ namespace FixPro.ViewModels
             BranchName = Helpers.Settings.BranchName;
 
             //Chech the year now because change value for House details
-            if (!string.IsNullOrEmpty(model.YearEstimedValue))
-            {
-                if (DateTime.Now.Year - int.Parse(model.YearEstimedValue) > 1)
-                {
-                    model = Controls.StartData.GetAddressDetails(model);
-                }
-            }
+            CheckHouseDataCust(model);
 
             //if (!string.IsNullOrEmpty(model.EstimedValue) && model.EstimedValue.StartsWith("$") != true)
             //{
@@ -1545,14 +1649,6 @@ namespace FixPro.ViewModels
             OpenInvoiceScheduleDates = new Command(OnOpenInvoiceScheduleDates);
         }
 
-        //Get Perrmission for User
-        public async void GetPerrmission()
-        {
-            EmployeePermission = new EmployeeModel();
-            await Controls.StartData.CheckPermissionEmployee();
-            EmployeePermission = Controls.StartData.EmployeeDataStatic;
-        }
-
         //One Schedule Details Or From CallViewModel
         public SchedulesViewModel(int SchedulId, int ScheduleDateId)
         {
@@ -1579,13 +1675,18 @@ namespace FixPro.ViewModels
 
             InitData(model);
 
+            IsShowScheduleDates = true; //Show all Schedules Dates
             GetScheduleDates(model.Id, 1); //All Schedule Dates
+
+            AmountOrPersent = CustomerDetails.MemeberType == false ? false : CustomerDetails.MemberDTO == null ? false : CustomerDetails.MemberDTO.MemberType == true ? true : false;
 
             OpenCustomerDetails = new Command<CustomersModel>(OnOpenCustomerDetails);
             ReturnBackFromScheduleImages = new Command<SchedulesModel>(OnReturnBackFromScheduleImages);
             AddScheduleDate = new Command<SchedulesModel>(OnAddScheduleDate);
             OutScheduleImage = new Command<SchedulePicturesModel>(OnOutScheduleImage);
             OpenFullScreenSchImage = new Command<string>(OnOpenFullScreenSchImage);
+            OpenFullScreenSchImageBeforeInsert = new Command<ImageSource>(OnOpenFullScreenSchImageBeforeInsert);
+            SelectedDispatch = new Command<SchaduleDateModel>(OnSelectedDispatch);
 
             ScheduleAddDate = DateTime.Now;
         }
@@ -1599,6 +1700,114 @@ namespace FixPro.ViewModels
 
             CreditPayment = new Command<InvoiceModel>(OnCreditPayment);
             CashPayment = new Command<InvoiceModel>(OnCashPayment);
+        }
+
+        async void Init()
+        {
+            CustomerDetails = new CustomersModel();
+            ScheduleDetails = new SchedulesModel();
+            EmpCategory = new EmployeesCategoryModel();
+            OneEmployee = new EmployeeModel();
+            LstItems = new ObservableCollection<ScheduleItemsServicesModel>();
+            LstFreeServices = new ObservableCollection<ScheduleItemsServicesModel>();
+            LstMaterialReceipt = new ObservableCollection<ScheduleMaterialReceiptModel>();
+            LstItemsInvoice = new ObservableCollection<ScheduleItemsServicesModel>();
+            LstItemsEstimate = new ObservableCollection<ScheduleItemsServicesModel>();
+            ScheduleDetails.LstScheduleItemsServices = new List<ScheduleItemsServicesModel>();
+            ScheduleDetails.LstFreeServices = new List<ScheduleItemsServicesModel>();
+            ScheduleDetails.LstFirstCreateServices = new List<ScheduleItemsServicesModel>();
+            ScheduleDetails.LstScheduleEmployeeDTO = new List<ScheduleEmployeesModel>();           
+            CustomerDetails.LstCustItemsServices = new List<ScheduleItemsServicesModel>();
+            LstColors = new ObservableCollection<SheetColorModel>();
+            LstEmpCategory = new ObservableCollection<EmployeesCategoryModel>();
+            LstEmpInOneCategory = new ObservableCollection<EmployeeModel>();
+            OneInvoice = new InvoiceModel();
+            OneInvoice.LstInvoiceItemServices = new List<InvoiceItemServicesModel>();
+            OneEstimate = new EstimateModel();
+            OneEstimate.LstEstimateItemServices = new List<EstimateItemServicesModel>();
+            LstPriority = new ObservableCollection<PriorityModel>();
+            LstEmps = new ObservableCollection<ScheduleEmployeesModel>();
+            LstServices = new ObservableCollection<ItemsServicesModel>();
+            SelectedService = new ItemsServicesModel();
+            LstATwoPictures = new ObservableCollection<SchedulePicturesModel>();
+            LstEstimateSchaduleDates = new ObservableCollection<SchaduleDateModel>();
+            LstEstimateSchaduleDatesActual = new ObservableCollection<SchaduleDateModel>();
+            LstInvoiceSchaduleDates = new ObservableCollection<SchaduleDateModel>();
+            LstInvoiceSchaduleDatesActual = new ObservableCollection<SchaduleDateModel>();
+            LstInvoiceDates = new ObservableCollection<SchaduleDateModel>();
+            LstEstimateDates = new ObservableCollection<SchaduleDateModel>();
+
+            //Schdule Date
+            ScheduleDetails.OneScheduleDate = new SchaduleDateModel();
+            OneScheduleDate = new SchaduleDateModel();
+
+            OnePictureModel = new SchedulePicturesModel();
+            BranchIdVM = int.Parse(Helpers.Settings.BranchId);
+
+            SelecteNewItems = new Command<SchedulesModel>(OnSelecteNewItems);
+            SelecteNewFreeService = new Command<SchedulesModel>(OnSelecteNewFreeService);
+            SelecteNewMaterialReceipt = new Command<SchedulesModel>(OnSelecteNewMaterialReceipt);
+            SelecteNewItemsEstimate = new Command<SchedulesModel>(OnSelecteNewItemsEstimate);
+            SelectedEmpCategory = new Command<EmployeesCategoryModel>(OnSelectedEmpCategory);
+            SelectedEmpInOneCategory = new Command<ObservableCollection<EmployeeModel>>(OnSelectedEmpInOneCategory);
+            SelectedSubmitSchedule = new Command<SchedulesModel>(OnSelectedSubmitSchedule);
+            RemoveItem = new Command<ScheduleItemsServicesModel>(OnRemoveItemAsync);
+            RemoveService = new Command<ScheduleItemsServicesModel>(OnRemoveService);
+            RemoveMaterialReceipt = new Command<ScheduleMaterialReceiptModel>(OnRemoveMaterialReceipt);
+            RemoveItemEstimate = new Command<ScheduleItemsServicesModel>(OnRemoveItemEstimate);
+            //RemoveItemfromList = new Command<ScheduleItemsServicesModel>(OnRemoveItemfromList);
+            OpenEmployeesInOneCategory = new Command(OnOpenEmployeesInOneCategory);
+            OpenEstimateScheduleDates = new Command(OnOpenEstimateScheduleDates);
+            OpenInvoiceScheduleDates = new Command(OnOpenInvoiceScheduleDates);
+            SelectJobDetails = new Command<SchedulesModel>(OnSelectJobDetails);
+            //AddScheduleDate = new Command<SchedulesModel>(OnAddScheduleDate);
+            SaveResponNotServiceScheduleDate = new Command<SchaduleDateModel>(OnSaveResponNotServiceScheduleDate);
+            DoneScheduleDate = new Command<SchaduleDateModel>(OnDoneScheduleDate);
+            SelecteCamSchedulePhoto = new Command(OnSelecteCamSchedulePhoto);
+            SelectePickSchedulePhoto = new Command(OnSelectePickSchedulePhoto);
+            DeleteSchedulePhoto = new Command<SchedulePicturesModel>(OnDeleteSchedulePhoto);
+            OpenImages = new Command<SchedulesModel>(OnOpenImages);
+            OpenAddImagesPopup = new Command<SchedulesModel>(OnOpenAddImagesPopup);
+            DonePictures = new Command<SchedulesModel>(OnDonePictures);
+            CreateScheduleInvoice = new Command<SchedulesModel>(OnCreateScheduleInvoice);
+            CreateScheduleEstimate = new Command<SchedulesModel>(OnCreateScheduleEstimate);
+            EditDiscountForCustomer = new Command<CustomersModel>(OnEditDiscountForCustomer);
+            EditDiscountForCustomerEstimate = new Command<CustomersModel>(OnEditDiscountForCustomerEstimate);
+            SaveReOpenScheduleDate = new Command<SchaduleDateModel>(OnSaveReOpenScheduleDate);
+            SubmitSchInvoiceOrEstimate = new Command<SchedulesModel>(OnSubmitSchInvoiceOrEstimate);
+            SubmitCustInvoiceOrEstimate = new Command<CustomersModel>(OnSubmitCustInvoiceOrEstimate);
+            OpenCustomerDetails = new Command<CustomersModel>(OnOpenCustomerDetails);
+            RemoveEmployee = new Command<ScheduleEmployeesModel>(OnRemoveEmployee);
+            RemoveEstimateDate = new Command<SchaduleDateModel>(OnRemoveEstimateDate);
+            RemoveInvoiceDate = new Command<SchaduleDateModel>(OnRemoveInvoiceDate);
+            OpenMaterialDetails = new Command<ScheduleItemsServicesModel>(OnOpenMaterialDetails);
+            OpenMaterialReceiptDetails = new Command<ScheduleMaterialReceiptModel>(OnOpenMaterialReceiptDetails);
+            OpenServiceDetails = new Command<ScheduleItemsServicesModel>(OnOpenServiceDetails);
+            SelectedDispatch = new Command<SchaduleDateModel>(OnSelectedDispatch);
+            OpenFullScreenSchImage = new Command<string>(OnOpenFullScreenSchImage);
+            FullScreenNote = new Command<string>(OnFullScreenNote);
+            CallCustomer = new Command<CustomersModel>(OnCallCustomer);
+            MyWay = new Command<CustomersModel>(OnMyWay);
+
+            //ConvertToInvoice = new Command<EstimateModel>(OnConvertToInvoice);
+
+            LstColors.Add(new SheetColorModel() { ColorName = "Red", ColorHex = "#eb4034" });
+            LstColors.Add(new SheetColorModel() { ColorName = "Blue", ColorHex = "#2f6fde" });
+            LstColors.Add(new SheetColorModel() { ColorName = "Green", ColorHex = "#23b007" });
+            LstColors.Add(new SheetColorModel() { ColorName = "Black", ColorHex = "#272927" });
+            LstColors.Add(new SheetColorModel() { ColorName = "Gray", ColorHex = "#878787" });
+            LstColors.Add(new SheetColorModel() { ColorName = "Brwon", ColorHex = "#7d654c" });
+
+            LstPriority.Add(new PriorityModel() { Id = 1, Name = "Normal" });
+            LstPriority.Add(new PriorityModel() { Id = 2, Name = "Urgent" });
+
+            OnePriorityModel = new PriorityModel() { Id = 1, Name = "Normal" };
+
+            StrEstimateDates = "Choose Schedule Dates";
+            StrInvoiceDates = "Choose Schedule Dates";
+
+            await GetServices();
+            await GetEmpCategories();
         }
 
         async void InitData(SchedulesModel model)
@@ -1628,31 +1837,50 @@ namespace FixPro.ViewModels
                 Discount = 0;
             }
 
-            if (model.LstScheduleItemsServices.Count > 0)
-            {
-                LstItems = new ObservableCollection<ScheduleItemsServicesModel>(model.LstScheduleItemsServices);
-                TotalInvoice(model, CustomerDetails);
-            }
-            else
-            {
-                SubTotal = 0;
-                Net = 0;
-                Paid = 0;
-                TotalDue = 0;
-            }
 
             if (model.LstScheduleItemsServices.Count > 0)
             {
-                LstItemsEstimate = new ObservableCollection<ScheduleItemsServicesModel>(model.LstScheduleItemsServices);
-                TotalEstimate(model, CustomerDetails);
+                LstItems = new ObservableCollection<ScheduleItemsServicesModel>(model.LstScheduleItemsServices);
             }
-            else
-            {
-                SubTotalEst = 0;
-                NetEst = 0;
-                PaidEst = 0;
-                TotalDueEst = 0;
-            }
+
+            //invoice
+            SubTotal = 0;
+            Net = 0;
+            Paid = 0;
+            TotalDue = 0;
+
+            //estimate
+            SubTotalEst = 0;
+            NetEst = 0; 
+            PaidEst = 0; 
+            TotalDueEst = 0;
+
+            //if (model.LstFreeServices.Count > 0)
+            //{
+            //    LstItemsInvoice = new ObservableCollection<ScheduleItemsServicesModel>(model.LstFreeServices.Where(s => s.TypeMaterial_Services == null).ToList());
+            //    TotalInvoice(model, CustomerDetails);
+            //}
+            //else
+            //{
+            //    SubTotal = 0;
+            //    Net = 0;
+            //    Paid = 0;
+            //    TotalDue = 0;
+            //}
+
+            //if (model.LstFreeServices.Count > 0)
+            //{
+            //    //LstItemsEstimate = new ObservableCollection<ScheduleItemsServicesModel>(model.LstScheduleItemsServices); //old code
+            //    LstItemsEstimate = new ObservableCollection<ScheduleItemsServicesModel>(model.LstFreeServices.Where(s => s.TypeMaterial_Services == null).ToList());
+            //    TotalEstimate(model, CustomerDetails);
+            //}
+            //else
+            //{
+            //    SubTotalEst = 0;
+            //    NetEst = 0;
+            //    PaidEst = 0;
+            //    TotalDueEst = 0;
+            //}
 
             if (model.LstFreeServices.Count > 0)
             {
@@ -1709,7 +1937,7 @@ namespace FixPro.ViewModels
 
             if (model.GetPictures == true)
             {
-                GetPictuers(model.Id);
+                GetPictuers(model.ScheduleDateId);
 
             }
 
@@ -1734,107 +1962,34 @@ namespace FixPro.ViewModels
 
         }
 
-        async void Init()
+
+        async void CheckHouseDataCust(CustomersModel model)
         {
-            CustomerDetails = new CustomersModel();
-            ScheduleDetails = new SchedulesModel();
-            EmpCategory = new EmployeesCategoryModel();
-            OneEmployee = new EmployeeModel();
-            LstItems = new ObservableCollection<ScheduleItemsServicesModel>();
-            LstFreeServices = new ObservableCollection<ScheduleItemsServicesModel>();
-            LstMaterialReceipt = new ObservableCollection<ScheduleMaterialReceiptModel>();
-            LstItemsEstimate = new ObservableCollection<ScheduleItemsServicesModel>();
-            ScheduleDetails.LstScheduleItemsServices = new List<ScheduleItemsServicesModel>();
-            ScheduleDetails.LstFreeServices = new List<ScheduleItemsServicesModel>();
-            ScheduleDetails.LstScheduleEmployeeDTO = new List<ScheduleEmployeesModel>();
-            CustomerDetails.LstCustItemsServices = new List<ScheduleItemsServicesModel>();
-            LstColors = new ObservableCollection<SheetColorModel>();
-            LstEmpCategory = new ObservableCollection<EmployeesCategoryModel>();
-            LstEmpInOneCategory = new ObservableCollection<EmployeeModel>();
-            OneInvoice = new InvoiceModel();
-            OneInvoice.LstInvoiceItemServices = new List<InvoiceItemServicesModel>();
-            OneEstimate = new EstimateModel();
-            OneEstimate.LstEstimateItemServices = new List<EstimateItemServicesModel>();
-            LstPriority = new ObservableCollection<PriorityModel>();
-            LstEmps = new ObservableCollection<ScheduleEmployeesModel>();
-            LstServices = new ObservableCollection<ItemsServicesModel>();
-            SelectedService = new ItemsServicesModel();
-            LstATwoPictures = new ObservableCollection<SchedulePicturesModel>();
-            LstEstimateSchaduleDates = new ObservableCollection<SchaduleDateModel>();
-            LstEstimateSchaduleDatesActual = new ObservableCollection<SchaduleDateModel>();
-            LstInvoiceSchaduleDates = new ObservableCollection<SchaduleDateModel>();
-            LstInvoiceSchaduleDatesActual = new ObservableCollection<SchaduleDateModel>();
-            LstInvoiceDates = new ObservableCollection<SchaduleDateModel>();
-            LstEstimateDates = new ObservableCollection<SchaduleDateModel>();
-            //Schdule Date
-            ScheduleDetails.OneScheduleDate = new SchaduleDateModel();
-            OneScheduleDate = new SchaduleDateModel();
+            if (!string.IsNullOrEmpty(model.YearEstimedValue))
+            {
+                if (DateTime.Now.Year - int.Parse(model.YearEstimedValue) > 1)
+                {
+                    model = await Controls.StartData.GetAddressDetails(model);
+                }
+            }
+        }
 
-            OnePictureModel = new SchedulePicturesModel();
-            BranchIdVM = int.Parse(Helpers.Settings.BranchId);
-
-            SelecteNewItems = new Command<SchedulesModel>(OnSelecteNewItems);
-            SelecteNewFreeService = new Command<SchedulesModel>(OnSelecteNewFreeService);
-            SelecteNewMaterialReceipt = new Command<SchedulesModel>(OnSelecteNewMaterialReceipt);
-            SelecteNewItemsEstimate = new Command<SchedulesModel>(OnSelecteNewItemsEstimate);
-            SelectedEmpCategory = new Command<EmployeesCategoryModel>(OnSelectedEmpCategory);
-            SelectedEmpInOneCategory = new Command<ObservableCollection<EmployeeModel>>(OnSelectedEmpInOneCategory);
-            SelectedSubmitSchedule = new Command<SchedulesModel>(OnSelectedSubmitSchedule);
-            RemoveItem = new Command<ScheduleItemsServicesModel>(OnRemoveItemAsync);
-            RemoveService = new Command<ScheduleItemsServicesModel>(OnRemoveService);
-            RemoveMaterialReceipt = new Command<ScheduleMaterialReceiptModel>(OnRemoveMaterialReceipt);
-            RemoveItemEstimate = new Command<ScheduleItemsServicesModel>(OnRemoveItemEstimate);
-            //RemoveItemfromList = new Command<ScheduleItemsServicesModel>(OnRemoveItemfromList);
-            OpenEmployeesInOneCategory = new Command(OnOpenEmployeesInOneCategory);
-            OpenEstimateScheduleDates = new Command(OnOpenEstimateScheduleDates);
-            OpenInvoiceScheduleDates = new Command(OnOpenInvoiceScheduleDates);
-            SelectJobDetails = new Command<SchedulesModel>(OnSelectJobDetails);
-            //AddScheduleDate = new Command<SchedulesModel>(OnAddScheduleDate);
-            SaveResponNotServiceScheduleDate = new Command<SchaduleDateModel>(OnSaveResponNotServiceScheduleDate);
-            DoneScheduleDate = new Command<SchaduleDateModel>(OnDoneScheduleDate);
-            SelecteCamSchedulePhoto = new Command(OnSelecteCamSchedulePhoto);
-            SelectePickSchedulePhoto = new Command(OnSelectePickSchedulePhoto);
-            DeleteSchedulePhoto = new Command<SchedulePicturesModel>(OnDeleteSchedulePhoto);
-            OpenImages = new Command<SchedulesModel>(OnOpenImages);
-            OpenAddImagesPopup = new Command<SchedulesModel>(OnOpenAddImagesPopup);
-            DonePictures = new Command<SchedulesModel>(OnDonePictures);
-            CreateScheduleInvoice = new Command<SchedulesModel>(OnCreateScheduleInvoice);
-            CreateScheduleEstimate = new Command<SchedulesModel>(OnCreateScheduleEstimate);
-            EditDiscountForCustomer = new Command<CustomersModel>(OnEditDiscountForCustomer);
-            EditDiscountForCustomerEstimate = new Command<CustomersModel>(OnEditDiscountForCustomerEstimate);
-            SaveReOpenScheduleDate = new Command<SchaduleDateModel>(OnSaveReOpenScheduleDate);
-            SubmitSchInvoiceOrEstimate = new Command<SchedulesModel>(OnSubmitSchInvoiceOrEstimate);
-            SubmitCustInvoiceOrEstimate = new Command<CustomersModel>(OnSubmitCustInvoiceOrEstimate);
-            OpenCustomerDetails = new Command<CustomersModel>(OnOpenCustomerDetails);
-            RemoveEmployee = new Command<ScheduleEmployeesModel>(OnRemoveEmployee);
-            RemoveEstimateDate = new Command<SchaduleDateModel>(OnRemoveEstimateDate);
-            RemoveInvoiceDate = new Command<SchaduleDateModel>(OnRemoveInvoiceDate);
-            OpenMaterialDetails = new Command<ScheduleItemsServicesModel>(OnOpenMaterialDetails);
-            OpenMaterialReceiptDetails = new Command<ScheduleMaterialReceiptModel>(OnOpenMaterialReceiptDetails);
-            OpenServiceDetails = new Command<ScheduleItemsServicesModel>(OnOpenServiceDetails);
-            //ConvertToInvoice = new Command<EstimateModel>(OnConvertToInvoice);
-
-            LstColors.Add(new SheetColorModel() { ColorName = "Red", ColorHex = "#eb4034" });
-            LstColors.Add(new SheetColorModel() { ColorName = "Blue", ColorHex = "#2f6fde" });
-            LstColors.Add(new SheetColorModel() { ColorName = "Green", ColorHex = "#23b007" });
-            LstColors.Add(new SheetColorModel() { ColorName = "Black", ColorHex = "#272927" });
-            LstColors.Add(new SheetColorModel() { ColorName = "Gray", ColorHex = "#878787" });
-            LstColors.Add(new SheetColorModel() { ColorName = "Brwon", ColorHex = "#7d654c" });
-
-            LstPriority.Add(new PriorityModel() { Id = 1, Name = "Urgent" });
-            LstPriority.Add(new PriorityModel() { Id = 2, Name = "Normal" });
-
-            StrEstimateDates = "Choose Schedule Dates";
-            StrInvoiceDates = "Choose Schedule Dates";
-
-            await GetServices();
-            await GetEmpCategories();
+        //Get Perrmission for User
+        public async void GetPerrmission()
+        {
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                EmployeePermission = new EmployeeModel();
+                await Controls.StartData.CheckPermissionEmployee();
+                EmployeePermission = Controls.StartData.EmployeeDataStatic;
+            }
         }
 
         async void OnScheduleDetailsformList(SchedulesModel model)
         {
             var VM = new SchedulesViewModel(model.Id, model.ScheduleDateId);
-            var page = new NewSchedulePage();
+            //var page = new NewSchedulePage();
+            var page = new ScheduleDetailsPage();
             page.BindingContext = VM;
             await App.Current.MainPage.Navigation.PushAsync(page);
         }
@@ -1844,7 +1999,7 @@ namespace FixPro.ViewModels
             if (SchModel.Id != 0)
             {
                 //decimal? SumCost = SchModel.LstScheduleItemsServices.Where(x => x.CostRate > 0 && x.Out == false).Sum(s => s.CostRate * s.Quantity);
-                decimal? SumCost = LstItems.Where(x => x.CostRate > 0 && x.Out == false).Sum(s => s.CostRate * s.Quantity);
+                decimal? SumCost = LstItemsInvoice.Where(x => x.CostRate > 0 && x.Out == false).Sum(s => s.CostRate * s.Quantity);
 
                 //decimal? DiscountVal = (SchModel.CustomerDTO != null && SchModel.CustomerDTO.MemeberType == false) ? (SumCost * SchModel.CustomerDTO.Discount / 100) : (SchModel.CustomerDTO != null && SchModel.CustomerDTO.MemeberType == true) ? (SumCost - SchModel.CustomerDTO.Discount) : 0;
                 decimal? DiscountVal = (SchModel.CustomerDTO != null && SchModel.CustomerDTO.MemeberType == false) ? Discount != 0 ? (SumCost * Discount / 100) : 0 : (SchModel.CustomerDTO != null && SchModel.CustomerDTO.MemberDTO == null) ? Discount != 0 ? (SumCost * Discount / 100) : 0 : (SchModel.CustomerDTO != null && SchModel.CustomerDTO.MemberDTO.MemberType == false) ? Discount != 0 ? (SumCost * Discount / 100) : 0 : (Discount);
@@ -1860,7 +2015,7 @@ namespace FixPro.ViewModels
             if (CustModel.Id != 0 && SchModel.Id == 0)
             {
                 //decimal? SumCost = CustModel.LstCustItemsServices.Where(x => x.CostRate > 0 && x.Out == false).Sum(s => s.CostRate * s.Quantity);
-                decimal? SumCost = LstItems.Where(x => x.CostRate > 0 && x.Out == false).Sum(s => s.CostRate * s.Quantity);
+                decimal? SumCost = LstItemsInvoice.Where(x => x.CostRate > 0 && x.Out == false).Sum(s => s.CostRate * s.Quantity);
 
                 decimal? DiscountVal = (CustModel.MemeberType == false) ? Discount != 0 ? (SumCost * Discount / 100) : 0 : (CustModel.MemberDTO == null) ? Discount != 0 ? (SumCost * Discount / 100) : 0 : (CustModel.MemberDTO.MemberType == false) ? (SumCost * Discount / 100) : (Discount);
 
@@ -1922,189 +2077,359 @@ namespace FixPro.ViewModels
         //Get all Schedules in Branch
         async void GetAllSchedules()
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<SchedulesModel>>(string.Format("api/Schedules/GetSchedules?" + "AccountId=" + Helpers.Settings.AccountId + "&" + "EmpId=" + Helpers.Settings.UserId + "&" + "EmpRole=" + Controls.StartData.EmployeeDataStatic.UserRole + "&" + "lstEmp=" + Helpers.Settings.UserEmployees), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                //GetPerrmission();
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<SchedulesModel>>(string.Format("api/Schedules/GetSchedules?" + "AccountId=" + Helpers.Settings.AccountId + "&" + "EmpId=" + Helpers.Settings.UserId + "&" + "EmpRole=" + Controls.StartData.EmployeeDataStatic.UserRole + "&" + "lstEmp=" + Helpers.Settings.UserEmployees + "&" + "TextSearch="), UserToken);
 
-                var cc = Controls.StartData.EmployeeDataStatic;
-                if (Controls.StartData.EmployeeDataStatic.ActiveAllScdTr_FaorTrOnly == false) //For Dispatch
+                if (json != null)
                 {
-                    LstSchedules = new ObservableCollection<SchedulesModel>(json.Where(x => x.OneScheduleDate.Active == true).ToList());
-                }
-                else
-                {
-                    LstSchedules = json;
+                    //GetPerrmission();
+
+                    //var cc = Controls.StartData.EmployeeDataStatic;
+                    if (Controls.StartData.EmployeeDataStatic.ActiveAllScdTr_FaorTrOnly == false) //For Dispatch
+                    {
+                        LstSchedules = new ObservableCollection<SchedulesModel>(json.Where(x => x.OneScheduleDate.Active == true).ToList());
+                    }
+                    else
+                    {
+                        LstSchedules = json;
+                    }
+
+                    string day = DateTime.Now.ToString("yyyy-MM-dd");
+                    CalendarDataToday = new ObservableCollection<SchedulesModel>(LstSchedules.Where(x => x.StartDate == day).ToList());
+
+                    await GetEvents(LstSchedules);
                 }
 
-                string day = DateTime.Now.ToString("yyyy-MM-dd");
-                CalendarDataToday = new ObservableCollection<SchedulesModel>(LstSchedules.Where(x => x.StartDate == day).ToList());
+                UserDialogs.Instance.HideLoading();
             }
-
-            UserDialogs.Instance.HideLoading();
         }
 
 
-        async Task GetServices()
+        async Task GetEvents(ObservableCollection<SchedulesModel> Lstschedules)
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<ItemsServicesModel>>(string.Format("api/Schedules/GetServices?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
-
-            if (json != null)
+            if (LstSchedules.Count > 0)
             {
-                LstServices = json;
+                LstScheduleEvevts = new CalendarEventCollection();
+                ObservableCollection<SchedulesModel> groupedList = new ObservableCollection<SchedulesModel>();
 
-                if (ScheduleDetails.OneScheduleService != null && ScheduleDetails.OneScheduleService.ScheduleDateId == null)
+                string Date = "";
+
+                foreach (var item in LstSchedules.OrderBy(appointment => DateTime.Parse(appointment.StartDate)))
                 {
-                    SelectedService = LstServices.Where(x => x.Id == ScheduleDetails.OneScheduleService.ItemsServicesId).FirstOrDefault();
+                    if (item.StartDate != Date)
+                    {
+                        groupedList.Add(item);
+                        Date = item.StartDate;
+                    }
+                }
+
+                foreach (var group in groupedList)
+                {
+                    CalendarInlineEvent event1 = new CalendarInlineEvent();
+
+                    DateTime Startday = DateTime.Parse(group.StartDate);
+                    DateTime StartTime = DateTime.Parse(group.Time);
+
+                    DateTime Endday = DateTime.Parse(group.StartDate);
+                    DateTime EndTime = DateTime.Parse(group.TimeEnd);
+
+                    event1.StartTime = new DateTime(Startday.Year, Startday.Month, Startday.Day, StartTime.Hour, StartTime.Minute, StartTime.Second);
+                    event1.EndTime = new DateTime(Endday.Year, Endday.Month, Endday.Day, EndTime.Hour, EndTime.Minute, EndTime.Second);
+                    event1.Subject = $"Job Title: {group.Title}";
+                    event1.Color = Color.FromHex("#538dd4");
+
+                    LstScheduleEvevts.Add(event1);
                 }
             }
+        }
 
-            UserDialogs.Instance.HideLoading();
+        async void OnChangeTextSearchJobs(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                IsShowSearchByItem = true;
+            }
+            else
+            {
+                if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+                {
+                    IsShowSearchByItem = false;
+                    string UserToken = await _service.UserToken();
+                    var json = await ORep.GetAsync<ObservableCollection<SchedulesModel>>(string.Format("api/Schedules/GetSchedules?" + "AccountId=" + Helpers.Settings.AccountId + "&" + "EmpId=" + Helpers.Settings.UserId + "&" + "EmpRole=" + Controls.StartData.EmployeeDataStatic.UserRole + "&" + "lstEmp=" + Helpers.Settings.UserEmployees + "&" + "TextSearch=" + text), UserToken);
+
+                    if (json != null)
+                    {
+                        if (Controls.StartData.EmployeeDataStatic.ActiveAllScdTr_FaorTrOnly == false) //For Dispatch
+                        {
+                            LstSchedulesSearch = new ObservableCollection<SchedulesModel>(json.Where(x => x.OneScheduleDate.Active == true).ToList());
+                        }
+                        else
+                        {
+                            LstSchedulesSearch = json;
+                        }
+                    }
+                }
+            }
+        }
+
+        async Task GetServices()
+        {
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<ItemsServicesModel>>(string.Format("api/Schedules/GetServices?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
+
+                if (json != null)
+                {
+                    LstServices = json;
+
+                    if (ScheduleDetails.OneScheduleService != null && ScheduleDetails.OneScheduleService.ScheduleDateId == null)
+                    {
+                        SelectedService = LstServices.Where(x => x.Id == ScheduleDetails.OneScheduleService.ItemsServicesId).FirstOrDefault();
+                    }
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }
         }
 
         async void GetScheduleDates(int ScheduleId, int Type)
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<SchaduleDateModel>>(string.Format("api/Schedules/GetScheduleDates?" + "ScheduleId=" + ScheduleId + "&" + "Type=" + Type), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstEstimateSchaduleDates = json;
-                LstInvoiceSchaduleDates = json;
-            }
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<SchaduleDateModel>>(string.Format("api/Schedules/GetScheduleDates?" + "ScheduleId=" + ScheduleId + "&" + "Type=" + Type), UserToken);
 
-            UserDialogs.Instance.HideLoading();
+                if (json != null)
+                {
+                    if (json.Count == 1)
+                    {
+                        LstEstimateSchaduleDatesActual = json;
+                        StrEstimateDates = json.FirstOrDefault().Date;
+                        LstInvoiceSchaduleDatesActual = json;
+                        StrInvoiceDates = json.FirstOrDefault().Date;
+                        LstEstimateSchaduleDates = json;
+                        LstInvoiceSchaduleDates = json;
+                        IsShowScheduleDates = false;
+                    }
+                    else
+                    {
+                        LstEstimateSchaduleDates = json;
+                        LstInvoiceSchaduleDates = json;
+                    }
+
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }
         }
 
 
         //Get One Schedule Details
         public async Task GetOneScheduleDetails(int ScheduleId, int ScheduleDateId)
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var Schedule = await ORep.GetAsync<SchedulesModel>(string.Format("api/Schedules/GetScheduleDetails?" + "ScheduleId=" + ScheduleId + "&" + "ScheduleDateId=" + ScheduleDateId), UserToken);
-
-            if (Schedule != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                Schedule.CustomerDTO = Schedule.CustomerDTO == null ? new CustomersModel() : Schedule.CustomerDTO;
-                Schedule.OneScheduleDate = Schedule.OneScheduleDate == null ? new SchaduleDateModel() : Schedule.OneScheduleDate;
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var Schedule = await ORep.GetAsync<SchedulesModel>(string.Format("api/Schedules/GetScheduleDetails?" + "ScheduleId=" + ScheduleId + "&" + "ScheduleDateId=" + ScheduleDateId), UserToken);
 
-
-                Schedule.LstScheduleEmployeeDTO = Schedule.LstScheduleEmployeeDTO == null ? new List<ScheduleEmployeesModel>() : Schedule.LstScheduleEmployeeDTO;
-
-                Schedule.LstScheduleItemsServices = Schedule.LstScheduleItemsServices == null ? new List<ScheduleItemsServicesModel>() : Schedule.LstScheduleItemsServices;
-                Schedule.LstSchedulePictures = Schedule.LstSchedulePictures == null ? new List<SchedulePicturesModel>() : Schedule.LstSchedulePictures;
-                Schedule.LstMaterialReceipt = Schedule.LstMaterialReceipt == null ? new List<ScheduleMaterialReceiptModel>() : Schedule.LstMaterialReceipt;
-
-                ScheduleDetails = Schedule;
-
-
-                if (ScheduleDetails.LstScheduleItemsServices.Count > 4)
+                if (Schedule != null)
                 {
-                    LstHeight = 1;
+                    Schedule.CustomerDTO = Schedule.CustomerDTO == null ? new CustomersModel() : Schedule.CustomerDTO;
+                    Schedule.OneScheduleDate = Schedule.OneScheduleDate == null ? new SchaduleDateModel() : Schedule.OneScheduleDate;
+
+
+                    Schedule.LstScheduleEmployeeDTO = Schedule.LstScheduleEmployeeDTO == null ? new List<ScheduleEmployeesModel>() : Schedule.LstScheduleEmployeeDTO;
+
+                    Schedule.LstScheduleItemsServices = Schedule.LstScheduleItemsServices == null ? new List<ScheduleItemsServicesModel>() : Schedule.LstScheduleItemsServices;
+                    Schedule.LstSchedulePictures = Schedule.LstSchedulePictures == null ? new List<SchedulePicturesModel>() : Schedule.LstSchedulePictures;
+                    Schedule.LstMaterialReceipt = Schedule.LstMaterialReceipt == null ? new List<ScheduleMaterialReceiptModel>() : Schedule.LstMaterialReceipt;
+
+                    ScheduleDetails = Schedule;
+
+                    //LstATwoPictures = new ObservableCollection<SchedulePicturesModel>(ScheduleDetails.LstSchedulePictures);
+
+                    if (ScheduleDetails.LstScheduleItemsServices.Count > 4)
+                    {
+                        LstHeight = 1;
+                    }
+
+                    if (ScheduleDetails.EstimateDTO != null)
+                    {
+                        ShowEstimateButton = true;
+                    }
+
+                    InitData(ScheduleDetails);
+
+                    LstEmps = new ObservableCollection<ScheduleEmployeesModel>(ScheduleDetails.LstScheduleEmployeeDTO);
+
+                    foreach (var mod in ScheduleDetails.LstScheduleEmployeeDTO)
+                    {
+                        StrEmployeesId += ("," + mod.EmpId);
+                    }
+                    StrEmployeesId = StrEmployeesId?.Remove(0, 1);
                 }
 
-                if (ScheduleDetails.EstimateDTO != null)
-                {
-                    ShowEstimateButton = true;
-                }
-
-                InitData(ScheduleDetails);
-
-                LstEmps = new ObservableCollection<ScheduleEmployeesModel>(ScheduleDetails.LstScheduleEmployeeDTO);
-
-                foreach (var mod in ScheduleDetails.LstScheduleEmployeeDTO)
-                {
-                    StrEmployeesId += ("," + mod.EmpId);
-                }
-                StrEmployeesId = StrEmployeesId?.Remove(0, 1);
+                UserDialogs.Instance.HideLoading();
             }
-
-            UserDialogs.Instance.HideLoading();
         }
 
         //Get Employees Category
         public async Task GetEmpCategories()
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<EmployeesCategoryModel>>(string.Format("api/Employee/GetEmpCategory?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstEmpCategory = json;
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<EmployeesCategoryModel>>(string.Format("api/Employee/GetEmpCategory?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
 
-                if (ScheduleDetails?.EmployeeCategoryId != null && ScheduleDetails?.LstScheduleEmployeeDTO.Count > 0)
+                if (json != null)
                 {
-                    SelectedCateory = LstEmpCategory.Where(x => x.Id == ScheduleDetails?.EmployeeCategoryId).FirstOrDefault();
+                    LstEmpCategory = json;
 
-                    string str = "";
-                    foreach (ScheduleEmployeesModel Emp in ScheduleDetails?.LstScheduleEmployeeDTO)
+                    if (ScheduleDetails?.EmployeeCategoryId != null && ScheduleDetails?.LstScheduleEmployeeDTO.Count > 0)
                     {
-                        str += ("," + Emp.EmpUserName);
+                        SelectedCateory = LstEmpCategory.Where(x => x.Id == ScheduleDetails?.EmployeeCategoryId).FirstOrDefault();
+
+                        string str = "";
+                        foreach (ScheduleEmployeesModel Emp in ScheduleDetails?.LstScheduleEmployeeDTO)
+                        {
+                            str += ("," + Emp.EmpUserName);
+                        }
+                        StrEmployees = str.Remove(0, 1);
                     }
-                    StrEmployees = str.Remove(0, 1);
+                    else
+                    {
+                        SelectedCateory = LstEmpCategory.FirstOrDefault();
+                    }
+
+                    //if (ScheduleDetails.EmployeeCategoryId != null && ScheduleDetails.LstEmployeeDTO.Count > 0)
+                    //{
+                    //    SelectedCateory = LstEmpCategory.Where(x => x.Id == ScheduleDetails.EmployeeCategoryId).FirstOrDefault();
+
+                    //    string str = "";
+                    //    foreach (EmployeeModel Emp in ScheduleDetails.LstEmployeeDTO)
+                    //    {
+                    //        str += ("," + Emp.UserName);
+                    //    }
+                    //    StrEmployees = str.Remove(0, 1);
+                    //}
                 }
 
-                //if (ScheduleDetails.EmployeeCategoryId != null && ScheduleDetails.LstEmployeeDTO.Count > 0)
-                //{
-                //    SelectedCateory = LstEmpCategory.Where(x => x.Id == ScheduleDetails.EmployeeCategoryId).FirstOrDefault();
-
-                //    string str = "";
-                //    foreach (EmployeeModel Emp in ScheduleDetails.LstEmployeeDTO)
-                //    {
-                //        str += ("," + Emp.UserName);
-                //    }
-                //    StrEmployees = str.Remove(0, 1);
-                //}
+                UserDialogs.Instance.HideLoading();
             }
-
-            UserDialogs.Instance.HideLoading();
         }
 
         // Get Employees in One Category
         async void OnSelectedEmpCategory(EmployeesCategoryModel model)
         {
+
             EmpCategory = model;
 
             //StrEmployees = "Choose Employees";
-
-
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<EmployeeModel>>(string.Format("api/Employee/GetEmpInOneCategory/{0}/{1}/{2}/{3}/{4}", Helpers.Settings.BranchId, EmpCategory.Id, Helpers.Settings.AccountId, Controls.StartData.EmployeeDataStatic.UserRole, Helpers.Settings.UserId), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstEmpInOneCategory = json;
-            }
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<EmployeeModel>>(string.Format("api/Employee/GetEmpInOneCategory/{0}/{1}/{2}/{3}/{4}", Helpers.Settings.BranchId, EmpCategory.Id, Helpers.Settings.AccountId, Controls.StartData.EmployeeDataStatic.UserRole, Helpers.Settings.UserId), UserToken);
 
-            UserDialogs.Instance.HideLoading();
+                if (json != null)
+                {
+                    LstEmpInOneCategory = json;
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }
         }
 
         //Get Pictuers
         async void GetPictuers(int ScheduleId)
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<SchedulePicturesModel>>(string.Format("api/Schedules/GetPictures?" + "ScheduleId=" + ScheduleId), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstNewPictures = new ObservableCollection<SchedulePicturesModel>(); //Check if Show Button Done
-                ScheduleDetails.LstSchedulePictures = json.ToList();
-                LstAllPictures = json;
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<SchedulePicturesModel>>(string.Format("api/Schedules/GetPictures?" + "ScheduleId=" + ScheduleId), UserToken);
 
-                SetLstTwoSchedulePhotos(ScheduleDetails.LstSchedulePictures);
+                if (json != null)
+                {
+                    LstNewPictures = new ObservableCollection<SchedulePicturesModel>(); //Check if Show Button Done
+                    ScheduleDetails.LstSchedulePictures = json.ToList();
+                    LstAllPictures = json;
+
+                    SetLstTwoSchedulePhotos(ScheduleDetails.LstSchedulePictures);
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }
+        }
+
+
+        async void OnCallCustomer(CustomersModel model)
+        {
+            try
+            {
+                PhoneDialer.Open(model.Phone1);
+            }
+            catch (FeatureNotSupportedException ex)
+            {
+                // Handle the case where the phone dialer is not supported on the device
+                await App.Current.MainPage.DisplayAlert("Error", "Phone dialer is not supported on this device.", "OK");
+            }
+            catch (Exception ex)
+            {
+                // Handle other errors that might occur
+                await App.Current.MainPage.DisplayAlert("Error", "Unable to dial this number.", "OK");
             }
 
-            UserDialogs.Instance.HideLoading();
+        }
+
+        async void OnMyWay(CustomersModel model)
+        {
+            IsBusy = true;
+            var popupView = new OnMyWayViewModel(model);
+            var page = new OnMyWayPopup();
+            page.BindingContext = popupView;
+            await PopupNavigation.Instance.PushAsync(page);
+            IsBusy = false;
+        }
+
+
+
+        async void OnSelectedDispatch(SchaduleDateModel model)
+        {
+            IsBusy = true;
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                bool check = await App.Current.MainPage.DisplayAlert("FixPro", "Are you sure that you want to dispatch?", "Yes", "No");
+
+                if(check == true)
+                {
+                    string UserToken = await _service.UserToken();
+
+                    UserDialogs.Instance.ShowLoading();
+                    string Json = await ORep.PutStrAsync("api/Schedules/PutScheduleDispatch", model, UserToken);
+                    UserDialogs.Instance.HideLoading();
+
+                    if (!string.IsNullOrEmpty(Json) && Json.Contains("Success Dispatch") == true)
+                    {
+                        await App.Current.MainPage.DisplayAlert("FixPro", "Schedule dispatched successfully", "Ok");
+                        ShowDispatch = 2; //Don't Show Dispatch Button
+                    }
+                    else
+                    {
+                        await App.Current.MainPage.DisplayAlert("FixPro", "Failed to dispatch this schedule", "Ok");
+                    }
+                }
+
+            }
+            IsBusy = false;
         }
 
         async void OnReturnBackFromScheduleImages(SchedulesModel model)
@@ -2112,7 +2437,8 @@ namespace FixPro.ViewModels
             IsBusy = true;
             UserDialogs.Instance.ShowLoading();
             var popupView = new SchedulesViewModel(model.Id, model.OneScheduleDate.Id);
-            var page = new Views.SchedulePages.NewSchedulePage();
+            //var page = new NewSchedulePage();
+            var page = new ScheduleDetailsPage();
             page.BindingContext = popupView;
             await App.Current.MainPage.Navigation.PushAsync(page);
             App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
@@ -2129,8 +2455,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -2188,10 +2514,9 @@ namespace FixPro.ViewModels
                     await App.Current.MainPage.Navigation.PushAsync(page);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -2216,8 +2541,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -2249,7 +2574,7 @@ namespace FixPro.ViewModels
                             Unit = item.Unit,
                         };
 
-                        if(ShowQty == false)// add material
+                        if (ShowQty == false)// add material
                         {
                             ScheduleItemsServicesModel scheduleItemsServicesModel = new ScheduleItemsServicesModel();
 
@@ -2276,8 +2601,18 @@ namespace FixPro.ViewModels
                         }
                         else // add invoice item or Estimate item
                         {
-                            LstItems.Add(ItemsModel);
+                            var itm2 = LstItemsInvoice.Where(x => x.ItemsServicesId == item.Id).FirstOrDefault();
+                            if (itm2 == null)
+                            {
+                                LstItemsInvoice.Add(ItemsModel);
+                            }
                         }
+
+                        if (LstItemsInvoice.Count > 4)
+                        {
+                            LstHeight = 1;
+                        }
+
 
                         if (LstItems.Count > 4)
                         {
@@ -2295,10 +2630,9 @@ namespace FixPro.ViewModels
                     await App.Current.MainPage.Navigation.PushAsync(page);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -2312,8 +2646,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -2347,27 +2681,33 @@ namespace FixPro.ViewModels
 
                         ScheduleItemsServicesModel scheduleItemsServicesModel = new ScheduleItemsServicesModel();
 
-                        if (LstFreeServices.Count > 0)
+                        scheduleItemsServicesModel = await InsertOneFreeService(ServiceModel);
+                        if (scheduleItemsServicesModel != null)
                         {
-                            var itm = LstFreeServices.Where(x => x.ItemsServicesId == service.Id).FirstOrDefault();
-                            if (itm == null)
-                            {
-                                scheduleItemsServicesModel = await InsertOneFreeService(ServiceModel);
-                                if (scheduleItemsServicesModel != null)
-                                {
-                                    LstFreeServices.Add(scheduleItemsServicesModel);
+                            LstFreeServices.Add(scheduleItemsServicesModel);
+                        }
 
-                                }
-                            }
-                        }
-                        else
-                        {
-                            scheduleItemsServicesModel = await InsertOneFreeService(ServiceModel);
-                            if (scheduleItemsServicesModel != null)
-                            {
-                                LstFreeServices.Add(scheduleItemsServicesModel);
-                            }
-                        }
+                        //if (LstFreeServices.Count > 0)
+                        //{
+                        //    var itm = LstFreeServices.Where(x => x.ItemsServicesId == service.Id).FirstOrDefault();
+                        //    if (itm == null)
+                        //    {
+                        //        scheduleItemsServicesModel = await InsertOneFreeService(ServiceModel);
+                        //        if (scheduleItemsServicesModel != null)
+                        //        {
+                        //            LstFreeServices.Add(scheduleItemsServicesModel);
+
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    scheduleItemsServicesModel = await InsertOneFreeService(ServiceModel);
+                        //    if (scheduleItemsServicesModel != null)
+                        //    {
+                        //        LstFreeServices.Add(scheduleItemsServicesModel);
+                        //    }
+                        //}
 
                         if (LstFreeServices.Count > 4)
                         {
@@ -2384,8 +2724,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -2393,47 +2732,51 @@ namespace FixPro.ViewModels
 
         public async Task<ScheduleItemsServicesModel> InsertOneItemService(ScheduleItemsServicesModel model)
         {
-            string UserToken = await _service.UserToken();
-            var json = await ORep.PostDataAsync("api/Schedules/PostScheduleMaterials", model, UserToken);
-
-            if (json != "Bad Request" && json != "api not responding" && json.Contains("Not_Enough") != true && json.Contains("This Invoice Already Exist") != true)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                var oModel = JsonConvert.DeserializeObject<ScheduleItemsServicesModel>(json);
-                return oModel;
+                string UserToken = await _service.UserToken();
+                var json = await ORep.PostDataAsync("api/Schedules/PostScheduleMaterials", model, UserToken);
+
+                if (json != "Bad Request" && json != "api not responding" && json.Contains("Not_Enough") != true && json.Contains("This Invoice Already Exist") != true)
+                {
+                    var oModel = JsonConvert.DeserializeObject<ScheduleItemsServicesModel>(json);
+                    return oModel;
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
+                    return null;
+                }
             }
             else
             {
-                await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
                 return null;
             }
-
-            //if (!string.IsNullOrEmpty(json))
-            //{
-            //    var oModel = JsonConvert.DeserializeObject<ScheduleItemsServicesModel>(json);
-            //    return oModel;
-            //}
-            //else
-            //{
-            //    await App.Current.MainPage.DisplayAlert("Alert", "Faild for add this Material.", "Ok");
-            //    return null;
-            //}
         }
 
         public async Task<ScheduleItemsServicesModel> InsertOneFreeService(ScheduleItemsServicesModel model)
         {
-            string UserToken = await _service.UserToken();
-            var json = await ORep.PostStrAsync("api/Schedules/PostScheduleFreeServices", model, UserToken);
-
-            if (!string.IsNullOrEmpty(json))
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                var oModel = JsonConvert.DeserializeObject<ScheduleItemsServicesModel>(json);
-                return oModel;
+                string UserToken = await _service.UserToken();
+                var json = await ORep.PostStrAsync("api/Schedules/PostScheduleFreeServices", model, UserToken);
+
+                if (!string.IsNullOrEmpty(json))
+                {
+                    var oModel = JsonConvert.DeserializeObject<ScheduleItemsServicesModel>(json);
+                    return oModel;
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Alert", "Failed to add this service", "Ok");
+                    return null;
+                }
             }
             else
             {
-                await App.Current.MainPage.DisplayAlert("Alert", "Faild for add this Service.", "Ok");
                 return null;
             }
+
         }
 
         async void OnSelecteNewMaterialReceipt(SchedulesModel model)
@@ -2444,8 +2787,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -2476,7 +2819,7 @@ namespace FixPro.ViewModels
 
                         if (string.IsNullOrEmpty(json))
                         {
-                            await App.Current.MainPage.DisplayAlert("Alert", "Faild for add this Material Receipt.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("Alert", "Failed to add the material receipt", "Ok");
                         }
                         else
                         {
@@ -2492,10 +2835,9 @@ namespace FixPro.ViewModels
                     await App.Current.MainPage.Navigation.PushAsync(page);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -2505,31 +2847,39 @@ namespace FixPro.ViewModels
         {
             IsBusy = true;
 
-            UserDialogs.Instance.ShowLoading();
-            if(ShowQty == false) // Remove material
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                string UserToken = await _service.UserToken();
-                var json = await ORep.PutStrAsync("api/Schedules/PutMaterial", item, UserToken);//Delete Material
-
-                if (string.IsNullOrEmpty(json))
+                UserDialogs.Instance.ShowLoading();
+                if (ShowQty == false) // Remove material
                 {
-                    await App.Current.MainPage.DisplayAlert("Alert", "Faild for Delete this Material.", "Ok");
+                    string UserToken = await _service.UserToken();
+                    var json = await ORep.PutStrAsync("api/Schedules/PutMaterial", item, UserToken);//Delete Material
+
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        await App.Current.MainPage.DisplayAlert("Alert", "Failed to delete the material", "Ok");
+                    }
+                    else
+                    {
+                        LstItems.Remove(item);
+                        ScheduleDetails.LstScheduleItemsServices.Remove(item);
+                    }
                 }
                 else
                 {
-                    LstItems.Remove(item);
-                    ScheduleDetails.LstScheduleItemsServices.Remove(item);
+                    if (LstItemsInvoice.Count > 0) //Remove invoice item
+                    {
+                        LstItemsInvoice.Remove(item);
+                        //ScheduleDetails.LstScheduleItemsServices.Remove(item);
+
+                        TotalInvoice(ScheduleDetails, CustomerDetails);
+                    }
+
                 }
-            }
-            else //Remove invoice item or Estimate item
-            {
-                LstItems.Remove(item);
-                ScheduleDetails.LstScheduleItemsServices.Remove(item);
 
-                TotalInvoice(ScheduleDetails, CustomerDetails);
-            }
 
-            UserDialogs.Instance.HideLoading();
+                UserDialogs.Instance.HideLoading();
+            }
 
             IsBusy = false;
         }
@@ -2537,49 +2887,67 @@ namespace FixPro.ViewModels
         async void OnRemoveService(ScheduleItemsServicesModel service)
         {
             IsBusy = true;
-
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.PutStrAsync("api/Schedules/PutFreeService", service, UserToken);//Delete Service
-
-            if (string.IsNullOrEmpty(json))
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                await App.Current.MainPage.DisplayAlert("Alert", "Faild for Delete this Service.", "Ok");
-            }
-            else
-            {
-                LstFreeServices.Remove(service);
-                ScheduleDetails.LstFreeServices.Remove(service);
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.PutStrAsync("api/Schedules/PutFreeService", service, UserToken);//Delete Service
 
-                //TotalInvoice(ScheduleDetails, CustomerDetails);
-            }
+                if (string.IsNullOrEmpty(json))
+                {
+                    await App.Current.MainPage.DisplayAlert("Alert", "Failed to delete the service", "Ok");
+                }
+                else
+                {
+                    LstFreeServices.Remove(service);
+                    ScheduleDetails.LstFreeServices.Remove(service);
 
-            UserDialogs.Instance.HideLoading();
+                    //TotalInvoice(ScheduleDetails, CustomerDetails);
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }
 
             IsBusy = false;
         }
 
+        async void OnFullScreenNote(string Note)
+        {
+            var popupView = new FullScreenNoteViewModel(Note);
+            popupView.NoteClose += (note) =>
+            {
+                ScheduleDetails.Notes = note;
+            };
+            var page = new Views.SchedulePages.FullScreenNotePage();
+            page.BindingContext = popupView;
+            await App.Current.MainPage.Navigation.PushAsync(page);
+        }
 
         async void OnRemoveMaterialReceipt(ScheduleMaterialReceiptModel item)
         {
             IsBusy = true;
-            UserDialogs.Instance.ShowLoading();
-
-            string UserToken = await _service.UserToken();
-
-            var json = await ORep.PutStrAsync("api/Schedules/PutMaterialReceipt", item, UserToken);//Delete Material Receipt
-
-            if (string.IsNullOrEmpty(json))
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                await App.Current.MainPage.DisplayAlert("Alert", "Faild for Delete this Material Receipt.", "Ok");
-            }
-            else
-            {
-                LstMaterialReceipt.Remove(item);
-                ScheduleDetails.LstMaterialReceipt.Remove(item);
+                UserDialogs.Instance.ShowLoading();
+
+                string UserToken = await _service.UserToken();
+
+                var json = await ORep.PutStrAsync("api/Schedules/PutMaterialReceipt", item, UserToken);//Delete Material Receipt
+
+                if (string.IsNullOrEmpty(json))
+                {
+                    await App.Current.MainPage.DisplayAlert("Alert", "Failed to delete the material receipt", "Ok");
+                }
+                else
+                {
+                    LstMaterialReceipt.Remove(item);
+                    ScheduleDetails.LstMaterialReceipt.Remove(item);
+
+                }
+
+                UserDialogs.Instance.HideLoading();
             }
 
-            UserDialogs.Instance.HideLoading();
             IsBusy = false;
         }
 
@@ -2607,8 +2975,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -2650,10 +3018,9 @@ namespace FixPro.ViewModels
                     await PopupNavigation.Instance.PushAsync(popupView);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -2666,8 +3033,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -2710,10 +3077,9 @@ namespace FixPro.ViewModels
                     await PopupNavigation.Instance.PushAsync(popupView);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -2726,8 +3092,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -2746,14 +3112,19 @@ namespace FixPro.ViewModels
                             string strId = "";
                             foreach (var Emp in Empolyees)
                             {
-                                str += ("," + Emp.UserName);
-                                strId += ("," + Emp.Id);
-                                LstEmps.Add(new ScheduleEmployeesModel
+                                var obj = LstEmps.ToList().Find(x => x.EmpId == Emp.Id);
+                                if (obj == null)
                                 {
-                                    EmpId = Emp.Id,
-                                    EmpFullName = Emp.FirstName + " " + Emp.LastName,
-                                    EmpUserName = Emp.UserName,
-                                });
+                                    str += ("," + Emp.UserName);
+                                    strId += ("," + Emp.Id);
+                                    LstEmps.Add(new ScheduleEmployeesModel
+                                    {
+                                        EmpId = Emp.Id,
+                                        EmpFullName = Emp.FirstName + " " + Emp.LastName,
+                                        EmpUserName = Emp.UserName,
+                                    });
+                                }
+
                             }
 
                             if (!string.IsNullOrEmpty(StrEmployees) && !string.IsNullOrEmpty(StrEmployeesId))
@@ -2774,10 +3145,9 @@ namespace FixPro.ViewModels
                     await PopupNavigation.Instance.PushAsync(popupView);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -2864,8 +3234,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -2959,23 +3329,36 @@ namespace FixPro.ViewModels
                             }
                             if (Json != "Bad Request" && Json != "api not responding")
                             {
-                                await App.Current.MainPage.DisplayAlert("FixPro", "Succes for Save Schedule.", "Ok");
-                                await App.Current.MainPage.Navigation.PushAsync(new MainPage());
-
+                                await App.Current.MainPage.DisplayAlert("FixPro", "Schedule saved successfully", "Ok");
                                 if (model.Id == 0)
                                 {
-                                    string Massage = $"Hi {model.CustomerName}! Your service appointment with {Helpers.Settings.AccountName} has been scheduled for {DateTime.Parse(model.StartDate).ToString("MMMM dd, yyyy")}. Your technician will arrive between {DateTime.Parse(model.Time).ToString("hh:mmtt")} - {DateTime.Parse(model.TimeEnd).ToString("hh:mmtt")} CDT.";
+                                    var VM = new SchedulesViewModel();
+                                    var page = new SchedulePage();
+                                    page.BindingContext = VM;
+                                    await App.Current.MainPage.Navigation.PushAsync(page);
+                                    App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
 
-                                    string returnMsg = SendSMS(ScheduleDetails.CustomerDTO.Phone1, Massage);
+                                    string Massage = $"Hi {model.CustomerName}! Your service appointment with {Helpers.Settings.AccountNameWithSpace} has been scheduled for {DateTime.Parse(model.StartDate).ToString("MMMM dd, yyyy")}. Your technician will arrive between {DateTime.Parse(model.Time).ToString("hh:mmtt")} - {DateTime.Parse(model.TimeEnd).ToString("hh:mmtt")} CDT.";
+
+                                    string returnMsg = Controls.StartData.SendSMS(ScheduleDetails.CustomerDTO.Phone1, Massage);
                                     if (string.IsNullOrEmpty(returnMsg))
                                     {
-                                        await App.Current.MainPage.DisplayAlert("Alert", "Succes for Save Schedule but Faild Send SMS to Customer.", "Ok");
+                                        await App.Current.MainPage.DisplayAlert("Alert", "Schedule saved successfully, but failed to send SMS to the customer", "Ok");
                                     }
+                                }
+                                else
+                                {
+                                    var VM = new SchedulesViewModel(model.Id, model.ScheduleDateId);
+                                    //var page = new NewSchedulePage();
+                                    var page = new ScheduleDetailsPage();
+                                    page.BindingContext = VM;
+                                    await App.Current.MainPage.Navigation.PushAsync(page);
+                                    App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                                 }
                             }
                             else
                             {
-                                await App.Current.MainPage.DisplayAlert("Alert", "Faild for add or edit schedule.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("Alert", "Failed to add or edit this schedule", "Ok");
                             }
                         }
                     }
@@ -2989,21 +3372,23 @@ namespace FixPro.ViewModels
             IsBusy = false;
         }
 
-        string SendSMS(string Phone, string Msg)
-        {
-            var accountSid = "AC2aa33faec930e6bddfef1daa25e3b945";
-            var authToken = "744fd3259244985557d4d0c1aa2617eb";
-            TwilioClient.Init(accountSid, authToken);
+        //string SendSMS(string Phone, string Msg)
+        //{
+        //    //var accountSid = "AC2aa33faec930e6bddfef1daa25e3b945";
+        //    //var authToken = "744fd3259244985557d4d0c1aa2617eb";            
+        //    var accountSid = Controls.StartData.Com_MainObj.TwilioAccountSid;
+        //    var authToken = Controls.StartData.Com_MainObj.TwilioauthToken;
+        //    TwilioClient.Init(accountSid, authToken);
 
-            var messageOptions = new CreateMessageOptions(
-              new PhoneNumber("+1" + Phone));
-            messageOptions.From = new PhoneNumber("+18885307372");
-            messageOptions.Body = Msg;
+        //    var messageOptions = new CreateMessageOptions(
+        //      new PhoneNumber("+1" + Phone));
 
-            var message = MessageResource.Create(messageOptions);
+        //    messageOptions.From = new PhoneNumber(Controls.StartData.Com_MainObj.TwilioFromPhoneNumber);
+        //    messageOptions.Body = Msg;
+        //    var message = MessageResource.Create(messageOptions);
 
-            return message.Sid;
-        }
+        //    return message.Sid;
+        //}
 
         //string SendSMS(string Phone, string Code)
         //{
@@ -3020,7 +3405,6 @@ namespace FixPro.ViewModels
 
         //    return message.Sid;
         //}
-
 
 
         async void OnSelectJobDetails(SchedulesModel model)
@@ -3042,8 +3426,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -3056,10 +3440,9 @@ namespace FixPro.ViewModels
                     UserDialogs.Instance.HideLoading();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -3146,8 +3529,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -3167,7 +3550,7 @@ namespace FixPro.ViewModels
 
                             if (!string.IsNullOrEmpty(json))
                             {
-                                await App.Current.MainPage.DisplayAlert("FixPro", "Succes Start The Job.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("FixPro", "The job started successfully.", "Ok");
                                 model.ShowCheckBtn = 1;
 
                                 await App.Current.MainPage.Navigation.PushAsync(new SchedulePage());
@@ -3175,17 +3558,16 @@ namespace FixPro.ViewModels
                             }
                             else
                             {
-                                await App.Current.MainPage.DisplayAlert("FixPro", "Failed Start The Job.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("FixPro", "The job start Failed.", "Ok");
                             }
                             UserDialogs.Instance.HideLoading();
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -3198,8 +3580,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -3220,7 +3602,7 @@ namespace FixPro.ViewModels
 
                             if (!string.IsNullOrEmpty(json))
                             {
-                                await App.Current.MainPage.DisplayAlert("FixPro", "Succes End The Job.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("FixPro", "The job ended successfully.", "Ok");
 
                                 model.ShowCheckBtn = 2;
 
@@ -3229,17 +3611,16 @@ namespace FixPro.ViewModels
                             }
                             else
                             {
-                                await App.Current.MainPage.DisplayAlert("FixPro", "Failed End The Job.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("FixPro", "The job end Failed.", "Ok");
                             }
                             UserDialogs.Instance.HideLoading();
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -3252,8 +3633,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -3285,38 +3666,42 @@ namespace FixPro.ViewModels
 
                             if (!string.IsNullOrEmpty(json))
                             {
-                                await App.Current.MainPage.DisplayAlert("FixPro", "Succes Add Another Date.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("FixPro", "Date added successfully", "Ok");
+                                var VM = new SchedulesViewModel();
+                                var page = new SchedulePage();
+                                page.BindingContext = VM;
+                                await App.Current.MainPage.Navigation.PushAsync(page);
                                 await PopupNavigation.Instance.PopAsync();
-                                await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+
 
                                 if (model.Id == 0)
                                 {
-                                    string Massage = $"Hi {model.CustomerName}! Your service appointment with {Helpers.Settings.AccountName} has been scheduled for {DateTime.Parse(model.StartDate).ToString("MMMM dd, yyyy")}. Your technician will arrive between {DateTime.Parse(model.Time).ToString("hh:mmtt")} - {DateTime.Parse(model.TimeEnd).ToString("hh:mmtt")} CDT.";
+                                    string Massage = $"Hi {model.CustomerName}! Your service appointment with {Helpers.Settings.AccountNameWithSpace} has been scheduled for {DateTime.Parse(model.StartDate).ToString("MMMM dd, yyyy")}. Your technician will arrive between {DateTime.Parse(model.Time).ToString("hh:mmtt")} - {DateTime.Parse(model.TimeEnd).ToString("hh:mmtt")} CDT.";
 
-                                    string returnMsg = SendSMS(ScheduleDetails.CustomerDTO.Phone1, Massage);
+                                    string returnMsg = Controls.StartData.SendSMS(ScheduleDetails.CustomerDTO.Phone1, Massage);
                                     if (string.IsNullOrEmpty(returnMsg))
                                     {
-                                        await App.Current.MainPage.DisplayAlert("Alert", "Succes for Save Schedule but Faild Send SMS to Customer.", "Ok");
+                                        await App.Current.MainPage.DisplayAlert("Alert", "Schedule saved successfully, but failed to send SMS to the customer", "Ok");
                                     }
                                 }
                             }
                             else
                             {
-                                await App.Current.MainPage.DisplayAlert("FixPro", "Failed for Add Another Date.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("FixPro", "Failed to add another date", "Ok");
                             }
                             UserDialogs.Instance.HideLoading();
                         }
                         else
                         {
-                            await App.Current.MainPage.DisplayAlert("FixPro", "Complete All Fields, please .", "Ok");
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Please complete all the fields", "Ok");
                         }
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -3329,8 +3714,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -3349,9 +3734,13 @@ namespace FixPro.ViewModels
 
                         if (json != null)
                         {
-                            await App.Current.MainPage.DisplayAlert("FixPro", "Save Respon Not Service.", "Ok");
-                            await PopupNavigation.Instance.PopAsync();
-                            await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                            await App.Current.MainPage.DisplayAlert("FixPro", "The job is not serviced", "Ok");
+                            var VM = new SchedulesViewModel(ScheduleDetails.Id, model.Id);
+                            //var page = new NewSchedulePage();
+                            var page = new ScheduleDetailsPage();
+                            page.BindingContext = VM;
+                            await App.Current.MainPage.Navigation.PushAsync(page);
+                            App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                         }
                         UserDialogs.Instance.HideLoading();
                     }
@@ -3361,10 +3750,9 @@ namespace FixPro.ViewModels
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -3377,8 +3765,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -3393,9 +3781,13 @@ namespace FixPro.ViewModels
 
                         if (json != null)
                         {
-                            await App.Current.MainPage.DisplayAlert("FixPro", "Success Re Open Service.", "Ok");
-                            await PopupNavigation.Instance.PopAsync();
-                            await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Job re opened successfully", "Ok");
+                            var VM = new SchedulesViewModel(ScheduleDetails.Id, model.Id);
+                            //var page = new NewSchedulePage();
+                            var page = new ScheduleDetailsPage();
+                            page.BindingContext = VM;
+                            await App.Current.MainPage.Navigation.PushAsync(page);
+                            App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                         }
                         UserDialogs.Instance.HideLoading();
                     }
@@ -3405,10 +3797,9 @@ namespace FixPro.ViewModels
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -3422,8 +3813,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -3447,32 +3838,34 @@ namespace FixPro.ViewModels
 
                         if (!string.IsNullOrEmpty(json) && json.Contains("Not Done All Employee") == true)
                         {
-                            await App.Current.MainPage.DisplayAlert("FixPro", "Failed Job Done because find employee is not finished.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Failed to end the scheduled job because the employee isn’t done", "Ok");
                         }
                         else if (!string.IsNullOrEmpty(json))
                         {
-                            bool answer = await App.Current.MainPage.DisplayAlert("Question?", "Do you want send massage to customer?", "Yes", "No");
-                            if(answer)
+                            bool answer = await App.Current.MainPage.DisplayAlert("Question?", "Do you want to send a message to the customer?", "Yes", "No");
+                            if (answer)
                             {
-                                BitlyService bitly = new BitlyService();
-                                string shortUrl = await bitly.ShortenUrl(model.GoogleReviewLink);
+                                string Massage = $"Hello {model.CustomerName}, thank you for choosing us. We hope your experience was satisfactory. Your feedback means a lot to us! Please consider leaving a Google review here: {model.GoogleReviewLink}. Have a great day!";
 
-                                string Massage = $"Hello {model.CustomerName}, thank you for choosing us. We hope your experience was satisfactory. Your feedback means a lot to us! Please consider leaving a Google review here: {shortUrl}. Have a great day!";
-
-                                string returnMsg = SendSMS(model.CustomerPhone, Massage);
+                                string returnMsg = Controls.StartData.SendSMS(model.CustomerPhone, Massage);
                                 if (string.IsNullOrEmpty(returnMsg))
                                 {
-                                    await App.Current.MainPage.DisplayAlert("Alert", "Succes for Done Schedule but Faild Send SMS to Customer.", "Ok");
+                                    await App.Current.MainPage.DisplayAlert("Alert", "Schedule accepted successfully, but failed to send SMS to the customer", "Ok");
                                 }
                             }
 
-                            await App.Current.MainPage.DisplayAlert("FixPro", "Succes for End schedule Date.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Scheduled job completed successfully", "Ok");
+                            var VM = new SchedulesViewModel(ScheduleDetails.Id, model.Id);
+                            //var page = new NewSchedulePage();
+                            var page = new ScheduleDetailsPage();
+                            page.BindingContext = VM;
+                            await App.Current.MainPage.Navigation.PushAsync(page);
                             await PopupNavigation.Instance.PopAsync();
-                            await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                            App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                         }
                         else
                         {
-                            await App.Current.MainPage.DisplayAlert("FixPro", "Failed for End schedule Date.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Failed to end the scheduled job", "Ok");
                         }
                         UserDialogs.Instance.HideLoading();
                         //}
@@ -3483,9 +3876,9 @@ namespace FixPro.ViewModels
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
                 //throw;
             }
 
@@ -3495,20 +3888,30 @@ namespace FixPro.ViewModels
         async Task UploadPictures(List<SchedulePicturesModel> LstPhotos)
         {
             IsBusy = true;
-            UserDialogs.Instance.ShowLoading();
 
-            List<SchedulePicturesModel> LstFinalPhotos = LstPhotos.Where(x => x.Id == 0).ToList(); // if Id = 0 (Photo New)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                UserDialogs.Instance.ShowLoading();
 
-            //string Postjson = await Helpers.Utility.PostData("api/ImageMobile/ReplacePostOneImagesScheduleMobile", JsonConvert.SerializeObject(LstFinalPhotos, Formatting.None,
-            //            new JsonSerializerSettings()
-            //            {
-            //                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            //            }));
+                List<SchedulePicturesModel> LstFinalPhotos = LstPhotos.Where(x => x.Id == 0).ToList(); // if Id = 0 (Photo New)
 
-            string UserToken = await _service.UserToken();
-            string Postjson = await ORep.PostMultiPicAsync("api/ImageMobile/ReplacePostOneImagesScheduleMobile", LstFinalPhotos, UserToken);
+                foreach (var source in LstFinalPhotos)
+                {
+                    if (source.PictureSource != null)
+                        source.PictureSource = null;
+                }
+                //string Postjson = await Helpers.Utility.PostData("api/ImageMobile/ReplacePostOneImagesScheduleMobile", JsonConvert.SerializeObject(LstFinalPhotos, Formatting.None,
+                //            new JsonSerializerSettings()
+                //            {
+                //                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                //            }));
 
-            UserDialogs.Instance.HideLoading();
+                string UserToken = await _service.UserToken();
+                string Postjson = await ORep.PostMultiPicAsync("api/ImageMobile/ReplacePostOneImagesScheduleMobile", LstFinalPhotos, UserToken);
+
+                UserDialogs.Instance.HideLoading();
+            }
+
             IsBusy = false;
         }
 
@@ -3527,11 +3930,12 @@ namespace FixPro.ViewModels
                 }
                 else
                 {
-
-
                     var mediaOption = new PickMediaOptions()
                     {
-                        PhotoSize = PhotoSize.Medium
+                        PhotoSize = PhotoSize.Small,
+                        CompressionQuality = 75,
+                        CustomPhotoSize = 200,
+                        MaxWidthHeight = 400,
                     };
 
                     _mediaFile = await CrossMedia.Current.PickPhotoAsync();
@@ -3553,12 +3957,14 @@ namespace FixPro.ViewModels
                         ScheduleId = ScheduleDetails.Id,
                         FileName = Convert.ToBase64String(Helpers.Utility.ReadToEnd(_mediaFile.GetStream())),
                         Active = true,
+                        ShowToCust = true,
                         CreateUser = ScheduleDetails.CreateUser,
                         CreateDate = DateTime.Now,
                         ScheduleDateId = ScheduleDetails.OneScheduleDate.Id,
                         PictureSource = SchedulePhoto,
                         Flag = 0, // new photo
                     };
+
 
                     LstNewPictures.Add(OnePictureModel);
                     LstAllPictures.Add(OnePictureModel);
@@ -3581,7 +3987,6 @@ namespace FixPro.ViewModels
             catch (Exception ex)
             {
                 await App.Current.MainPage.DisplayAlert("Error", "This is not support on your device.", "Ok");
-                //throw ex;
             }
 
         }
@@ -3603,7 +4008,11 @@ namespace FixPro.ViewModels
                 var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
                 {
                     Directory = "Sample",
-                    Name = "test.jpg"
+                    Name = "test.jpg",
+                    PhotoSize = PhotoSize.Small,
+                    CompressionQuality = 75,
+                    CustomPhotoSize = 200,
+                    MaxWidthHeight = 400,
                 });
 
                 if (file == null)
@@ -3618,6 +4027,7 @@ namespace FixPro.ViewModels
                     return stream;
                 });
 
+
                 OnePictureModel = new SchedulePicturesModel
                 {
                     AccountId = ScheduleDetails.AccountId,
@@ -3625,12 +4035,14 @@ namespace FixPro.ViewModels
                     ScheduleId = ScheduleDetails.Id,
                     FileName = Convert.ToBase64String(Helpers.Utility.ReadToEnd(file.GetStream())),
                     Active = true,
+                    ShowToCust = true,
                     CreateUser = ScheduleDetails.CreateUser,
                     CreateDate = DateTime.Now,
                     ScheduleDateId = ScheduleDetails.OneScheduleDate.Id,
                     PictureSource = SchedulePhoto,
                     Flag = 0, // new photo
                 };
+
 
                 LstNewPictures.Add(OnePictureModel);
                 LstAllPictures.Add(OnePictureModel);
@@ -3653,9 +4065,9 @@ namespace FixPro.ViewModels
             catch (Exception ex)
             {
                 await App.Current.MainPage.DisplayAlert("No Camera", ":( No camera available.", "Ok");
-                //throw ex;
             }
         }
+
 
         async void OnDeleteSchedulePhoto(SchedulePicturesModel model)
         {
@@ -3663,8 +4075,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -3716,10 +4128,9 @@ namespace FixPro.ViewModels
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
         }
 
@@ -3741,13 +4152,14 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
-                    if (model != null)
+                    if (model != null && model.LstSchedulePictures.Count > 0)
                     {
+                        UserDialogs.Instance.ShowLoading();
                         await UploadPictures(model.LstSchedulePictures);
 
                         SetLstTwoSchedulePhotos(model.LstSchedulePictures);
@@ -3755,11 +4167,12 @@ namespace FixPro.ViewModels
                         //PhotosCount = model.LstSchedulePictures.Count-2;
                         await CalcSchPhotoCount(model.LstSchedulePictures.Count);
 
-                        await App.Current.MainPage.DisplayAlert("FixPro", "Succes for add schedule pictures.", "Ok");
+                        await App.Current.MainPage.DisplayAlert("FixPro", "Schedule pictures added successfully", "Ok");
 
                         UserDialogs.Instance.ShowLoading();
                         var popupView = new SchedulesViewModel(model.Id, model.OneScheduleDate.Id);
-                        var page = new Views.SchedulePages.NewSchedulePage();
+                        //var page = new NewSchedulePage();
+                        var page = new ScheduleDetailsPage();
                         page.BindingContext = popupView;
                         await App.Current.MainPage.Navigation.PushAsync(page);
                         App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
@@ -3767,6 +4180,7 @@ namespace FixPro.ViewModels
                         UserDialogs.Instance.HideLoading();
 
                         //await App.Current.MainPage.Navigation.PopAsync();
+                        UserDialogs.Instance.HideLoading();
                     }
                     else
                     {
@@ -3774,10 +4188,9 @@ namespace FixPro.ViewModels
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -3818,8 +4231,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -3835,86 +4248,104 @@ namespace FixPro.ViewModels
                                 {
                                     if (Pending == true || Accept == true || Declind == true)
                                     {
-                                        if (SignatureImageByte64Estimate != null)
+
+                                        OneEstimate.AccountId = model.AccountId;
+                                        OneEstimate.BrancheId = model.BrancheId;
+                                        OneEstimate.ScheduleId = model.Id;
+                                        OneEstimate.EstimateDate = DateTime.Now;
+                                        OneEstimate.CustomerId = model.CustomerId;
+                                        OneEstimate.Total = SubTotalEst; //Total before discount and tax
+                                        OneEstimate.TaxId = model.CustomerDTO.TaxId;
+                                        OneEstimate.Tax = model.CustomerDTO.TaxDTO?.Rate;
+                                        OneEstimate.Taxval = null;
+                                        OneEstimate.SignatureDraw = SignatureImageByte64Estimate;
+                                        //OneEstimate.Taxval = (model.CustomerDTO != null && model.CustomerDTO.MemeberType == false && model.CustomerDTO.TaxDTO != null) ? (SubTotal - (SubTotal * model.CustomerDTO.MemberDTO.MemberValue / 100) * model.CustomerDTO.TaxDTO.Rate / 100) : (model.CustomerDTO != null && model.CustomerDTO.TaxDTO != null && model.CustomerDTO.MemeberType == true && model.CustomerDTO.TaxDTO != null) ? ((SubTotal - model.CustomerDTO.Discount) * model.CustomerDTO.TaxDTO.Rate / 100) : 0;
+                                        OneEstimate.MemberId = model.CustomerDTO.MemeberId;
+                                        OneEstimate.Discount = Discount;
+                                        //OneEstimate.DiscountAmountOrPercent = model.CustomerDTO.MemberDTO.MemberType == false ? "%" : "$";
+                                        OneEstimate.DiscountAmountOrPercent = AmountOrPersent == false ? "%" : "$";
+                                        OneEstimate.Net = NetEst;
+                                        OneEstimate.Status = Accept == true ? 1 : Declind == true ? 2 : 0; //0 = Pending
+                                        OneEstimate.SignaturePrintName = null;
+                                        OneEstimate.Terms = null;
+                                        OneEstimate.NotesForCustomer = model.CustomerDTO.Notes;
+                                        OneEstimate.Notes = model.Notes;
+                                        OneEstimate.Active = model.Active;
+                                        OneEstimate.CreateUser = int.Parse(Helpers.Settings.UserId);
+                                        OneEstimate.CreateDate = DateTime.Now;
+
+                                        foreach (ScheduleItemsServicesModel item in LstItemsEstimate)
                                         {
-                                            OneEstimate.AccountId = model.AccountId;
-                                            OneEstimate.BrancheId = model.BrancheId;
-                                            OneEstimate.ScheduleId = model.Id;
-                                            OneEstimate.EstimateDate = DateTime.Now;
-                                            OneEstimate.CustomerId = model.CustomerId;
-                                            OneEstimate.Total = SubTotalEst; //Total before discount and tax
-                                            OneEstimate.TaxId = model.CustomerDTO.TaxId;
-                                            OneEstimate.Tax = model.CustomerDTO.TaxDTO.Rate;
-                                            OneEstimate.Taxval = null;
-                                            OneEstimate.SignatureDraw = SignatureImageByte64Estimate;
-                                            //OneEstimate.Taxval = (model.CustomerDTO != null && model.CustomerDTO.MemeberType == false && model.CustomerDTO.TaxDTO != null) ? (SubTotal - (SubTotal * model.CustomerDTO.MemberDTO.MemberValue / 100) * model.CustomerDTO.TaxDTO.Rate / 100) : (model.CustomerDTO != null && model.CustomerDTO.TaxDTO != null && model.CustomerDTO.MemeberType == true && model.CustomerDTO.TaxDTO != null) ? ((SubTotal - model.CustomerDTO.Discount) * model.CustomerDTO.TaxDTO.Rate / 100) : 0;
-                                            OneEstimate.MemberId = model.CustomerDTO.MemeberId;
-                                            OneEstimate.Discount = Discount;
-                                            //OneEstimate.DiscountAmountOrPercent = model.CustomerDTO.MemberDTO.MemberType == false ? "%" : "$";
-                                            OneEstimate.DiscountAmountOrPercent = AmountOrPersent == false ? "%" : "$";
-                                            OneEstimate.Net = NetEst;
-                                            OneEstimate.Status = Accept == true ? 1 : Declind == true ? 2 : 0; //0 = Pending
-                                            OneEstimate.SignaturePrintName = null;
-                                            OneEstimate.Terms = null;
-                                            OneEstimate.NotesForCustomer = model.CustomerDTO.Notes;
-                                            OneEstimate.Notes = model.Notes;
-                                            OneEstimate.Active = model.Active;
-                                            OneEstimate.CreateUser = int.Parse(Helpers.Settings.UserId);
-                                            OneEstimate.CreateDate = DateTime.Now;
-
-                                            foreach (ScheduleItemsServicesModel item in LstItemsEstimate)
+                                            EstimateItemServicesModel ObjItem = new EstimateItemServicesModel
                                             {
-                                                EstimateItemServicesModel ObjItem = new EstimateItemServicesModel
+                                                Id = item.Id,
+                                                AccountId = model.AccountId,
+                                                BrancheId = model.BrancheId,
+                                                //TaxId = model.CustomerDTO.TaxId,
+                                                //Tax = model.CustomerDTO.TaxDTO.Rate,
+                                                //Taxable = (model.CustomerDTO.TaxDTO.Rate == null || model.CustomerDTO.TaxDTO.Rate == 0) ? false : true,
+                                                Taxable = true,
+                                                //Unit = item.Unit,
+                                                Price = item.CostRate,
+                                                Quantity = item.Quantity,
+                                                //Discountable = model.CustomerDTO.MemberDTO.MemberValue != null ? true : false,
+                                                Discountable = true,
+                                                ItemsServicesId = item.ItemsServicesId,
+                                                ItemsServicesName = item.ItemsServicesName,
+                                                CreateUser = int.Parse(Helpers.Settings.UserId),
+                                                CreateDate = DateTime.Now,
+                                                Total = item.Quantity != null && item.Tax != null ? (item.CostRate * item.Quantity) + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity == null && item.Tax != null ? item.CostRate + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity != null && item.Tax == null ? item.CostRate * item.Quantity : item.CostRate,
+                                                Active = model.Active,
+                                            };
+                                            OneEstimate.LstEstimateItemServices.Add(ObjItem);
+                                        }
+
+                                        OneEstimate.LstScdDate = LstEstimateSchaduleDatesActual.ToList();
+
+                                        UserDialogs.Instance.ShowLoading();
+                                        //var json = await Helpers.Utility.PostData("api/Estimates/PostEstimate", JsonConvert.SerializeObject(OneEstimate));
+                                        var json = await ORep.PostDataAsync("api/Estimates/PostEstimate", OneEstimate, UserToken);
+                                        UserDialogs.Instance.HideLoading();
+
+                                        if (json != "Bad Request" && json != "api not responding" && json.Contains("Already Exist For This Schedule Date#") != true)
+                                        {
+                                            //await App.Current.MainPage.DisplayAlert("FixPro", "Success Save Estimate.", "Ok");
+                                            Helpers.Messages.ShowSuccessSnackBar("Success Create Estimate.");
+
+                                            bool answer = await App.Current.MainPage.DisplayAlert("Question?", "Do you want to send an email to the customer?", "Yes", "No");
+
+                                            if (answer)//Send Email
+                                            {
+
+                                                UserDialogs.Instance.ShowLoading();
+                                                var jsonEmail = await ORep.PostStrAsync("api/Estimates/PostEstimateEmail", OneEstimate, UserToken);
+                                                UserDialogs.Instance.HideLoading();
+
+                                                if (!string.IsNullOrEmpty(jsonEmail) && jsonEmail.Contains("Send Success") == true)
                                                 {
-                                                    Id = item.Id,
-                                                    AccountId = model.AccountId,
-                                                    BrancheId = model.BrancheId,
-                                                    //TaxId = model.CustomerDTO.TaxId,
-                                                    //Tax = model.CustomerDTO.TaxDTO.Rate,
-                                                    //Taxable = (model.CustomerDTO.TaxDTO.Rate == null || model.CustomerDTO.TaxDTO.Rate == 0) ? false : true,
-                                                    Taxable = true,
-                                                    //Unit = item.Unit,
-                                                    Price = item.CostRate,
-                                                    Quantity = item.Quantity,
-                                                    //Discountable = model.CustomerDTO.MemberDTO.MemberValue != null ? true : false,
-                                                    Discountable = true,
-                                                    ItemsServicesId = item.ItemsServicesId,
-                                                    ItemsServicesName = item.ItemsServicesName,
-                                                    CreateUser = int.Parse(Helpers.Settings.UserId),
-                                                    CreateDate = DateTime.Now,
-                                                    Total = item.Quantity != null && item.Tax != null ? (item.CostRate * item.Quantity) + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity == null && item.Tax != null ? item.CostRate + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity != null && item.Tax == null ? item.CostRate * item.Quantity : item.CostRate,
-                                                    Active = model.Active,
-                                                };
-                                                OneEstimate.LstEstimateItemServices.Add(ObjItem);
+                                                    Helpers.Messages.ShowSuccessSnackBar("Success Send Email to Customer.");
+                                                    //await App.Current.MainPage.DisplayAlert("FixPro", "Email sent successfully to customer", "Ok");
+                                                }
+                                                else
+                                                {
+                                                    Helpers.Messages.ShowSuccessSnackBar("Failed to send e-mail to the customer");
+                                                    //await App.Current.MainPage.DisplayAlert("FixPro", "Failed to send e-mail to the customer", "Ok");
+                                                }
                                             }
 
-                                            OneEstimate.LstScdDate = LstEstimateSchaduleDatesActual.ToList();
-
-                                            UserDialogs.Instance.ShowLoading();
-                                            //var json = await Helpers.Utility.PostData("api/Estimates/PostEstimate", JsonConvert.SerializeObject(OneEstimate));
-                                            var json = await ORep.PostDataAsync("api/Estimates/PostEstimate", OneEstimate, UserToken);
-                                            UserDialogs.Instance.HideLoading();
-
-                                            if (json != "Bad Request" && json != "api not responding" && json.Contains("Already Exist For This Schedule Date#") != true)
-                                            {
-                                                await App.Current.MainPage.DisplayAlert("FixPro", "Succes Save Estimate.", "Ok");
-
-                                                await App.Current.MainPage.Navigation.PushAsync(new MainPage());
-                                                //var VM = new SchedulesViewModel(model.Id, model.StartDate);
-                                                //var page = new NewSchedulePage();
-                                                //page.BindingContext = VM;
-                                                //await App.Current.MainPage.Navigation.PushAsync(page);
-                                                //App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
-                                            }
-                                            else
-                                            {
-                                                await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
-                                            }
+                                            //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                            var VM = new SchedulesViewModel(model.Id, model.ScheduleDateId);
+                                            //var page = new NewSchedulePage();
+                                            var page = new ScheduleDetailsPage();
+                                            page.BindingContext = VM;
+                                            await App.Current.MainPage.Navigation.PushAsync(page);
+                                            App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                                         }
                                         else
                                         {
-                                            await App.Current.MainPage.DisplayAlert("Alert", "Please Enter Signature for this Estimate.", "Ok");
+                                            await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
                                         }
+
                                     }
                                     else
                                     {
@@ -3923,24 +4354,24 @@ namespace FixPro.ViewModels
                                 }
                                 else
                                 {
-                                    await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Schedule Dates for Estimate.", "Ok");
+                                    await App.Current.MainPage.DisplayAlert("Alert", "No schedule dates chosen for this estimate!", "Ok");
                                 }
                             }
                             else
                             {
-                                await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Item-Service for this Estimate.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("Alert", "No item/service chosen for this estimate!", "Ok");
                             }
 
                         }
                         else //Insert Invoice InvoiceOrEstimate == 1 (Schedule Page)
                         {
-                            if (LstItems.Count > 0)
+                            if (LstItemsInvoice.Count > 0)
                             {
                                 string UserToken = await _service.UserToken();
 
                                 if (LstInvoiceSchaduleDatesActual.Count > 0)
                                 {
-                                    var CheckItemoutFalse = LstItems.Where(m => m.Out == false).FirstOrDefault();
+                                    var CheckItemoutFalse = LstItemsInvoice.Where(m => m.Out == false).FirstOrDefault();
                                     if (CheckItemoutFalse != null)
                                     {
                                         OneInvoice.AccountId = model.AccountId;
@@ -3972,7 +4403,7 @@ namespace FixPro.ViewModels
                                         OneInvoice.CreateUser = int.Parse(Helpers.Settings.UserId);
                                         OneInvoice.CreateDate = DateTime.Now;
 
-                                        foreach (ScheduleItemsServicesModel item in LstItems)
+                                        foreach (ScheduleItemsServicesModel item in LstItemsInvoice)
                                         {
                                             InvoiceItemServicesModel ObjItem = new InvoiceItemServicesModel
                                             {
@@ -4009,7 +4440,28 @@ namespace FixPro.ViewModels
 
                                         if (json != "Bad Request" && json != "api not responding" && json.Contains("Not_Enough") != true && json.Contains("This Invoice Already Exist") != true)
                                         {
-                                            await App.Current.MainPage.DisplayAlert("FixPro", "Succes Create Invoice for this Job.", "Ok");
+                                            //await App.Current.MainPage.DisplayAlert("FixPro", "Success Create Invoice for this Job.", "Ok");
+                                            Helpers.Messages.ShowSuccessSnackBar("Success Create Invoice for this Job.");
+
+                                            bool answer = await App.Current.MainPage.DisplayAlert("Question?", "Do you want to send an email to the customer?", "Yes", "No");
+
+                                            if (answer)//Send Email
+                                            {
+                                                UserDialogs.Instance.ShowLoading();
+                                                var jsonEmail = await ORep.PostStrAsync("api/Invoices/PostInvoiceEmail", OneInvoice, UserToken);
+                                                UserDialogs.Instance.HideLoading();
+
+                                                if (!string.IsNullOrEmpty(jsonEmail) && jsonEmail.Contains("Send Success") == true)
+                                                {
+                                                    Helpers.Messages.ShowSuccessSnackBar("Success Send Email to Customer.");
+                                                    //await App.Current.MainPage.DisplayAlert("FixPro", "Email sent successfully to customer", "Ok");
+                                                }
+                                                else
+                                                {
+                                                    Helpers.Messages.ShowSuccessSnackBar("Failed to send e-mail to the customer");
+                                                    //await App.Current.MainPage.DisplayAlert("FixPro", "Failed to send e-mail to the customer", "Ok");
+                                                }
+                                            }
 
                                             OneInvoice.Id = int.Parse(json.Replace("\"", "").Trim());
                                             var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
@@ -4026,28 +4478,27 @@ namespace FixPro.ViewModels
                                     }
                                     else
                                     {
-                                        await App.Current.MainPage.DisplayAlert("Alert", "Please Don't Check all Item-Service Out for this Invoice.", "Ok");
+                                        await App.Current.MainPage.DisplayAlert("Alert", "Please don’t check all the items/services out for this invoice", "Ok");
                                     }
                                 }
                                 else
                                 {
-                                    await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Schedule Dates for Invoice.", "Ok");
+                                    await App.Current.MainPage.DisplayAlert("Alert", "No schedule dates chosen for this invoice!", "Ok");
                                 }
-                                
+
                             }
                             else
                             {
-                                await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Item-Service for this Invoice.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("Alert", "No item/service chosen for this invoice", "Ok");
                             }
                         }
                     }
 
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -4061,8 +4512,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -4076,210 +4527,249 @@ namespace FixPro.ViewModels
                             {
                                 if (Pending == true || Accept == true || Declind == true)
                                 {
-                                    if (SignatureImageByte64Estimate != null)
+
+                                    OneEstimate.AccountId = model.AccountId;
+                                    OneEstimate.BrancheId = model.BrancheId;
+                                    //OneEstimate.ScheduleId = model.Id;
+                                    //OneEstimate.ScheduleDateId = model.OneScheduleDate.Id;
+                                    OneEstimate.EstimateDate = DateTime.Now;
+                                    OneEstimate.CustomerId = model.Id;
+                                    OneEstimate.Total = SubTotalEst;
+                                    OneEstimate.TaxId = model.TaxId;
+                                    OneEstimate.Tax = model.TaxDTO?.Rate;
+                                    //OneEstimate.Taxval = (SubTotal - (SubTotal * model.MemberDTO.MemberValue / 100)) * model.TaxDTO.Rate / 100;
+                                    //OneEstimate.Taxval = (model.MemeberType == false && model.TaxDTO != null) ? (SubTotal - (SubTotal * model.MemberDTO.MemberValue / 100) * model.TaxDTO.Rate / 100) : (model.TaxDTO != null && model.MemeberType == true && model.TaxDTO != null) ? ((SubTotal - model.Discount) * model.TaxDTO.Rate / 100) : 0;
+                                    OneEstimate.Taxval = null;
+                                    OneEstimate.MemberId = model.MemeberId;
+                                    OneEstimate.Discount = Discount;
+                                    OneEstimate.SignatureDraw = SignatureImageByte64Estimate;
+                                    //OneEstimate.DiscountAmountOrPercent = model.MemberDTO.MemberType == false ? "%" : "$";
+                                    OneEstimate.DiscountAmountOrPercent = AmountOrPersent == false ? "%" : "$";
+                                    OneEstimate.Net = NetEst;
+                                    OneEstimate.Status = Accept == true ? 1 : Declind == true ? 2 : 0; //0 = Pending
+                                    OneEstimate.SignaturePrintName = null;
+                                    OneEstimate.Terms = null;
+                                    OneEstimate.NotesForCustomer = model.Notes;
+                                    //OneEstimate.Notes = model.Notes;
+                                    OneEstimate.Active = model.Active;
+                                    OneEstimate.CreateUser = int.Parse(Helpers.Settings.UserId);
+                                    OneEstimate.CreateDate = DateTime.Now;
+
+                                    foreach (ScheduleItemsServicesModel item in LstItemsEstimate)
                                     {
-                                        OneEstimate.AccountId = model.AccountId;
-                                        OneEstimate.BrancheId = model.BrancheId;
-                                        //OneEstimate.ScheduleId = model.Id;
-                                        //OneEstimate.ScheduleDateId = model.OneScheduleDate.Id;
-                                        OneEstimate.EstimateDate = DateTime.Now;
-                                        OneEstimate.CustomerId = model.Id;
-                                        OneEstimate.Total = SubTotalEst;
-                                        OneEstimate.TaxId = model.TaxId;
-                                        OneEstimate.Tax = model.TaxDTO.Rate;
-                                        //OneEstimate.Taxval = (SubTotal - (SubTotal * model.MemberDTO.MemberValue / 100)) * model.TaxDTO.Rate / 100;
-                                        //OneEstimate.Taxval = (model.MemeberType == false && model.TaxDTO != null) ? (SubTotal - (SubTotal * model.MemberDTO.MemberValue / 100) * model.TaxDTO.Rate / 100) : (model.TaxDTO != null && model.MemeberType == true && model.TaxDTO != null) ? ((SubTotal - model.Discount) * model.TaxDTO.Rate / 100) : 0;
-                                        OneEstimate.Taxval = null;
-                                        OneEstimate.MemberId = model.MemeberId;
-                                        OneEstimate.Discount = Discount;
-                                        OneEstimate.SignatureDraw = SignatureImageByte64Estimate;
-                                        //OneEstimate.DiscountAmountOrPercent = model.MemberDTO.MemberType == false ? "%" : "$";
-                                        OneEstimate.DiscountAmountOrPercent = AmountOrPersent == false ? "%" : "$";
-                                        OneEstimate.Net = NetEst;
-                                        OneEstimate.Status = Accept == true ? 1 : Declind == true ? 2 : 0; //0 = Pending
-                                        OneEstimate.SignaturePrintName = null;
-                                        OneEstimate.Terms = null;
-                                        OneEstimate.NotesForCustomer = model.Notes;
-                                        //OneEstimate.Notes = model.Notes;
-                                        OneEstimate.Active = model.Active;
-                                        OneEstimate.CreateUser = int.Parse(Helpers.Settings.UserId);
-                                        OneEstimate.CreateDate = DateTime.Now;
-
-                                        foreach (ScheduleItemsServicesModel item in LstItemsEstimate)
+                                        EstimateItemServicesModel ObjItem = new EstimateItemServicesModel
                                         {
-                                            EstimateItemServicesModel ObjItem = new EstimateItemServicesModel
-                                            {
-                                                Id = item.Id,
-                                                AccountId = model.AccountId,
-                                                BrancheId = model.BrancheId,
-                                                //TaxId = model.TaxId,
-                                                //Tax = model.TaxDTO.Rate,
-                                                //Taxable = (model.TaxDTO.Rate == null || model.TaxDTO.Rate == 0) ? false : true,
-                                                Taxable = true,
-                                                //Unit = item.Unit,
-                                                Price = item.CostRate,
-                                                Quantity = item.Quantity,
-                                                //Discountable = model.MemberDTO.MemberValue != null ? true : false,
-                                                Discountable = true,
-                                                ItemsServicesId = item.ItemsServicesId,
-                                                ItemsServicesName = item.ItemsServicesName,
-                                                CreateUser = int.Parse(Helpers.Settings.UserId),
-                                                CreateDate = DateTime.Now,
-                                                Total = item.Quantity != null && item.Tax != null ? (item.CostRate * item.Quantity) + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity == null && item.Tax != null ? item.CostRate + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity != null && item.Tax == null ? item.CostRate * item.Quantity : item.CostRate,
-                                                Active = model.Active,
-                                            };
-                                            OneEstimate.LstEstimateItemServices.Add(ObjItem);
-                                        }
+                                            Id = item.Id,
+                                            AccountId = model.AccountId,
+                                            BrancheId = model.BrancheId,
+                                            //TaxId = model.TaxId,
+                                            //Tax = model.TaxDTO.Rate,
+                                            //Taxable = (model.TaxDTO.Rate == null || model.TaxDTO.Rate == 0) ? false : true,
+                                            Taxable = true,
+                                            //Unit = item.Unit,
+                                            Price = item.CostRate,
+                                            Quantity = item.Quantity,
+                                            //Discountable = model.MemberDTO.MemberValue != null ? true : false,
+                                            Discountable = true,
+                                            ItemsServicesId = item.ItemsServicesId,
+                                            ItemsServicesName = item.ItemsServicesName,
+                                            CreateUser = int.Parse(Helpers.Settings.UserId),
+                                            CreateDate = DateTime.Now,
+                                            Total = item.Quantity != null && item.Tax != null ? (item.CostRate * item.Quantity) + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity == null && item.Tax != null ? item.CostRate + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity != null && item.Tax == null ? item.CostRate * item.Quantity : item.CostRate,
+                                            Active = model.Active,
+                                        };
+                                        OneEstimate.LstEstimateItemServices.Add(ObjItem);
+                                    }
 
-                                        UserDialogs.Instance.ShowLoading();
-                                        //var json = await Helpers.Utility.PostData("api/Estimates/PostEstimate", JsonConvert.SerializeObject(OneEstimate));
-                                        var json = await ORep.PostDataAsync("api/Estimates/PostEstimate", OneEstimate, UserToken);
-                                        UserDialogs.Instance.HideLoading();
+                                    UserDialogs.Instance.ShowLoading();
+                                    //var json = await Helpers.Utility.PostData("api/Estimates/PostEstimate", JsonConvert.SerializeObject(OneEstimate));
+                                    var json = await ORep.PostDataAsync("api/Estimates/PostEstimate", OneEstimate, UserToken);
+                                    UserDialogs.Instance.HideLoading();
 
-                                        if (json != "Bad Request" && json != "api not responding" && json.Contains("Already Exist For This Schedule Date#") != true)
+                                    if (json != "Bad Request" && json != "api not responding" && json.Contains("Already Exist For This Schedule Date#") != true)
+                                    {
+                                        //await App.Current.MainPage.DisplayAlert("FixPro", "Success Create Estimate for This Job.", "Ok");
+
+                                        Helpers.Messages.ShowSuccessSnackBar("Success Create Estimate for This Job.");
+
+                                        bool answer = await App.Current.MainPage.DisplayAlert("Question?", "Do you want to send an email to the customer?", "Yes", "No");
+
+                                        if (answer)//Send Email
                                         {
-                                            await App.Current.MainPage.DisplayAlert("FixPro", "Succes Create Estimate for This Job.", "Ok");
+                                            UserDialogs.Instance.ShowLoading();
+                                            var jsonEmail = await ORep.PostStrAsync("api/Estimates/PostEstimateEmail", OneEstimate, UserToken);
+                                            UserDialogs.Instance.HideLoading();
 
-                                            var ViewModel = new CustomersViewModel(CustomerDetails);
-                                            var page = new Views.CustomerPages.CustomersDetailsPage();
-                                            page.BindingContext = ViewModel;
-                                            await App.Current.MainPage.Navigation.PushAsync(page);
-
-                                            if (OneEstimate.Status == 1)//Status Accept
+                                            if (!string.IsNullOrEmpty(jsonEmail) && jsonEmail.Contains("Send Success") == true)
                                             {
-                                                ShowEstimateConvertToInvoice = true;
+                                                Helpers.Messages.ShowSuccessSnackBar("Success Send Email to Customer.");
+                                                //await App.Current.MainPage.DisplayAlert("FixPro", "Email sent successfully to customer", "Ok");
                                             }
                                             else
                                             {
-                                                ShowEstimateConvertToInvoice = false;
+                                                Helpers.Messages.ShowSuccessSnackBar("Failed to send e-mail to the customer");
+                                                //await App.Current.MainPage.DisplayAlert("FixPro", "Failed to send e-mail to the customer", "Ok");
                                             }
+                                        }
+
+                                        var ViewModel = new CustomersViewModel(CustomerDetails);
+                                        var page = new Views.CustomerPages.CustomersDetailsPage();
+                                        page.BindingContext = ViewModel;
+                                        await App.Current.MainPage.Navigation.PushAsync(page);
+
+                                        if (OneEstimate.Status == 1)//Status Accept
+                                        {
+                                            ShowEstimateConvertToInvoice = true;
                                         }
                                         else
                                         {
-                                            await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
-                                            //await App.Current.MainPage.DisplayAlert("Alert", "Faild Create Estimate.", "Ok");
+                                            ShowEstimateConvertToInvoice = false;
                                         }
                                     }
                                     else
                                     {
-                                        await App.Current.MainPage.DisplayAlert("Alert", "Please Enter Signature for this Estimate.", "Ok");
+                                        await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
+                                        //await App.Current.MainPage.DisplayAlert("Alert", "Faild Create Estimate.", "Ok");
                                     }
+
+
                                 }
                                 else
                                 {
                                     await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Status for Estimate.", "Ok");
                                 }
                             }
-                        }
-                        else
-                        {
-                            await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Item-Service for this Estimate.", "Ok");
-                        }
-                    }
-                    else //Insert Invoice WayAfterChooseCust == 2 (Customer Page)
-                    {
-                        if (LstItems.Count > 0)
-                        {
-                            var CheckItemoutFalse = LstItems.Where(m => m.Out == false).FirstOrDefault();
-                            if (CheckItemoutFalse != null)
+                            else
                             {
-                                OneInvoice.AccountId = model.AccountId;
-                                OneInvoice.BrancheId = model.BrancheId;
-                                //OneInvoice.ContractId = model.ContractId;
-                                //OneInvoice.ScheduleDateId = model.OneScheduleDate.Id;
-                                //OneInvoice.ScheduleId = model.Id;
-                                OneInvoice.InvoiceDate = DateTime.Now;
-                                OneInvoice.CustomerId = model.Id;
-                                OneInvoice.Total = SubTotal;
-                                OneInvoice.TaxId = model.TaxId;
-                                OneInvoice.Tax = model.TaxDTO.Rate;
-                                //OneInvoice.Taxval = (SubTotal - (SubTotal * model.MemberDTO.MemberValue / 100)) * model.TaxDTO.Rate / 100;
-                                //OneInvoice.Taxval = (model.MemeberType == false && model.TaxDTO != null) ? (SubTotal - (SubTotal * model.MemberDTO.MemberValue / 100) * model.TaxDTO.Rate / 100) : (model.TaxDTO != null && model.MemeberType == true && model.TaxDTO != null) ? ((SubTotal - model.Discount) * model.TaxDTO.Rate / 100) : 0;
-                                OneInvoice.Taxval = null;
-                                OneInvoice.MemberId = model.MemeberId;
-                                OneInvoice.Discount = Discount;
-                                OneInvoice.DiscountAmountOrPercent = AmountOrPersent == false ? "%" : "$";
-                                OneInvoice.Paid = 0;
-                                OneInvoice.Net = Net;
-                                OneInvoice.Status = 0; //Draft status if(1=partail & 2=paid)
-                                OneInvoice.Type = 2; //Installment Payment type
-                                OneInvoice.SignaturePrintName = null;
-                                OneInvoice.SignatureDraw = null;
-                                OneInvoice.Terms = null;
-                                OneInvoice.NotesForCustomer = model.Notes;
-                                //OneInvoice.Notes = model.Notes;
-                                OneInvoice.Active = model.Active;
-                                OneInvoice.CreateUser = int.Parse(Helpers.Settings.UserId);
-                                OneInvoice.CreateDate = DateTime.Now;
-
-                                foreach (ScheduleItemsServicesModel item in LstItems)
+                                await App.Current.MainPage.DisplayAlert("Alert", "No item/service chosen for this estimate!", "Ok");
+                            }
+                        }
+                        else //Insert Invoice WayAfterChooseCust == 2 (Customer Page)
+                        {
+                            if (LstItemsInvoice.Count > 0)
+                            {
+                                var CheckItemoutFalse = LstItemsInvoice.Where(m => m.Out == false).FirstOrDefault();
+                                if (CheckItemoutFalse != null)
                                 {
-                                    InvoiceItemServicesModel ObjItem = new InvoiceItemServicesModel
+                                    OneInvoice.AccountId = model.AccountId;
+                                    OneInvoice.BrancheId = model.BrancheId;
+                                    //OneInvoice.ContractId = model.ContractId;
+                                    //OneInvoice.ScheduleDateId = model.OneScheduleDate.Id;
+                                    //OneInvoice.ScheduleId = model.Id;
+                                    OneInvoice.InvoiceDate = DateTime.Now;
+                                    OneInvoice.CustomerId = model.Id;
+                                    OneInvoice.Total = SubTotal;
+                                    OneInvoice.TaxId = model.TaxId;
+                                    OneInvoice.Tax = model.TaxDTO?.Rate;
+                                    //OneInvoice.Taxval = (SubTotal - (SubTotal * model.MemberDTO.MemberValue / 100)) * model.TaxDTO.Rate / 100;
+                                    //OneInvoice.Taxval = (model.MemeberType == false && model.TaxDTO != null) ? (SubTotal - (SubTotal * model.MemberDTO.MemberValue / 100) * model.TaxDTO.Rate / 100) : (model.TaxDTO != null && model.MemeberType == true && model.TaxDTO != null) ? ((SubTotal - model.Discount) * model.TaxDTO.Rate / 100) : 0;
+                                    OneInvoice.Taxval = null;
+                                    OneInvoice.MemberId = model.MemeberId;
+                                    OneInvoice.Discount = Discount;
+                                    OneInvoice.DiscountAmountOrPercent = AmountOrPersent == false ? "%" : "$";
+                                    OneInvoice.Paid = 0;
+                                    OneInvoice.Net = Net;
+                                    OneInvoice.Status = 0; //Draft status if(1=partail & 2=paid)
+                                    OneInvoice.Type = 2; //Installment Payment type
+                                    OneInvoice.SignaturePrintName = null;
+                                    OneInvoice.SignatureDraw = null;
+                                    OneInvoice.Terms = null;
+                                    OneInvoice.NotesForCustomer = model.Notes;
+                                    //OneInvoice.Notes = model.Notes;
+                                    OneInvoice.Active = model.Active;
+                                    OneInvoice.CreateUser = int.Parse(Helpers.Settings.UserId);
+                                    OneInvoice.CreateDate = DateTime.Now;
+
+                                    foreach (ScheduleItemsServicesModel item in LstItemsInvoice)
                                     {
-                                        Id = item.Id,
-                                        AccountId = model.AccountId,
-                                        BrancheId = model.BrancheId,
-                                        ItemServiceDescription = item.ItemServiceDescription,
-                                        //TaxId = model.TaxId,
-                                        //Tax = model.TaxDTO.Rate,
-                                        //Taxable = (model.TaxDTO.Rate == null || model.TaxDTO.Rate == 0) ? false : true,
-                                        Taxable = true,
-                                        //Unit = item.Unit,
-                                        Price = item.CostRate,
-                                        Quantity = item.Quantity,
-                                        //Discountable = model.MemberDTO.MemberValue != null ? true : false,
-                                        Discountable = true,
-                                        ItemsServicesId = item.ItemsServicesId,
-                                        ItemsServicesName = item.ItemsServicesName,
-                                        CreateUser = int.Parse(Helpers.Settings.UserId),
-                                        CreateDate = DateTime.Now,
-                                        SkipOfTotal = item.Out,
-                                        Total = item.Quantity != null && item.Tax != null ? (item.CostRate * item.Quantity) + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity == null && item.Tax != null ? item.CostRate + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity != null && item.Tax == null ? item.CostRate * item.Quantity : item.CostRate,
-                                        Active = model.Active,
-                                    };
-                                    OneInvoice.LstInvoiceItemServices.Add(ObjItem);
-                                }
+                                        InvoiceItemServicesModel ObjItem = new InvoiceItemServicesModel
+                                        {
+                                            Id = item.Id,
+                                            AccountId = model.AccountId,
+                                            BrancheId = model.BrancheId,
+                                            ItemServiceDescription = item.ItemServiceDescription,
+                                            //TaxId = model.TaxId,
+                                            //Tax = model.TaxDTO.Rate,
+                                            //Taxable = (model.TaxDTO.Rate == null || model.TaxDTO.Rate == 0) ? false : true,
+                                            Taxable = true,
+                                            //Unit = item.Unit,
+                                            Price = item.CostRate,
+                                            Quantity = item.Quantity,
+                                            //Discountable = model.MemberDTO.MemberValue != null ? true : false,
+                                            Discountable = true,
+                                            ItemsServicesId = item.ItemsServicesId,
+                                            ItemsServicesName = item.ItemsServicesName,
+                                            CreateUser = int.Parse(Helpers.Settings.UserId),
+                                            CreateDate = DateTime.Now,
+                                            SkipOfTotal = item.Out,
+                                            Total = item.Quantity != null && item.Tax != null ? (item.CostRate * item.Quantity) + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity == null && item.Tax != null ? item.CostRate + (item.CostRate * item.Quantity * item.Tax / 100) : item.Quantity != null && item.Tax == null ? item.CostRate * item.Quantity : item.CostRate,
+                                            Active = model.Active,
+                                        };
+                                        OneInvoice.LstInvoiceItemServices.Add(ObjItem);
+                                    }
 
-                                UserDialogs.Instance.ShowLoading();
-                                //var json = await Helpers.Utility.PostMData("api/Invoices/PostInvoice", JsonConvert.SerializeObject(OneInvoice));
-                                var json = await ORep.PostDataAsync("api/Invoices/PostInvoice", OneInvoice, UserToken);
-                                UserDialogs.Instance.HideLoading();
+                                    UserDialogs.Instance.ShowLoading();
+                                    //var json = await Helpers.Utility.PostMData("api/Invoices/PostInvoice", JsonConvert.SerializeObject(OneInvoice));
+                                    var json = await ORep.PostDataAsync("api/Invoices/PostInvoice", OneInvoice, UserToken);
+                                    UserDialogs.Instance.HideLoading();
 
-                                if (json != "Bad Request" && json != "api not responding" && json.Contains("Not_Enough") != true && json.Contains("This Invoice Already Exist") != true)
-                                {
-                                    await App.Current.MainPage.DisplayAlert("FixPro", "Succes Create Invoice for This Job.", "Ok");
+                                    if (json != "Bad Request" && json != "api not responding" && json.Contains("Not_Enough") != true && json.Contains("This Invoice Already Exist") != true)
+                                    {
+                                        //await App.Current.MainPage.DisplayAlert("FixPro", "Success Create Invoice for This Job.", "Ok");
+                                        Helpers.Messages.ShowSuccessSnackBar("Success Create Invoice for This Job.");
 
-                                    OneInvoice.Id = int.Parse(json.Replace("\"", "").Trim());
-                                    var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
-                                    var page = new Views.PopupPages.PaymentMethodsPopup();
-                                    page.BindingContext = ViewModel;
-                                    await PopupNavigation.Instance.PushAsync(page);
-                                    //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
-                                    // App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                        bool answer = await App.Current.MainPage.DisplayAlert("Question?", "Do you want to send an email to the customer?", "Yes", "No");
+
+                                        if (answer)//Send Email
+                                        {
+                                            UserDialogs.Instance.ShowLoading();
+                                            var jsonEmail = await ORep.PostStrAsync("api/Invoices/PostInvoiceEmail", OneInvoice, UserToken);
+                                            UserDialogs.Instance.HideLoading();
+
+                                            if (!string.IsNullOrEmpty(jsonEmail) && jsonEmail.Contains("Send Success") == true)
+                                            {
+                                                Helpers.Messages.ShowSuccessSnackBar("Success Send Email to Customer.");
+                                                //await App.Current.MainPage.DisplayAlert("FixPro", "Email sent successfully to customer", "Ok");
+                                            }
+                                            else
+                                            {
+                                                Helpers.Messages.ShowSuccessSnackBar("Failed to send e-mail to the customer");
+                                                //await App.Current.MainPage.DisplayAlert("FixPro", "Failed to send e-mail to the customer", "Ok");
+                                            }
+                                        }
+
+                                        OneInvoice.Id = int.Parse(json.Replace("\"", "").Trim());
+                                        var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
+                                        var page = new Views.PopupPages.PaymentMethodsPopup();
+                                        page.BindingContext = ViewModel;
+                                        await PopupNavigation.Instance.PushAsync(page);
+                                        //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                        // App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                    }
+                                    else
+                                    {
+                                        await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
+                                        await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                    }
                                 }
                                 else
                                 {
-                                    await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
-                                    await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                    await App.Current.MainPage.DisplayAlert("Alert", "Please don’t check all the items/services out for this invoice", "Ok");
                                 }
+
                             }
                             else
                             {
-                                await App.Current.MainPage.DisplayAlert("Alert", "Please Don't Check all Item-Service Out for this Invoice.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("Alert", "No item/service chosen for this invoice", "Ok");
                             }
-
-                        }
-                        else
-                        {
-                            await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Item-Service for this Invoice.", "Ok");
                         }
                     }
+
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -4289,6 +4779,9 @@ namespace FixPro.ViewModels
         {
             IsBusy = true;
             UserDialogs.Instance.ShowLoading();
+            Controls.StaticMembers.WayCreateCust = 3;//From Schedule can edit customer and return schedule again
+            Controls.StaticMembers.ScheduleIdStatic = ScheduleDetails.Id;
+            Controls.StaticMembers.ScheduleDateIdStatic = ScheduleDetails.ScheduleDateId;
             var popupView = new CustomersViewModel(model);
             var page = new Views.CustomerPages.CustomersDetailsPage();
             page.BindingContext = popupView;
@@ -4355,20 +4848,32 @@ namespace FixPro.ViewModels
         async void OnOutScheduleImage(SchedulePicturesModel image)
         {
             IsBusy = true;
-            string UserToken = await _service.UserToken();
-            var json = await ORep.PutStrAsync("api/Schedules/PutOutPicture", image, UserToken);
-            if (json == "false")
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                Helpers.Messages.ShowSuccessSnackBar("Don't Show unchecked photos to customer");
-            }
-            else
-            {
-                Helpers.Messages.ShowSuccessSnackBar("Show checked photos to customer");
+                string UserToken = await _service.UserToken();
+                var json = await ORep.PutStrAsync("api/Schedules/PutOutPicture", image, UserToken);
+                if (json == "false")
+                {
+                    Helpers.Messages.ShowSuccessSnackBar("Don't Show unchecked photos to customer");
+                }
+                else
+                {
+                    Helpers.Messages.ShowSuccessSnackBar("Show checked photos to customer");
+                }
             }
             IsBusy = false;
         }
 
         async void OnOpenFullScreenSchImage(string ImageName)
+        {
+            IsBusy = true;
+            UserDialogs.Instance.ShowLoading();
+            await PopupNavigation.Instance.PushAsync(new Views.PopupPages.FullScreenImagePopup(ImageName));
+            UserDialogs.Instance.HideLoading();
+            IsBusy = false;
+        }
+
+        async void OnOpenFullScreenSchImageBeforeInsert(ImageSource ImageName)
         {
             IsBusy = true;
             UserDialogs.Instance.ShowLoading();

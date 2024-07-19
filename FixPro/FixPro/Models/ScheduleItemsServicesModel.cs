@@ -18,7 +18,7 @@ namespace FixPro.Models
         public int? Quantity { get; set; } = 1;
         public int? TaxId { get; set; }
         public decimal? Tax { get; set; }
-        public decimal? Total { get; set; }
+        public decimal? Total { get; set; } = 0;
         public decimal? Price { get; set; }
         public int? TypeMaterial_Services { get; set; }
         public string Notes { get; set; }

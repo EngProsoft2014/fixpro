@@ -50,7 +50,7 @@ namespace FixPro.Views.SchedulePages
 
         private void entryDiscount_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (e.NewTextValue != null && e.NewTextValue != "" && e.NewTextValue != "0")
+            if (e.NewTextValue != null && e.NewTextValue != "")
             {
                 pnkSave.IsVisible = true;
             }

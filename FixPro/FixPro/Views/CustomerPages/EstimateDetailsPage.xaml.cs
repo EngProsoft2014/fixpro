@@ -1,10 +1,12 @@
 ﻿using FixPro.ViewModels;
+using SignaturePad.Forms;
 using Syncfusion.SfCalendar.XForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -45,7 +47,7 @@ namespace FixPro.Views.CustomerPages
 
         private void entryDiscount_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (e.NewTextValue != null && e.NewTextValue != "" && e.NewTextValue != "0")
+            if (e.NewTextValue != null && e.NewTextValue != "")
             {
                 pnkSave.IsVisible = true;
             }
@@ -63,6 +65,23 @@ namespace FixPro.Views.CustomerPages
         private void CheckBox_CheckedChanged(object sender, CheckedChangedEventArgs e)
         {
             ViewModel.TotalInvoice(ViewModel.OneInvoice);
+        }
+
+
+        //Save signature
+        private async void Button_Clicked_1(object sender, EventArgs e)
+        {
+            Stream stream = await signaturePadEstimate.GetImageStreamAsync(SignatureImageFormat.Png);
+
+            ViewModel.SignatureImageByte64Estimate = Convert.ToBase64String(Helpers.Utility.ReadToEnd(stream));
+
+            Helpers.Messages.ShowSuccessSnackBar("Success for save your signature");
+        }
+
+        //Clear Credit
+        private void Button_Clicked_2(object sender, EventArgs e)
+        {
+            signaturePadEstimate.Clear();
         }
     }
 }

@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 namespace FixPro.ViewModels
 {
@@ -278,46 +279,55 @@ namespace FixPro.ViewModels
         //Get Reasons
         async Task GetReasons()
         {
-            string UserToken = await _service.UserToken();
-
-            var json = await ORep.GetAsync<ObservableCollection<ReasonModel>>(string.Format("api/Calls/GetReasons?" + "AccountId=" + Helpers.Settings.AccountId),UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstReasons = json;
+                string UserToken = await _service.UserToken();
 
-                OneReason = LstReasons.Where(x => x.Id == OneFilter.ReasonId).FirstOrDefault();
-            }
+                var json = await ORep.GetAsync<ObservableCollection<ReasonModel>>(string.Format("api/Calls/GetReasons?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
+
+                if (json != null)
+                {
+                    LstReasons = json;
+
+                    OneReason = LstReasons.Where(x => x.Id == OneFilter.ReasonId).FirstOrDefault();
+                }
+            }  
         }
 
         //Get Campaigns
         async Task GetCampaigns()
         {
-            string UserToken = await _service.UserToken();
-
-            var json = await ORep.GetAsync<ObservableCollection<CampaignModel>>(string.Format("api/Calls/GetCampaigns?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstCampaigns = json;
+                string UserToken = await _service.UserToken();
 
-                OneCampaign = LstCampaigns.Where(x => x.Id == OneFilter.CampaignId).FirstOrDefault();
-            }
+                var json = await ORep.GetAsync<ObservableCollection<CampaignModel>>(string.Format("api/Calls/GetCampaigns?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
+
+                if (json != null)
+                {
+                    LstCampaigns = json;
+
+                    OneCampaign = LstCampaigns.Where(x => x.Id == OneFilter.CampaignId).FirstOrDefault();
+                }
+            }      
         }
 
         // Get Employees 
         async Task GetEmployeesInCall()
         {
-            string UserToken = await _service.UserToken();
-
-            var json = await ORep.GetAsync<ObservableCollection<EmployeeModel>>(string.Format("api/Employee/GetEmpInCall/{0}/{1}/{2}", Helpers.Settings.AccountId, Controls.StartData.EmployeeDataStatic.UserRole, Helpers.Settings.UserId), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstEmployees = json;
+                string UserToken = await _service.UserToken();
 
-                OneEmployee = LstEmployees.Where(x => x.Id == OneFilter.CreateUser).FirstOrDefault();
-            }
+                var json = await ORep.GetAsync<ObservableCollection<EmployeeModel>>(string.Format("api/Employee/GetEmpInCall/{0}/{1}/{2}", Helpers.Settings.AccountId, Controls.StartData.EmployeeDataStatic.UserRole, Helpers.Settings.UserId), UserToken);
+
+                if (json != null)
+                {
+                    LstEmployees = json;
+
+                    OneEmployee = LstEmployees.Where(x => x.Id == OneFilter.CreateUser).FirstOrDefault();
+                }
+            }       
         }
 
         async void OnApplyFilterCalls(CallModel model)

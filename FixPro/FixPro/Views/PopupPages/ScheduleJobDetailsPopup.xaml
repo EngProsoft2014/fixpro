@@ -30,7 +30,7 @@
 
 
     <Grid Padding="0" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-        <yummy:PancakeView x:Name="yummyAddItems" HeightRequest="530" CornerRadius="30" BackgroundColor="White" Margin="10,0,10,0" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+        <yummy:PancakeView x:Name="yummyAddItems" HeightRequest="560" CornerRadius="30" BackgroundColor="White" Margin="10,0,10,0" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
             <StackLayout Padding="20,20,20,0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                 <!--Header-->
                 <StackLayout Orientation="Horizontal" Spacing="2" HorizontalOptions="CenterAndExpand">
@@ -44,10 +44,10 @@
                 </StackLayout>
                 <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray" Margin="0,10,0,10"></Line>
 
-                <StackLayout Spacing="20">
+                <StackLayout Spacing="20" HorizontalOptions="CenterAndExpand">
 
                     <!--Title&Date-->
-                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="20">
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Spacing="20">
                         <!--Title-->
                         <StackLayout WidthRequest="150">
                             <Label Text="Title" FontSize="13" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
@@ -63,7 +63,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -81,7 +81,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -100,14 +100,14 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
                     </StackLayout>
 
                     <!--Start&End Time-->
-                    <StackLayout x:Name="stkStEdTime" Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="20">
+                    <StackLayout x:Name="stkStEdTime" Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Spacing="20">
                         <!--Start Time-->
                         <StackLayout WidthRequest="150">
                             <Label Text="Start Time" TextColor="#333" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
@@ -122,7 +122,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -140,7 +140,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -163,7 +163,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -182,7 +182,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -203,16 +203,16 @@
                                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                             </yummy:PancakeView.Border>
                             <yummy:PancakeView.Shadow>
-                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                             </yummy:PancakeView.Shadow>
                         </yummy:PancakeView>
                     </StackLayout>
 
 
-                    <StackLayout x:Name="stkAddJobTimes" IsVisible="False" Orientation="Horizontal" Spacing="20" HorizontalOptions="FillAndExpand">
+                    <StackLayout x:Name="stkAddJobTimes" IsVisible="False" Orientation="Horizontal" Spacing="20" HorizontalOptions="CenterAndExpand">
 
                         <!--Start Time-->
-                        <StackLayout HorizontalOptions="StartAndExpand" WidthRequest="150">
+                        <StackLayout WidthRequest="150">
                             <Label Text="Start Time" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
                             <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
                                 <TimePicker 
@@ -224,13 +224,13 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
 
                         <!--End Time-->
-                        <StackLayout HorizontalOptions="FillAndExpand" WidthRequest="150">
+                        <StackLayout WidthRequest="150">
                             <Label Text="End Time" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
                             <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
                                 <TimePicker 
@@ -242,7 +242,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -251,7 +251,7 @@
                     <StackLayout x:Name="stkAddJobEmployee" IsVisible="False" Orientation="Vertical"  Spacing="20" HorizontalOptions="FillAndExpand">
 
                         <!--Job Title-->
-                        <StackLayout HorizontalOptions="StartAndExpand">
+                        <StackLayout HorizontalOptions="FillAndExpand">
                             <Label Text="Job Title" FontSize="13" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
                             <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" HeightRequest="40" CornerRadius="10">
                                 <combobox:SfComboBox 
@@ -279,7 +279,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -314,7 +314,7 @@
                                         <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                     </yummy:PancakeView.Border>
                                     <yummy:PancakeView.Shadow>
-                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=3}" Opacity="1"></yummy:DropShadow>
                                     </yummy:PancakeView.Shadow>
                                 </yummy:PancakeView>
                             </StackLayout>
@@ -328,8 +328,8 @@
                 <StackLayout x:Name="stkReopenButtons" IsVisible="False" Orientation="Horizontal" Spacing="5" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="10">
 
                     <Button Text="Re Open"
-                            WidthRequest="70"
-                            HeightRequest="35"
+                            WidthRequest="{OnPlatform Android=70, iOS=100}"
+                            HeightRequest="40"
                             BackgroundColor="DeepSkyBlue"
                             FontAttributes="Bold"
                             FontSize="13" 
@@ -351,8 +351,8 @@
                 <StackLayout x:Name="stkResponButtons" IsVisible="False" Orientation="Horizontal" Spacing="5" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="10">
 
                     <Button Text="Save"
-                            WidthRequest="70"
-                            HeightRequest="35"
+                            WidthRequest="{OnPlatform Android=70, iOS=100}"
+                            HeightRequest="40"
                             BackgroundColor="DeepSkyBlue"
                             FontAttributes="Bold"
                             FontSize="13" 
@@ -362,8 +362,8 @@
                             Command="{Binding BindingContext.SaveResponNotServiceScheduleDate,Source={x:Reference page}}" CommandParameter="{Binding OneScheduleDate}"></Button>
 
                     <Button Text="Back"
-                            WidthRequest="70"
-                            HeightRequest="35"
+                            WidthRequest="{OnPlatform Android=70, iOS=100}"
+                            HeightRequest="40"
                             BackgroundColor="YellowGreen"
                             FontAttributes="Bold"
                             FontSize="13" 
@@ -378,8 +378,8 @@
                 <StackLayout x:Name="stkAddJobDateButtons" IsVisible="False" Orientation="Horizontal" Spacing="10" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="10">
 
                     <Button Text="Yes"
-                            WidthRequest="70"
-                            HeightRequest="35"
+                           WidthRequest="{OnPlatform Android=70, iOS=100}"
+                            HeightRequest="40"
                             BackgroundColor="DeepSkyBlue"
                             FontAttributes="Bold"
                             FontSize="13" 
@@ -389,8 +389,8 @@
                             Command="{Binding BindingContext.AddScheduleDate,Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}"></Button>
 
                     <Button Text="No"
-                            WidthRequest="70"
-                            HeightRequest="35"
+                            WidthRequest="{OnPlatform Android=70, iOS=100}"
+                            HeightRequest="40"
                             BackgroundColor="YellowGreen"
                             FontAttributes="Bold"
                             FontSize="13" 
@@ -402,18 +402,19 @@
                 </StackLayout>
 
                 <!--stkButtons-->
-                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Margin="0,20,0,20" Spacing="10">
+                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Margin="0,20,0,0" Spacing="10">
                     <StackLayout x:Name="stkButtons" IsVisible="False" Orientation="Horizontal" Spacing="10" VerticalOptions="EndAndExpand">
-                        <Button Text="Add Date"
+                        <Button Text="New Visit"
                                  IsVisible="False"
-                                 HeightRequest="35"
+                                 HeightRequest="40"
                                  BackgroundColor="DeepSkyBlue"
                                  FontAttributes="Bold"
-                                 FontSize="13" 
+                                 FontSize="13"
+                                WidthRequest="{OnPlatform iOS=100}"
                                  CornerRadius="10"
                                  TextTransform="None"
                                  TextColor="White"
-                                 Clicked="Button_Clicked_4">        
+                                 Clicked="Button_Clicked_4">
                             <Button.Triggers>
                                 <DataTrigger TargetType="Button" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="1">
                                     <Setter Property="IsVisible" Value="True"></Setter>
@@ -424,14 +425,15 @@
 
                         <Button Text="Not Serviced"
                              HorizontalOptions="EndAndExpand"
-                             HeightRequest="35"
+                             HeightRequest="40"
+                                WidthRequest="{OnPlatform iOS=120}"
                              BackgroundColor="Red"
                              FontAttributes="Bold"
                              FontSize="13" 
                              CornerRadius="10"
                              TextTransform="None"
                              TextColor="White"
-                             Clicked="Button_Clicked_1">        
+                             Clicked="Button_Clicked_1">
                         </Button>
 
                         <StackLayout.Triggers>
@@ -446,37 +448,52 @@
                     </StackLayout>
 
                     <Button Text="Done" 
-                             IsVisible ="False"
                              HorizontalOptions="Start"
-                             HeightRequest="35"
+                             HeightRequest="40"
                              BackgroundColor="YellowGreen"
                              FontAttributes="Bold"
-                             FontSize="13" 
+                             FontSize="13"
+                            WidthRequest="{OnPlatform iOS=100}"
                              CornerRadius="10"
                              TextTransform="None"
                              TextColor="White"
                              Command="{Binding BindingContext.DoneScheduleDate,Source={x:Reference page}}" CommandParameter="{Binding OneScheduleDate}">
                         <Button.Triggers>
-                            <DataTrigger TargetType="Button" Binding="{Binding EmployeePermission.UserRole}" Value="4">
+                            <!--<DataTrigger TargetType="Button" Binding="{Binding EmployeePermission.UserRole}" Value="4">
                                 <Setter Property="IsVisible" Value="True"></Setter>
                             </DataTrigger>
                             <DataTrigger TargetType="Button" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="1">
                                 <Setter Property="IsVisible" Value="True"></Setter>
+                            </DataTrigger>-->
+                            <DataTrigger TargetType="Button" Binding="{Binding EmployeePermission.UserRole}" Value="1">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Button" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="0">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Button" Binding="{Binding ScheduleDetails.OneScheduleDate.Status}" Value="2">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference stkAddJobDateButtons},Path=IsVisible}" Value="True">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference stkResponNotServ},Path=IsVisible}" Value="True">
+                                <Setter Property="IsVisible" Value="False"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference stkReopenButtons},Path=IsVisible}" Value="True">
+                                <Setter Property="IsVisible" Value="False"></Setter>
                             </DataTrigger>
                         </Button.Triggers>
                     </Button>
                 </StackLayout>
-               
-
-
 
                 <Line  X1="400" HorizontalOptions="CenterAndExpand" BackgroundColor="LightGray" Margin="0,0,0,10"></Line>
 
                 <Button Text="Cancel"
-                        WidthRequest="60"
-                        HeightRequest="35"
+                        HeightRequest="40"
                         TextTransform="None" 
                         CornerRadius="10"
+                        WidthRequest="{OnPlatform Android=80, iOS=100}"
                         HorizontalOptions="Center"
                         BackgroundColor="White" 
                         FontAttributes="Bold"
@@ -486,6 +503,8 @@
                         BorderWidth="1"
                         Margin="0,0,0,20"
                         Clicked="Button_Clicked"></Button>
+
+
 
             </StackLayout>
 

@@ -279,55 +279,65 @@ namespace FixPro.ViewModels
 
         async void InitTraking()
         {
-            LstWorkingEmployees = new ObservableCollection<EmployeeModel>();
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                LstWorkingEmployees = new ObservableCollection<EmployeeModel>();
 
-            string Date = DateTime.Now.ToString("yyyy-MM-dd");
+                string Date = DateTime.Now.ToString("yyyy-MM-dd");
 
-            await Controls.StartData.GetWorkingEmployees(int.Parse(Helpers.Settings.AccountId), Date);
+                await Controls.StartData.GetWorkingEmployees(int.Parse(Helpers.Settings.AccountId), Date);
 
-            LstWorkingEmployees = Controls.StartData.LstWorkingEmployeesStatic;
+                LstWorkingEmployees = Controls.StartData.LstWorkingEmployeesStatic;
+            }     
         }
 
         //Get Perrmission for User
         public async void GetPerrmission()
         {
-            EmployeePermission = new EmployeeModel();
-            await Controls.StartData.CheckPermissionEmployee();
-            EmployeePermission = Controls.StartData.EmployeeDataStatic;
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                EmployeePermission = new EmployeeModel();
+                await Controls.StartData.CheckPermissionEmployee();
+                EmployeePermission = Controls.StartData.EmployeeDataStatic;
+            }      
         }
 
 
         //Get All Employees
         public async Task GetEmployees()
-        {
-            UserDialogs.Instance.ShowLoading();
-
-            string UserToken = await _service.UserToken();
-
-            var json = await ORep.GetAsync<EmployeesInPageModel>(string.Format("api/Employee/GetEmpInPage/{0}/{1}/{2}/{3}/{4}", PageNumber, Helpers.Settings.AccountId, Helpers.Settings.BranchId, Controls.StartData.EmployeeDataStatic.UserRole, Helpers.Settings.UserId), UserToken);
-
-            if (json != null)
+        {         
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                EmployeesInPageModel Employee = json;
-                TotalPage = Employee.Pages;
-                PageNumber += 1;
+                UserDialogs.Instance.ShowLoading();
 
-                LstEmployeesOnePage = new ObservableCollection<EmployeeModel>(Employee.EmployeesInPage);
+                string UserToken = await _service.UserToken();
 
-                if (LstEmployees.Count == 0)
+                var json = await ORep.GetAsync<EmployeesInPageModel>(string.Format("api/Employee/GetEmpInPage/{0}/{1}/{2}/{3}/{4}", PageNumber, Helpers.Settings.AccountId, Helpers.Settings.BranchId, Controls.StartData.EmployeeDataStatic.UserRole, Helpers.Settings.UserId), UserToken);
+
+                if (json != null)
                 {
-                    LstEmployees = new ObservableCollection<EmployeeModel>(LstEmployeesOnePage.OrderBy(x => x.UserName).ToList());
-                }
-                else
-                {
-                    if (LstEmployees != LstEmployeesOnePage)
+                    EmployeesInPageModel Employee = json;
+                    TotalPage = Employee.Pages;
+                    PageNumber += 1;
+
+                    LstEmployeesOnePage = new ObservableCollection<EmployeeModel>(Employee.EmployeesInPage);
+
+                    if (LstEmployees.Count == 0)
                     {
-                        LstEmployees = new ObservableCollection<EmployeeModel>(LstEmployees.Concat(LstEmployeesOnePage).OrderBy(x => x.UserName).ToList());
+                        LstEmployees = new ObservableCollection<EmployeeModel>(LstEmployeesOnePage.OrderBy(x => x.UserName).ToList());
+                    }
+                    else
+                    {
+                        if (LstEmployees != LstEmployeesOnePage)
+                        {
+                            LstEmployees = new ObservableCollection<EmployeeModel>(LstEmployees.Concat(LstEmployeesOnePage).OrderBy(x => x.UserName).ToList());
+                        }
                     }
                 }
-            }
 
-            UserDialogs.Instance.HideLoading();
+                UserDialogs.Instance.HideLoading();
+            }
+                
         }
 
         async void OnSelectedEmployeeInMap(EmployeeModel employee)
@@ -338,8 +348,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -351,10 +361,9 @@ namespace FixPro.ViewModels
                     UserDialogs.Instance.HideLoading();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -366,12 +375,13 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
-                    string uri = "https://fixpro.engprosoft.net/XMLData/" + OneEmployee.Id + ".xml";
+                    //URi for file data
+                    string uri = Helpers.Utility.PathServerMapTracking + Helpers.Settings.AccountName + "/" + OneEmployee.Id + ".xml";
 
                     document = XDocument.Load(uri);
 
@@ -397,10 +407,9 @@ namespace FixPro.ViewModels
                     MapsModel = CurrentTrack;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
         }
     }

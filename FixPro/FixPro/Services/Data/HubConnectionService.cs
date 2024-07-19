@@ -52,5 +52,15 @@ namespace FixPro.Services.Data
             }
         }
 
+        public async Task Connect()
+        {
+            await connection.Start();
+        }
+
+        public async Task Disconnect()
+        {
+            connection.Stop();
+        }
+
     }
 }

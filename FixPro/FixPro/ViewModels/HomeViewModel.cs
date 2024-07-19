@@ -27,6 +27,7 @@ using Syncfusion.SfCalendar.XForms;
 using GoogleApi.Entities.Search.Video.Common;
 using OneSignalSDK.Xamarin.Core;
 using Xamarin.Forms.Internals;
+using FixPro.Services.Data;
 
 namespace FixPro.ViewModels
 {
@@ -138,6 +139,22 @@ namespace FixPro.ViewModels
             }
         }
 
+        ImageSource _AccountPhoto;
+        public ImageSource AccountPhoto
+        {
+            get
+            {
+                return _AccountPhoto;
+            }
+            set
+            {
+                _AccountPhoto = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("AccountPhoto"));
+                }
+            }
+        }
 
         string _HeaderNotify;
         public string HeaderNotify
@@ -278,8 +295,22 @@ namespace FixPro.ViewModels
 
         Helpers.GenericRepository ORep = new Helpers.GenericRepository();
 
+        //private SignalRService _signalRService;
         public HomeViewModel()
         {
+
+
+            //_signalRService = new SignalRService();
+
+            //_signalRService.OnMessageReceived += _signalRService_OnMessageReceived;
+            //_signalRService.OnMessageReceived += (user, message, userFrom, userTo) =>
+            //{  
+            //    Massages.Add($"{user}: {message} , from: {userFrom} - to: {userTo}");
+            //};
+
+            //Massages = new ObservableCollection<string>();
+            //_signalRService.StartAsync();
+
             //Massages = new ObservableCollection<string>();
             UserRole = Helpers.Settings.UserRole;
 
@@ -330,21 +361,25 @@ namespace FixPro.ViewModels
             Login.UserName = Helpers.Settings.UserName;
             Login.Phone1 = Helpers.Settings.Phone;
 
-            if (Helpers.Settings.UserPricture != "" && Helpers.Settings.UserPricture != null && Helpers.Settings.UserPricture != "https://fixproapi.engprosoft.net/EmployeePic/")
+            if (Helpers.Settings.UserPricture != "" && Helpers.Settings.UserPricture != null && !Helpers.Settings.UserPricture.Contains("https://app.fixprous.com/EmployeePic_"))
             {
-                Login.Picture = Helpers.Settings.UserPricture;
+                AccountPhoto = Login.Picture = Helpers.Settings.UserPricture;
             }
             else
             {
-                Login.Picture = "avatar.png";
+                AccountPhoto = Login.Picture = "avatar.png";
             }
         }
 
         public async Task GetNotifications()
         {
-            string UserToken = await _service.UserToken();
-            Messages = await ORep.GetAsync<ObservableCollection<NotificationsModel>>("api/Notifications/GetNotifications?" + "EmployeeId=" + Helpers.Settings.UserId, UserToken);
-            NumNotify = Messages.Count;
+            
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                string UserToken = await _service.UserToken();
+                Messages = await ORep.GetAsync<ObservableCollection<NotificationsModel>>("api/Notifications/GetNotifications?" + "EmployeeId=" + Helpers.Settings.UserId, UserToken);
+                NumNotify = Messages.Count;
+            }      
         }
 
         // Get Employees in Account Id
@@ -352,13 +387,17 @@ namespace FixPro.ViewModels
         {
             IsBusy = true;
             //UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-
-            var json = await ORep.GetAsync<ObservableCollection<EmployeeModel>>("api/Employee/GetEmployeesInAccountId?" + "AccountId=" + AccountId, UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstEmpInAccountId = json;
+                string UserToken = await _service.UserToken();
+
+                var json = await ORep.GetAsync<ObservableCollection<EmployeeModel>>("api/Employee/GetEmployeesInAccountId?" + "AccountId=" + AccountId, UserToken);
+
+                if (json != null)
+                {
+                    LstEmpInAccountId = json;
+                }
+
             }
 
             //UserDialogs.Instance.HideLoading();
@@ -369,76 +408,96 @@ namespace FixPro.ViewModels
         {
             IsBusy = true;
 
-            string strEmployees = string.Empty;
-
-            List<int> oEmployees = new List<int>();
-            oEmployees = LstEmpInAccountId.Where(x => x.IsChecked == true).Select(m => m.Id).ToList();
-            if (oEmployees.Count > 0)
+            if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
             {
-                oEmployees.ForEach(f => strEmployees += $",{f}");
-                strEmployees = strEmployees.Remove(0, 1);
-            }
-
-            if(string.IsNullOrEmpty(strEmployees))
-            {
-                await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Choose Employees.", "Ok");
-            }
-            else if(string.IsNullOrEmpty(HeaderNotify))
-            {
-                await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Header of Notify.", "Ok");
-            }
-            else if(string.IsNullOrEmpty(ContentNotify))
-            {
-                await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Content of Notify.", "Ok");
+                await App.Current.MainPage.DisplayAlert("Alert", "No Internet connection!", "OK");
+                return;
             }
             else
             {
-                string UserToken = await _service.UserToken();
+                string strEmployees = string.Empty;
 
-                NotificationsSpecificModel model = new NotificationsSpecificModel()
+                List<int> oEmployees = new List<int>();
+                oEmployees = LstEmpInAccountId.Where(x => x.IsChecked == true).Select(m => m.Id).ToList();
+                if (oEmployees.Count > 0)
                 {
-                    app_id = Helpers.Settings.OneSignalAppId,
+                    oEmployees.ForEach(f => strEmployees += $",{f}");
+                    strEmployees = strEmployees.Remove(0, 1);
+                }
 
-                    Header = HeaderNotify,
-
-                    Content = ContentNotify,
-
-                    include_player_ids = LstEmpInAccountId.Where(v => v.IsChecked == true && !string.IsNullOrEmpty(v.OneSignalPlayerId)).Select(m => m.OneSignalPlayerId).ToArray(),
-
-                    Employees = strEmployees,
-
-                    CreateUser = int.Parse(Helpers.Settings.UserId),
-                };
-
-
-                UserDialogs.Instance.ShowLoading();
-                string json = await ORep.PostDataAsync("api/Notifications/PostNotificationSpecific", model, UserToken);
-                UserDialogs.Instance.HideLoading();
-
-                if (!string.IsNullOrEmpty(json))
+                if (string.IsNullOrEmpty(strEmployees))
                 {
-                    await App.Current.MainPage.DisplayAlert("FixPro", "Succes for Send Notifications.", "Ok");
-                    await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                    await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Choose Employees.", "Ok");
+                }
+                else if (string.IsNullOrEmpty(HeaderNotify))
+                {
+                    await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Header of Notify.", "Ok");
+                }
+                else if (string.IsNullOrEmpty(ContentNotify))
+                {
+                    await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Content of Notify.", "Ok");
                 }
                 else
                 {
-                    await App.Current.MainPage.DisplayAlert("Alert", "Faild for Send Notifications.", "Ok");
+                    string UserToken = await _service.UserToken();
+
+                    NotificationsSpecificModel model = new NotificationsSpecificModel()
+                    {
+                        AccountId = int.Parse(Helpers.Settings.AccountId),
+
+                        app_id = Helpers.Settings.OneSignalAppId,
+
+                        Header = HeaderNotify,
+
+                        Content = ContentNotify,
+
+                        include_player_ids = LstEmpInAccountId.Where(v => v.IsChecked == true && !string.IsNullOrEmpty(v.OneSignalPlayerId)).Select(m => m.OneSignalPlayerId).ToArray(),
+
+                        Employees = strEmployees,
+
+                        CreateUser = int.Parse(Helpers.Settings.UserId),
+                    };
+
+
+                    UserDialogs.Instance.ShowLoading();
+                    string json = await ORep.PostDataAsync("api/Notifications/PostNotificationSpecific", model, UserToken);
+                    UserDialogs.Instance.HideLoading();
+
+                    if (!string.IsNullOrEmpty(json))
+                    {
+                        await App.Current.MainPage.DisplayAlert("FixPro", "Notifications sent successfully", "Ok");
+                        await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                    }
+                    else
+                    {
+                        await App.Current.MainPage.DisplayAlert("Alert", "Failed to send notifications!", "Ok");
+                    }
                 }
             }
-
+                
             IsBusy = false;
         }
 
         async void OnSelectedNotificationsPage()
         {
             IsBusy = true;
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
+            if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
+                return;
+            }
+            else
+            {
+                UserDialogs.Instance.ShowLoading();
 
-            Messages = await ORep.GetAsync<ObservableCollection<NotificationsModel>>("api/Notifications/GetNotifications?" + "EmployeeId=" + Helpers.Settings.UserId, UserToken);
-            NumNotify = Messages.Count;
-            await App.Current.MainPage.Navigation.PushAsync(new Views.NotificationsPage());
-            UserDialogs.Instance.HideLoading();
+                string UserToken = await _service.UserToken();
+
+                Messages = await ORep.GetAsync<ObservableCollection<NotificationsModel>>("api/Notifications/GetNotifications?" + "EmployeeId=" + Helpers.Settings.UserId, UserToken);
+                NumNotify = Messages.Count;
+                await App.Current.MainPage.Navigation.PushAsync(new Views.NotificationsPage());
+                UserDialogs.Instance.HideLoading();
+            }
+
             IsBusy = false;
         }
 
@@ -450,7 +509,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new CreateNotificationsPage()));
+                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
                     //return;
                 }
                 else
@@ -464,7 +523,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 
@@ -474,39 +533,58 @@ namespace FixPro.ViewModels
         async void OnDeactiveNotify(NotificationsModel model)
         {
 
-            model.UpdateDate = DateTime.Now;
-            model.UpdateUser = int.Parse(Helpers.Settings.UserId);
-
-            var exit = false;
-            exit = await App.Current.MainPage.DisplayAlert("FixPro", "Do you want to Deactive the notify?", "Yes", "No").ConfigureAwait(false);
-            if (exit)
+            if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
             {
-                IsBusy = true;
-                string UserToken = await _service.UserToken();
-                UserDialogs.Instance.ShowLoading();
-                var json = await ORep.PutAsync("api/Notifications/PutDeactiveNotify", model,UserToken);
-                UserDialogs.Instance.HideLoading();
-                IsBusy = false;
+                await App.Current.MainPage.DisplayAlert("Alert", "No Internet connection!", "OK");
+                return;
+            }
+            else
+            {
+                model.UpdateDate = DateTime.Now;
+                model.UpdateUser = int.Parse(Helpers.Settings.UserId);
 
-                if (json.Active == false)
+                var exit = false;
+                exit = await App.Current.MainPage.DisplayAlert("FixPro", "Do you want to Deactive the notify?", "Yes", "No").ConfigureAwait(false);
+                if (exit)
                 {
-                    Messages.Remove(model);
+                    IsBusy = true;
+                    string UserToken = await _service.UserToken();
+                    UserDialogs.Instance.ShowLoading();
+                    var json = await ORep.PutAsync("api/Notifications/PutDeactiveNotify", model, UserToken);
+                    UserDialogs.Instance.HideLoading();
+                    IsBusy = false;
+
+                    if (json.Active == false)
+                    {
+                        Messages.Remove(model);
+                    }
                 }
             }
+               
         }
 
         async void OnSelectedNotificationDetails(NotificationsModel model)
         {
             IsBusy = true;
-            UserDialogs.Instance.ShowLoading();
-            if (model.ScheduleId != null && !string.IsNullOrEmpty(model.ScheduleDate))
+            if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
             {
-                //var VM = new SchedulesViewModel(model.ScheduleId.Value, model.ScheduleDate);
-                //var page = new NewSchedulePage();
-                //page.BindingContext = VM;
-                //await App.Current.MainPage.Navigation.PushAsync(page);
+                await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new NotificationsPage()));
+                return;
             }
-            UserDialogs.Instance.HideLoading();
+            else
+            {
+                UserDialogs.Instance.ShowLoading();
+                if (model.ScheduleId != null && model.ScheduleDateId != null && !string.IsNullOrEmpty(model.ScheduleDate))
+                {
+                    var VM = new SchedulesViewModel(model.ScheduleId.Value, model.ScheduleDateId.Value);
+                    //var page = new NewSchedulePage();
+                    var page = new ScheduleDetailsPage();
+                    page.BindingContext = VM;
+                    await App.Current.MainPage.Navigation.PushAsync(page);
+                }
+                UserDialogs.Instance.HideLoading();
+            }
+
             IsBusy = false;
         }
 
@@ -518,8 +596,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new EmployeesWorkingPage()));
-                    //return;
+                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
+                    return;
                 }
                 else
                 {
@@ -535,7 +613,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 
@@ -559,8 +637,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new Views.CustomerPages.CustomersPage()));
-                    //return;
+                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
+                    return;
                 }
                 else
                 {
@@ -573,7 +651,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 
@@ -596,7 +674,7 @@ namespace FixPro.ViewModels
 
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new Views.CallPages.CallsPage()));
+                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
                 }
                 else
                 {
@@ -608,7 +686,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 
@@ -617,7 +695,7 @@ namespace FixPro.ViewModels
             //{
             //    if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
             //    {
-            //        await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+            //        await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
             //        //return;
             //    }
             //    else
@@ -632,7 +710,7 @@ namespace FixPro.ViewModels
             //}
             //catch (Exception)
             //{
-            //    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+            //    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
             //    //throw;
             //}
 
@@ -653,7 +731,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new SchedulePage()));
+                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
                     //return;
                 }
                 else
@@ -670,7 +748,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 
@@ -691,7 +769,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new AllEmployeesPage()));
+                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
                     //return;
                 }
                 else
@@ -706,7 +784,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 
@@ -730,7 +808,7 @@ namespace FixPro.ViewModels
 
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new TimeSheetPage()));
+                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
                 }
                 else
                 {
@@ -741,7 +819,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 throw;
             }
 
@@ -749,7 +827,7 @@ namespace FixPro.ViewModels
             //{
             //    if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
             //    {
-            //        await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+            //        await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
             //        //return;
             //    }
             //    else
@@ -763,7 +841,7 @@ namespace FixPro.ViewModels
             //}
             //catch (Exception)
             //{
-            //    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+            //    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
             //    throw;
             //}
 
@@ -811,7 +889,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -825,7 +903,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 

@@ -1,5 +1,6 @@
 ﻿using Acr.UserDialogs;
 using FixPro.Models;
+using FixPro.Services.Data;
 using FixPro.ViewModels;
 using Newtonsoft.Json;
 using OneSignalSDK.Xamarin;
@@ -16,7 +17,9 @@ using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-
+using FixPro.Helpers;
+using Microsoft.AspNet.SignalR.Client;
+using Syncfusion.SfCalendar.XForms;
 
 namespace FixPro
 {
@@ -25,57 +28,100 @@ namespace FixPro
         HomeViewModel ViewModel { get => BindingContext as HomeViewModel; set => BindingContext = value; }
 
         //private readonly ChatService chatService;
+        //public ObservableCollection<string> Messages { get; private set; }
+
+        //private readonly HubConnectionService chatService;
+        
         //public ObservableCollection<string> Messages { get; }
 
         static int Idincerment = 0;
+
+        //private readonly HubConnection hubConnection;
+
+        //private SignalRService _signalRService;
 
         public MainPage()
         {
             InitializeComponent();
 
+            Animation();
             //HomeViewModel vm = new HomeViewModel();
             //this.BindingContext = vm;
 
             lblLoginName.Text = Helpers.Settings.UserName;
             lblLoginPhone.Text = Helpers.Settings.Phone;
 
+            StartGetLocation();
+
         }
 
+        protected override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+        }
+
+        async void Animation()
+        {
+            await yumImgLogo.TranslateTo(0, 0, 400);
+            await yumTimeSheet.ScaleTo(1, 200);
+            await yumCustomers.ScaleTo(1, 200);
+            await yumSchedules.ScaleTo(1, 200);
+            await yumCalls.ScaleTo(1, 200);
+            await imgWave.TranslateTo(0, 0, 100);
+        }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            OneSignal.Default.NotificationOpened += Default_NotificationOpened;
+
+            AccountImg.Source = Helpers.Settings.UserPricture != null ? Helpers.Settings.UserPricture : "avatar.png";
+
             //await chatService.Connect();
             //BadgeNotifications.Num = Messages.Count;
+
+            //await chatService.Connect();
+            //lblHub.Text = Messages.FirstOrDefault();
+
+            
+            //_signalRService = new SignalRService();
+            //await Task.Run(Connect);
+            //ViewModel.Massages = new ObservableCollection<string>();
+
+            
+            //_signalRService.OnMessageReceived += (user, message, userFrom , userTo) =>
+            //{
+            //   ViewModel.Massages.Add($"{user}: {message} , from: {userFrom} - to: {userTo}");
+            //};
+            
+  
+            //await _signalRService.StartAsync();
+            //lblHub.Text = ViewModel.Massages.FirstOrDefault();
         }
 
         protected override async void OnDisappearing()
         {
             base.OnDisappearing();
-            OneSignal.Default.NotificationOpened -= Default_NotificationOpened;
+
             //await chatService.Disconnect();
             //BadgeNotifications.Num = Messages.Count;
+
+            //await chatService.Disconnect();
+            //lblHub.Text = Messages.FirstOrDefault();
         }
 
-        private async void Default_NotificationOpened(NotificationOpenedResult result)
-        {
-            if (result.notification.additionalData != null && result.notification.additionalData.ContainsKey("deepLink"))
-            {
-                string deepLink = result.notification.additionalData["deepLink"].ToString();
 
-                switch (deepLink)
-                {
-                    case "page1":
-                        await App.Current.MainPage.Navigation.PushAsync(new Views.NotificationsPage());
-                        break;
-                    default:
-                        await App.Current.MainPage.Navigation.PushAsync(new Views.TimeSheetPage());
-                        break;
-                }
-            }
-        }
+        //async Task Connect()
+        //{
+        //    try
+        //    {
+        //        await _signalRService.StartAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Something has gone wrong
+        //    }
+        //}
 
 
         protected override bool OnBackButtonPressed()
@@ -92,21 +138,21 @@ namespace FixPro
             return true;
         }
 
-        string SendSMS(string Phone)
-        {
-            string accountSid = "AC1e12d1c89d9d238bf945b2f9b8ebc6a2";
-            string authToken = "d9212c43cc269700de08ef643b0d1dab";
+        //string SendSMS(string Phone)
+        //{
+        //    string accountSid = "AC1e12d1c89d9d238bf945b2f9b8ebc6a2";
+        //    string authToken = "d9212c43cc269700de08ef643b0d1dab";
 
-            TwilioClient.Init(accountSid, authToken);
+        //    TwilioClient.Init(accountSid, authToken);
 
-            var message = MessageResource.Create(
-                body: "here : Message to customer",
-                from: new Twilio.Types.PhoneNumber("+12086182061"),
-                to: new Twilio.Types.PhoneNumber("+1" + Phone)
-            );
+        //    var message = MessageResource.Create(
+        //        body: "here : Message to customer",
+        //        from: new Twilio.Types.PhoneNumber("+12086182061"),
+        //        to: new Twilio.Types.PhoneNumber("+1" + Phone)
+        //    );
 
-            return message.Sid;
-        }
+        //    return message.Sid;
+        //}
 
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
@@ -140,35 +186,13 @@ namespace FixPro
             Helpers.Settings.BranchId = "";
             Helpers.Settings.BranchName = "";
             Helpers.Settings.UserRole = "";
+            Helpers.Utility.ServerUrl = Helpers.Utility.ServerUrlStatic;
             await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
             Controls.StartData.IsRunning = false;
 
             UserDialogs.Instance.HideLoading();
         }
 
-
-        async void StartPermission()
-        {
-            var permission = await Xamarin.Essentials.Permissions.RequestAsync<Xamarin.Essentials.Permissions.LocationAlways>();
-
-            if (permission == Xamarin.Essentials.PermissionStatus.Denied)
-            {
-                // TODO Let the user know they need to accept
-                return;
-            }
-
-            if (Device.RuntimePlatform == Device.Android)
-            {
-                if (Preferences.Get("LocationServiceRunning", false) == false)
-                {
-                    StartService();
-                }
-                else
-                {
-                    StopService();
-                }
-            }
-        }
 
         async void StartGetLocation()
         {
@@ -186,7 +210,6 @@ namespace FixPro
                 {
                     await CrossGeolocator.Current.StopListeningAsync();
                     CrossGeolocator.Current.PositionChanged -= Current_PositionChanged;
-
                     return;
                 }
 
@@ -203,17 +226,17 @@ namespace FixPro
 
                 CrossGeolocator.Current.PositionChanged += Current_PositionChanged;
             }
-            else if (Device.RuntimePlatform == Device.Android)
-            {
-                if (Preferences.Get("LocationServiceRunning", false) == false)
-                {
-                    StartService();
-                }
-                else
-                {
-                    StopService();
-                }
-            }
+            //else if (Device.RuntimePlatform == Device.Android)
+            //{
+            //    if (Preferences.Get("LocationServiceRunning", false) == false)
+            //    {
+            //        StartService();
+            //    }
+            //    else
+            //    {
+            //        StopService();
+            //    }
+            //}
         }
 
         private async void Current_PositionChanged(object sender, Plugin.Geolocator.Abstractions.PositionEventArgs e)
@@ -269,25 +292,50 @@ namespace FixPro
             }
             catch (Exception)
             {
-
-                throw;
+                await App.Current.MainPage.DisplayAlert("Alert", "Saving position for tracking failed!", "OK");
             }
 
         }
 
-        private void StartService()
-        {
-            var startServiceMessage = new StartServiceMessage();
-            MessagingCenter.Send(startServiceMessage, "ServiceStarted");
-            Preferences.Set("LocationServiceRunning", true);
-        }
 
-        private void StopService()
-        {
-            var stopServiceMessage = new StopServiceMessage();
-            MessagingCenter.Send(stopServiceMessage, "ServiceStopped");
-            Preferences.Set("LocationServiceRunning", false);
-        }
+        //async void StartPermission()
+        //{
+        //    var permission = await Xamarin.Essentials.Permissions.RequestAsync<Xamarin.Essentials.Permissions.LocationAlways>();
+
+        //    if (permission == Xamarin.Essentials.PermissionStatus.Denied)
+        //    {
+        //        // TODO Let the user know they need to accept
+        //        return;
+        //    }
+
+        //    if (Device.RuntimePlatform == Device.Android)
+        //    {
+        //        if (Preferences.Get("LocationServiceRunning", false) == false)
+        //        {
+        //            StartService();
+        //        }
+        //        else
+        //        {
+        //            StopService();
+        //        }
+        //    }
+        //}
+
+
+
+        //private void StartService()
+        //{
+        //    var startServiceMessage = new StartServiceMessage();
+        //    MessagingCenter.Send(startServiceMessage, "ServiceStarted");
+        //    Preferences.Set("LocationServiceRunning", true);
+        //}
+
+        //private void StopService()
+        //{
+        //    var stopServiceMessage = new StopServiceMessage();
+        //    MessagingCenter.Send(stopServiceMessage, "ServiceStopped");
+        //    Preferences.Set("LocationServiceRunning", false);
+        //}
 
     }
 }

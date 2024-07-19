@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:Controls="clr-namespace:FixPro.Controls"
+                      xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                      xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                      xmlns:vm="clr-namespace:FixPro.ViewModels"
+                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                      x:Name="page"
+                      BackgroundColor="White"
+                      x:Class="FixPro.Views.SchedulePages.FullScreenNotePage">
+
+    <ContentPage.BindingContext>
+        <vm:FullScreenNoteViewModel></vm:FullScreenNoteViewModel>
+    </ContentPage.BindingContext>
+
+    <StackLayout>
+
+        <Controls:ToolBar Title="Note" HasBackButton="True"></Controls:ToolBar>
+
+         <StackLayout Margin="20" VerticalOptions="FillAndExpand" Spacing="25">
+     <Frame BorderColor="LightGray" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="10" CornerRadius="15">
+         <Editor Text="{Binding Note}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+
+         </Editor>
+     </Frame>
+
+
+     <Button Text="Apply"
+             VerticalOptions="End"
+             HorizontalOptions="FillAndExpand"
+             Margin="0,0,0,50"
+             CornerRadius="10"
+             BackgroundColor="#b66dff"
+             TextColor="White"
+             Command="{Binding BindingContext.ApplyNote, Source={x:Reference page}}" CommandParameter="{Binding Note}">
+     </Button>
+ </StackLayout>
+    </StackLayout>
+
+</Controls:CustomsPage>

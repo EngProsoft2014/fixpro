@@ -45,7 +45,7 @@
 
                 <StackLayout Padding="20,0,20,0">
                     <Entry x:Name="searchBar"
-                           Placeholder="Search Customer By Phone"
+                           Placeholder="Search Customer By Phone or Name"
                            FontFamily="AlmaraiRegular"
                            Keyboard="Text"
                            ClearButtonVisibility="WhileEditing"
@@ -139,15 +139,15 @@
 
                 </StackLayout>
 
-                <yummy:PancakeView x:Name="yumCreateCust" CornerRadius="100"
+                <yummy:PancakeView x:Name="yumCreateCust" CornerRadius="{OnPlatform Android=100, iOS=25}"
                                BackgroundColor="#8f1fff" 
                                Padding="5" 
                                VerticalOptions="End"
                                HorizontalOptions="End" 
-                               Margin="30"
+                               Margin="{OnPlatform Android= 30, iOS='30,30,30,50'}"
                                HeightRequest="40"
                                WidthRequest="40">
-                    <Label TranslationY="-8"
+                    <Label TranslationY="{OnPlatform Android=-8, iOS=-3}"
                             VerticalOptions="Center"
                             HorizontalTextAlignment="Center"
                             VerticalTextAlignment="Center"

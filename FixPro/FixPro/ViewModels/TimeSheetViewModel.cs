@@ -153,7 +153,7 @@ namespace FixPro.ViewModels
         public ICommand SelectedTimeOut { get; set; }
         public ICommand SelectedTimeMyStart { get; set; }
         public ICommand SelectedTimeMyEnd { get; set; }
-        
+
 
         public TimeSheetViewModel()
         {
@@ -189,40 +189,27 @@ namespace FixPro.ViewModels
 
         async void GetCheckInOutEmployees(string date)
         {
-            try
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<List<CheckInOutModel>>("api/TimeSheet/GetCheckInOut?" + "date=" + date + "&" + "userId=" + Helpers.Settings.UserId + "&" + "userRole=" + Controls.StartData.EmployeeDataStatic.UserRole.ToString(), UserToken);
+
+                if (json != null)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    LstEmployeesIn = new ObservableCollection<CheckInOutModel>(json.Where(x => x.HoursTo == "" || x.HoursTo == null).OrderBy(x => x.EmployeeName).ToList());
+                    LstEmployeesOut = new ObservableCollection<CheckInOutModel>(json.Where(x => x.HoursTo != "" && x.HoursTo != null).OrderBy(x => x.EmployeeName).ToList());
+
+                    NumIn = LstEmployeesIn.Count.ToString();
+                    NumOut = LstEmployeesOut.Count.ToString();
                 }
                 else
                 {
-                    UserDialogs.Instance.ShowLoading();
-                    string UserToken = await _service.UserToken();
-                    var json = await ORep.GetAsync<List<CheckInOutModel>>("api/TimeSheet/GetCheckInOut?" + "date=" + date + "&" + "userId=" + Helpers.Settings.UserId + "&" + "userRole=" + Controls.StartData.EmployeeDataStatic.UserRole.ToString(), UserToken);
-
-                    if (json != null)
-                    {
-                        LstEmployeesIn = new ObservableCollection<CheckInOutModel>(json.Where(x => x.HoursTo == "" || x.HoursTo == null).OrderBy(x => x.EmployeeName).ToList());
-                        LstEmployeesOut = new ObservableCollection<CheckInOutModel>(json.Where(x => x.HoursTo != "" && x.HoursTo != null).OrderBy(x => x.EmployeeName).ToList());
-
-                        NumIn = LstEmployeesIn.Count.ToString();
-                        NumOut = LstEmployeesOut.Count.ToString();
-                    }
-                    else
-                    {
-                        NumIn = "0";
-                        NumOut = "0";
-                    }
-
-                    UserDialogs.Instance.HideLoading();
+                    NumIn = "0";
+                    NumOut = "0";
                 }
-            }
-            catch (Exception)
-            {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+
+                UserDialogs.Instance.HideLoading();
             }
         }
 
@@ -281,7 +268,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -296,11 +283,11 @@ namespace FixPro.ViewModels
 
                         //string json = await Helpers.Utility.PutPosData(string.Format("api/TimeSheet/PutCheckInOut/{0}", model.EmployeeId), JsonConvert.SerializeObject(model));
 
-                        var json = await ORep.PutAsync(string.Format("api/TimeSheet/PutCheckInOut/{0}", model.EmployeeId), model, UserToken) ;
+                        var json = await ORep.PutAsync(string.Format("api/TimeSheet/PutCheckInOut/{0}", model.EmployeeId), model, UserToken);
 
                         if (json != null)
                         {
-                            await App.Current.MainPage.DisplayAlert("Project Services", "Succes Check In Time.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Check in time saved successfully", "Ok");
                             await App.Current.MainPage.Navigation.PushAsync(new Views.TimeSheetPage());
                             App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                         }
@@ -310,12 +297,11 @@ namespace FixPro.ViewModels
                     await PopupNavigation.Instance.PushAsync(popupView);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
-            
+
             IsBusy = false;
         }
 
@@ -326,7 +312,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -351,7 +337,7 @@ namespace FixPro.ViewModels
                         }
                         else
                         {
-                            await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Time After Check In Time.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("Alert", "Check out not determined! Choose the check in time first please", "Ok");
                         }
 
                         UserDialogs.Instance.HideLoading();
@@ -360,12 +346,11 @@ namespace FixPro.ViewModels
                     await PopupNavigation.Instance.PushAsync(popupView);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
-            
+
             IsBusy = false;
         }
 
@@ -377,7 +362,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -387,7 +372,7 @@ namespace FixPro.ViewModels
                     string UserToken = await _service.UserToken();
 
                     model.HoursFrom = string.Format(DateTime.Now.ToString(@"hh\:mm"));
-                    model.Date = DateTime.Now.ToString("yyyy-MM-dd");
+                    model.Date = Controls.StaticMembers.SelectedDate.ToString("yyyy-MM-dd");
                     model.CreateDate = DateTime.Now;
                     model.CreateUser = int.Parse(Helpers.Settings.UserId);
                     model.SheetColor = "#26cc8a";
@@ -398,22 +383,24 @@ namespace FixPro.ViewModels
                     var json = await ORep.PostAsync("api/TimeSheet/PostCheckInOut", model, UserToken);
 
                     //if (json != null && json != "api not responding")
-                    if (json != null)
+                    if (json != null && json.Id != 0)
                     {
-                        await App.Current.MainPage.DisplayAlert("Project Services", "Succes Check In Time.", "Ok");
+                        await App.Current.MainPage.DisplayAlert("FixPro", "Check in time saved successfully", "Ok");
                         await App.Current.MainPage.Navigation.PushAsync(new Views.TimeSheetPage());
                         App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                     }
-
+                    else
+                    {
+                        await App.Current.MainPage.DisplayAlert("FixPro", "Failed to save the check in time!", "Ok");
+                    }
                     UserDialogs.Instance.HideLoading();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");     
             }
-            
+
             IsBusy = false;
         }
 
@@ -425,7 +412,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -449,25 +436,24 @@ namespace FixPro.ViewModels
                         //if (json != null && json != "api not responding")
                         if (json != null)
                         {
-                            await App.Current.MainPage.DisplayAlert("Project Services", "Succes Check Out Time.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Check out time saved successfully", "Ok");
                             await App.Current.MainPage.Navigation.PushAsync(new Views.TimeSheetPage());
                             App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                         }
                     }
                     else
                     {
-                        await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Time After Check In Time.", "Ok");
+                        await App.Current.MainPage.DisplayAlert("Alert", "Check out not determined! Choose the check in time first please", "Ok");
                     }
 
                     UserDialogs.Instance.HideLoading();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
-            
+
             IsBusy = false;
         }
 

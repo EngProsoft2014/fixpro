@@ -115,7 +115,7 @@
                             <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
                         </yummy:PancakeView.Border>
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="10" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=10,iOS=5}" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                         <yummy:PancakeView.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding BindingContext.CashPayment,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></TapGestureRecognizer>
@@ -135,7 +135,7 @@
                             <yummy:Border Color="#b66dff" Thickness="2"></yummy:Border>
                         </yummy:PancakeView.Border>
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="10" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=10,iOS=5}" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                         <yummy:PancakeView.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding BindingContext.CreditPayment,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></TapGestureRecognizer>
@@ -154,6 +154,7 @@
                             BackgroundColor="White" 
                             FontAttributes="Bold"
                             FontSize="13"
+                            WidthRequest="{OnPlatform iOS=70}"
                             TextColor="#333" 
                             BorderColor="LightGray"
                             BorderWidth="1"

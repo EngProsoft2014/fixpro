@@ -17,7 +17,7 @@
     </ContentPage.BindingContext>
 
     <StackLayout>
-        <StackLayout Orientation="Horizontal" Spacing="0" Margin="20">
+        <StackLayout Orientation="Horizontal" Spacing="0" Margin="{OnPlatform Android=20,iOS='20,50,20,20'}">
             <!--<Controls:ToolBar Title="Schedule Images" HasBackButton="True" HorizontalOptions="FillAndExpand"></Controls:ToolBar>-->
 
             <Image x:Name="imgBack">
@@ -59,13 +59,13 @@
                                 <StackLayout>
                                     <StackLayout Orientation="Horizontal" Padding="20,0,20,0" HorizontalOptions="FillAndExpand">
 
-                                        <CheckBox IsChecked="{Binding Active}" Color="#b66dff" Margin="0,0,10,0">
+                                        <CheckBox IsChecked="{Binding ShowToCust}" Color="#b66dff" Margin="0,0,10,0">
                                             <CheckBox.Behaviors>
                                                 <xct:EventToCommandBehavior EventName="CheckedChanged" Command="{Binding BindingContext.OutScheduleImage,Source={x:Reference page}}" 
                                                                             CommandParameter="{Binding}" />
                                             </CheckBox.Behaviors>
                                         </CheckBox>
-                                        
+
                                         <!--Image-->
                                         <StackLayout HorizontalOptions="Start" IsVisible="False">
                                             <yummy:PancakeView BackgroundColor="White" Padding="0" CornerRadius="10" VerticalOptions="FillAndExpand">
@@ -91,7 +91,9 @@
                                         <StackLayout HorizontalOptions="Start" IsVisible="False">
                                             <yummy:PancakeView BackgroundColor="White" Padding="0" CornerRadius="10" VerticalOptions="FillAndExpand">
                                                 <ff:CachedImage x:Name="Pic2" Source="{Binding PictureSource}" WidthRequest="130" HeightRequest="90" Aspect="Fill" LoadingPlaceholder="picture.png" ErrorPlaceholder="picture.png">
-
+                                                    <ff:CachedImage.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding BindingContext.OpenFullScreenSchImageBeforeInsert,Source={x:Reference page}}" CommandParameter="{Binding PictureSource}"></TapGestureRecognizer>
+                                                    </ff:CachedImage.GestureRecognizers>
                                                 </ff:CachedImage>
                                                 <yummy:PancakeView.Border>
                                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
@@ -108,7 +110,7 @@
                                         </StackLayout>
 
                                         <StackLayout VerticalOptions="Center">
-                                            <Label Text="{Binding CreateDate,StringFormat='{0:MM-dd-yyyy}'}"></Label>
+                                            <Label Text="{Binding ScheduleDate,StringFormat='{0:MM-dd-yyyy}'}"></Label>
                                             <Label Text="{Binding CreateDate,StringFormat='{0:h:mm tt}'}"></Label>
                                         </StackLayout>
 
@@ -140,14 +142,19 @@
                     </DataTrigger>
                 </ListView.Triggers>
             </ListView>
-
+            <StackLayout.Triggers>
+                <DataTrigger TargetType="StackLayout" Binding="{Binding LstAllPictures.Count}" Value="0">
+                    <Setter Property="IsVisible" Value="False"></Setter>
+                    <Setter Property="HeightRequest" Value="0"></Setter>
+                </DataTrigger>
+            </StackLayout.Triggers>
         </StackLayout>
-        <Button x:Name="btnDone" Grid.Row="6" HeightRequest="50" 
+        <Button x:Name="btnDone" HeightRequest="50"
                 VerticalOptions="End"
                 Text="Done" 
                 BackgroundColor="#b66dff" 
                 TextColor="White"
-                Margin="50,0,50,20"
+                Margin="{OnPlatform Android='50,20,50,20',iOS='50,20,50,50'}"
                 Padding="0" 
                 CornerRadius="20"
                 Command="{Binding BindingContext.DonePictures, Source={x:Reference page}}" CommandParameter="{Binding ScheduleDetails}">
@@ -161,8 +168,9 @@
             </Button.Triggers>
         </Button>
 
-        <StackLayout x:Name="stkNoData" Padding="0,50,0,0" IsVisible="False" HeightRequest="550" HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
-            <Image Source="noresult.png" Aspect="AspectFill"></Image>
+        <!--NoData-->
+        <StackLayout x:Name="stkNoData" Padding="0,200,0,300" IsVisible="False" HeightRequest="100" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Image Source="noresult.png" Aspect="AspectFill" VerticalOptions="FillAndExpand"></Image>
             <StackLayout.Triggers>
                 <DataTrigger TargetType="StackLayout" Binding="{Binding LstAllPictures.Count}" Value="0">
                     <Setter Property="IsVisible" Value="True"></Setter>
@@ -170,6 +178,9 @@
             </StackLayout.Triggers>
         </StackLayout>
 
+        <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
+
+        </ActivityIndicator>
 
     </StackLayout>
 </Controls:CustomsPage>

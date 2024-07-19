@@ -17,7 +17,7 @@
 
     <StackLayout>
         <!--Toolbar-->
-        <StackLayout Orientation="Horizontal" Padding="20,10,20,0" HorizontalOptions="FillAndExpand">
+        <StackLayout Orientation="Horizontal" Padding="{OnPlatform iOS='20,50,20,10', Android='20,10,20,0'}" HorizontalOptions="FillAndExpand">
 
             <Image x:Name="imgBack">
                 <Image.Source>
@@ -43,10 +43,11 @@
         </StackLayout>
 
         <!--Search Bar-->
-        <yummy:PancakeView BackgroundColor="White" HeightRequest="42" Margin="30,10,30,10" Padding="0" CornerRadius="25" HorizontalOptions="FillAndExpand">
+        <yummy:PancakeView BackgroundColor="White" HeightRequest="42" Margin="30,10,30,10" Padding="0" CornerRadius="{OnPlatform Android=25,iOS=20}" HorizontalOptions="FillAndExpand">
             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
                 <SearchBar x:Name="srcBarEmployee"
-                           Placeholder="Search"    
+                           BackgroundColor="White"
+                           Placeholder="Search" 
                            TextChanged="srcBarEmployee_TextChanged"
                            HorizontalOptions="FillAndExpand" 
                            WidthRequest="265"
@@ -66,7 +67,7 @@
                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
             </yummy:PancakeView.Border>
             <yummy:PancakeView.Shadow>
-                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=LightGray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
             </yummy:PancakeView.Shadow>
         </yummy:PancakeView>
 

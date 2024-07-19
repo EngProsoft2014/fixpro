@@ -1,10 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.fixpro" android:installLocation="preferExternal">
-    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
-    <application android:label="FixPro.Android" android:theme="@style/MainTheme" android:supportsRtl="true" android:usesCleartextTraffic="true" android:icon="@mipmap/logo">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="5" android:versionName="1.0.0.5" package="com.companyname.fixprous" android:installLocation="preferExternal">
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
+	<application android:label="FixPro.Android" android:theme="@style/MainTheme" android:supportsRtl="true" android:usesCleartextTraffic="true" android:icon="@mipmap/logo">
 		<!--For GoogleMaps-->
-		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyARWU8W2TY1AIC-5vgRAs5ulMJeh6Qpw7c" />
+		<!--<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyARWU8W2TY1AIC-5vgRAs5ulMJeh6Qpw7c" />-->
+		<!--<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCQzkyf_VZM-RlfkDV-4PBqxlA-kNTtL5U" />-->
+		<!--<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAH2_0q0eOV4BX-qwShUW6NWtYMbuVAYPw" />-->
+		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDqwZ6F9-8JeluwYaJaOYyBnK_BHEBGjR8" />
 		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+		<uses-library android:name="org.apache.http.legacy" android:required="false" />
+		<meta-data android:name="com.onesignal.suppressLaunchURLs" android:value="true" />
 		<!--<provider android:name="androidx.core.content.FileProvider" android:authorities="com.companyname.fixpro.fileprovider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
 		</provider>-->
@@ -16,16 +21,18 @@
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS"
 						   android:resource="@xml/file_paths"></meta-data>
 		</provider>-->
-
 		<provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
 		</provider>
 	</application>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.INSTALL_LOCATION_PROVIDER" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.CALL_PHONE" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
 	<!--For Get Locations-->
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -44,6 +51,12 @@
 	<queries>
 		<intent>
 			<action android:name="android.media.action.IMAGE_CAPTURE" />
+		</intent>
+	</queries>
+	<queries>
+		<intent>
+			<action android:name="android.intent.action.DIAL" />
+			<data android:scheme="tel"/>
 		</intent>
 	</queries>
 </manifest>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FixPro.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,11 +13,21 @@ namespace FixPro.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LoginPage : Controls.CustomsPage
     {
+        LoginViewModel ViewModel { get => BindingContext as LoginViewModel; set => BindingContext = value; }
+
         public LoginPage()
         {
             InitializeComponent();
-        }
 
+            entUserName.Completed += (object sender, EventArgs e) =>
+            {
+                entPassword.Focus();
+            };
+            entPassword.Completed += (object sender, EventArgs e) =>
+            {
+                ViewModel.ClickLogin.Execute(ViewModel.Login);
+            };
+        }
         protected override bool OnBackButtonPressed()
         {
             Device.BeginInvokeOnMainThread(async () =>

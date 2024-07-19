@@ -2,47 +2,72 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>UIDeviceFamily</key>
-    <array>
-        <integer>1</integer>
-        <integer>2</integer>
-    </array>
-    <key>UISupportedInterfaceOrientations</key>
-    <array>
-        <string>UIInterfaceOrientationPortrait</string>
-        <string>UIInterfaceOrientationLandscapeLeft</string>
-        <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
-    <key>UISupportedInterfaceOrientations~ipad</key>
-    <array>
-        <string>UIInterfaceOrientationPortrait</string>
-        <string>UIInterfaceOrientationPortraitUpsideDown</string>
-        <string>UIInterfaceOrientationLandscapeLeft</string>
-        <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
-    <key>MinimumOSVersion</key>
-    <string>8.0</string>
-    <key>CFBundleDisplayName</key>
-    <string>FixPro</string>
-    <key>CFBundleIdentifier</key>
-    <string>com.companyname.FixPro</string>
-    <key>CFBundleVersion</key>
-    <string>1.0</string>
-    <key>UILaunchStoryboardName</key>
-    <string>LaunchScreen</string>
-    <key>CFBundleName</key>
-    <string>FixPro</string>
-    <key>XSAppIconAssets</key>
-    <string>Assets.xcassets/AppIcon.appiconset</string>
-	
+	<key>CFBundleDisplayName</key>
+	<string>FixPro</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.companyname.FixPro</string>
+	<key>CFBundleName</key>
+	<string>FixPro</string>
+	<key>CFBundleVersion</key>
+	<string>15.0.7</string>
+	<key>MinimumOSVersion</key>
+	<string>16.4</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to the camera to take photos.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Replace this with your reason for requesting location</string>
+	<string>Can we use your location at all times?</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Replace this with your reason for requesting location</string>
+	<string>Can we use your location when your application is being used?</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Replace this with your reason for requesting location</string>
-
+	<string>Can we use your location at all times?</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to microphone.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to the photo gallery.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to photos.</string>
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+		<integer>2</integer>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>NSCalendarsUsageDescription</key>
+	<string>purpose for using calendar</string>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/LogoIcon.appiconset</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.1.1</string>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>location</string>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+
+	<key>OneSignal_suppress_launch_urls</key>
+	<!-- <key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>googlechromes</string>
+		<string>comgooglemaps</string>
+	</array> -->
+<true/>
 </dict>
 </plist>

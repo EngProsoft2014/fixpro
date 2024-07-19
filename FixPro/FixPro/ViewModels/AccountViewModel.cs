@@ -14,9 +14,11 @@ using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
 using Stripe;
+using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
+using Xamarin.Essentials;
+
 
 namespace FixPro.ViewModels
 {
@@ -44,6 +46,7 @@ namespace FixPro.ViewModels
                 }
             }
         }
+
         BranchesModel _OneBranches;
         public BranchesModel OneBranches
         {
@@ -113,10 +116,13 @@ namespace FixPro.ViewModels
             }
         }
 
+
+
         Helpers.GenericRepository ORep = new Helpers.GenericRepository();
         public ICommand SelecteCamAccountPhoto { get; set; }
         public ICommand SelectePickAccountPhoto { get; set; }
         public ICommand SelectBranch { get; set; }
+        
 
         public AccountViewModel()
         {
@@ -174,26 +180,32 @@ namespace FixPro.ViewModels
         async Task GetBranches()
         {
             IsBusy = true;
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<BranchesModel>>(string.Format("api/Employee/GetEmpolyeeBranches?" + "AccountId=" + Helpers.Settings.AccountId + "&" + "EmpId=" + Helpers.Settings.UserId), UserToken);
 
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstBranches = json;
-                OneBranches = LstBranches.Where(x => x.Id == int.Parse(Helpers.Settings.BranchId)).FirstOrDefault();
-            }
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<BranchesModel>>(string.Format("api/Employee/GetEmpolyeeBranches?" + "AccountId=" + Helpers.Settings.AccountId + "&" + "EmpId=" + Helpers.Settings.UserId), UserToken);
 
-            UserDialogs.Instance.HideLoading();
+                if (json != null)
+                {
+                    LstBranches = json;
+                    OneBranches = LstBranches.Where(x => x.Id == int.Parse(Helpers.Settings.BranchId)).FirstOrDefault();
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }
+               
             IsBusy = false;
         }
-
+       
 
         void OnSelectBranch(BranchesModel model)
         {
             IsBusy = true;
             OneBranches = model;
             Helpers.Settings.BranchId = model.Id.ToString();
+            Helpers.Settings.BranchName = model.Name;
             IsBusy = false;
         }
 
@@ -216,35 +228,42 @@ namespace FixPro.ViewModels
                 {
                     var mediaOption = new PickMediaOptions()
                     {
-                        PhotoSize = PhotoSize.Medium
+                        PhotoSize = PhotoSize.Small,
+                        CompressionQuality =75,
+                        CustomPhotoSize = 200,
+                        MaxWidthHeight = 400,
                     };
 
                     _mediaFile = await CrossMedia.Current.PickPhotoAsync();
                     if (_mediaFile == null) return;
 
-                    //Upload Image To Server
-                    UserDialogs.Instance.ShowLoading();
-
-                    Login.Picture = Convert.ToBase64String(Helpers.Utility.ReadToEnd(_mediaFile.GetStream()));
-
-                    //string Postjson = await Helpers.Utility.PostData(string.Format("api/ImageMobile/ReplacePostOneImageProfileImageOnlyMobile"), JsonConvert.SerializeObject(Login));
-                    var Postjson = await ORep.PostAsync(string.Format("api/ImageMobile/ReplacePostOneImageProfileImageOnlyMobile"), Login, UserToken);
-
-                    if (Postjson != null)
+                    if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
                     {
-                        //EmployeeModel UserInfo = JsonConvert.DeserializeObject<EmployeeModel>(Postjson);
+                        //Upload Image To Server
+                        UserDialogs.Instance.ShowLoading();
 
-                        Helpers.Settings.UserPricture = Helpers.Utility.PathServerProfileImages + Postjson.Picture;
-                        Login.Picture = Postjson.Picture;
-                        Controls.StaticMembers.OldProfileImageSt = Login.OldPicture = Postjson.Picture;
-                        AccountPhoto = ImageSource.FromStream(() => _mediaFile.GetStream());
+                        Login.Picture = Convert.ToBase64String(Helpers.Utility.ReadToEnd(_mediaFile.GetStream()));
+
+
+                        var Postjson = await ORep.PostAsync(string.Format("api/ImageMobile/ReplacePostOneImageProfileImageOnlyMobile"), Login, UserToken);
+
+                        if (Postjson != null)
+                        {
+                            //EmployeeModel UserInfo = JsonConvert.DeserializeObject<EmployeeModel>(Postjson);
+
+                            Helpers.Settings.UserPricture = Helpers.Utility.PathServerProfileImages + Helpers.Settings.AccountName + "/" + Postjson.Picture;
+                            Login.Picture = Postjson.Picture;
+                            Controls.StaticMembers.OldProfileImageSt = Login.OldPicture = Postjson.Picture;
+                            AccountPhoto = ImageSource.FromStream(() => _mediaFile.GetStream());
+                        }
+                        UserDialogs.Instance.HideLoading();
+
+                        await App.Current.MainPage.Navigation.PushAsync(new AccountPage());
+                        App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+
+                        UserDialogs.Instance.HideLoading();
                     }
-                    UserDialogs.Instance.HideLoading();
-
-                    await App.Current.MainPage.Navigation.PushAsync(new AccountPage());
-                    App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
-
-                    UserDialogs.Instance.HideLoading();
+                       
                 }
             }
             catch (Exception ex)
@@ -252,7 +271,7 @@ namespace FixPro.ViewModels
                 //throw ex;
                 await App.Current.MainPage.DisplayAlert("Error", "This is not support on your device.", "Ok");
             }
-        }
+        } 
 
         //Camera Photo
         private async void OnSelecteCamAccountPhoto()
@@ -273,36 +292,44 @@ namespace FixPro.ViewModels
                 var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
                 {
                     Directory = "Sample",
-                    Name = "test.jpg"
+                    Name = "test.jpg",
+                    PhotoSize = PhotoSize.Small,
+                    CompressionQuality = 75,
+                    CustomPhotoSize = 200,
+                    MaxWidthHeight = 400,
                 });
 
                 if (file == null)
                     return;
 
-                //Upload Image To Server
-                UserDialogs.Instance.ShowLoading();
-
-                Login.Picture = Convert.ToBase64String(Helpers.Utility.ReadToEnd(file.GetStream()));
-
-                //string Postjson = await Helpers.Utility.PostData(string.Format("api/ImageMobile/ReplacePostOneImageProfileImageOnlyMobile"), JsonConvert.SerializeObject(Login));
-                var Postjson = await ORep.PostAsync(string.Format("api/ImageMobile/ReplacePostOneImageProfileImageOnlyMobile"), Login, UserToken);
-
-
-                if (Postjson != null)
+                if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    //EmployeeModel UserInfo = JsonConvert.DeserializeObject<EmployeeModel>(Postjson);
+                    //Upload Image To Server
+                    UserDialogs.Instance.ShowLoading();
 
-                    Helpers.Settings.UserPricture = Helpers.Utility.PathServerProfileImages + Postjson.Picture;
-                    Login.Picture = Postjson.Picture;
-                    Controls.StaticMembers.OldProfileImageSt = Login.OldPicture = Postjson.Picture;
-                    AccountPhoto = ImageSource.FromStream(() => file.GetStream());
+                    Login.Picture = Convert.ToBase64String(Helpers.Utility.ReadToEnd(file.GetStream()));
+
+
+                    var Postjson = await ORep.PostAsync(string.Format("api/ImageMobile/ReplacePostOneImageProfileImageOnlyMobile"), Login, UserToken);
+
+
+                    if (Postjson != null)
+                    {
+                        //EmployeeModel UserInfo = JsonConvert.DeserializeObject<EmployeeModel>(Postjson);
+
+                        Helpers.Settings.UserPricture = Helpers.Utility.PathServerProfileImages + Helpers.Settings.AccountName + "/" + Postjson.Picture;
+                        Login.Picture = Postjson.Picture;
+                        Controls.StaticMembers.OldProfileImageSt = Login.OldPicture = Postjson.Picture;
+                        AccountPhoto = ImageSource.FromStream(() => file.GetStream());
+                    }
+                    UserDialogs.Instance.HideLoading();
+
+                    await App.Current.MainPage.Navigation.PushAsync(new AccountPage());
+                    App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+
+                    UserDialogs.Instance.HideLoading();
                 }
-                UserDialogs.Instance.HideLoading();
-
-                await App.Current.MainPage.Navigation.PushAsync(new AccountPage());
-                App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
-
-                UserDialogs.Instance.HideLoading();
+                   
             }
 
             catch (Exception ex)
@@ -311,6 +338,7 @@ namespace FixPro.ViewModels
                 await App.Current.MainPage.DisplayAlert("No Camera", ":( No camera available.", "Ok");
             }
         }
+
 
     }
 }

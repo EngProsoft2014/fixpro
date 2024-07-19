@@ -1,15 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace FixPro.Models
 {
-    public class ItemsServicesModel
+    public class ItemsServicesModel : INotifyPropertyChanged
     {
         public int Id { get; set; }
         public int? AccountId { get; set; }
         public int? BrancheId { get; set; }
-        public string Name { get; set; }
+        //public string Name { get; set; }
+        string _Name;
+        public string Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                _Name = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Name"));
+                }
+            }
+        }
         public int? Type { get; set; }
         public int? CategoryId { get; set; }
         public int? SubCategoryId { get; set; }
@@ -30,5 +47,7 @@ namespace FixPro.Models
         public bool? Active { get; set; }
         public int? CreateUser { get; set; }
         public DateTime? CreateDate { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

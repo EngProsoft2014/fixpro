@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace FixPro.ViewModels
@@ -144,39 +145,45 @@ namespace FixPro.ViewModels
             {
                 await App.Current.MainPage.DisplayAlert("Alert", "Please Complete All Fields.", "Ok");
             }
-            
+     
             IsBusy = false;
         }
 
         public async void GetItemsServices()
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<ItemsServicesModel>>(string.Format("api/Schedules/GetServices?" + "AccountId=" + AccountIdVM), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstServiceCategory = json;
-            }
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<ItemsServicesModel>>(string.Format("api/Schedules/GetServices?" + "AccountId=" + AccountIdVM), UserToken);
 
-            UserDialogs.Instance.HideLoading();
+                if (json != null)
+                {
+                    LstServiceCategory = json;
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }          
         }
 
         async void OnSelectedServiceForGetCost(ItemsServicesModel model)
         {
-            UserDialogs.Instance.ShowLoading();
-            if (model != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                string UserToken = await _service.UserToken();
-                var json = await ORep.GetAsync<ItemsServicesModel>(string.Format("api/Schedules/GetServiceCost?" + "AccountId=" + AccountIdVM + "&" + "ServiceId=" + model.Id), UserToken);
-
-                if (json != null)
+                UserDialogs.Instance.ShowLoading();
+                if (model != null)
                 {
-                    ServiceDetails = json;
-                }
-            }
+                    string UserToken = await _service.UserToken();
+                    var json = await ORep.GetAsync<ItemsServicesModel>(string.Format("api/Schedules/GetServiceCost?" + "AccountId=" + AccountIdVM + "&" + "ServiceId=" + model.Id), UserToken);
 
-            UserDialogs.Instance.HideLoading();
+                    if (json != null)
+                    {
+                        ServiceDetails = json;
+                    }
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }        
         }
     }
 }

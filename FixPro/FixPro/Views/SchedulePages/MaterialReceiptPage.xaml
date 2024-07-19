@@ -19,7 +19,7 @@
     <ScrollView>
         <Grid Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <yummy:PancakeView x:Name="yummyAddItems"  CornerRadius="0" Margin="0" BackgroundColor="White" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                <StackLayout Padding="20,20,20,0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <StackLayout Padding="{OnPlatform iOS='20,0,20,10', Android='20,20,20,0'}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                     <!--Header-->
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                         <Image HorizontalOptions="Start">
@@ -40,46 +40,49 @@
 
                     <StackLayout>
 
+                        <!--Materials Receipt-->
                         <StackLayout Spacing="25">
 
-                            <!--Materials Receipt-->
+                            
                             <StackLayout  HorizontalOptions="FillAndExpand">
 
                                 <Label Text="Supplier" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                                <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                                <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10" HorizontalOptions="FillAndExpand">
 
-                                    <!--<Picker ItemsSource="{Binding LstItemCategory}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedServiceCateory,Mode=TwoWay}" SelectedIndexChanged="Picker_SelectedIndexChanged"
-                                        Title="Choose Item/Service"
+                                    <Picker x:Name="comxLstSuppliers" ItemsSource="{Binding LstSuppliers}" SelectedItem="{Binding OneSupplier,Mode=TwoWay}" ItemDisplayBinding="{Binding FullName}" SelectedIndexChanged="comxLstSuppliers_SelectedIndexChanged"
+                                        Title="Select Supplier"
                                         FontSize="12"
                                         HorizontalOptions="FillAndExpand">
-                                </Picker>-->
+                                    </Picker>
+                                    
 
-                                    <combobox:SfComboBox x:Name="comxLstSuppliers"
-                                            DataSource="{Binding LstSuppliers}" 
-                                            SelectedItem="{Binding OneSupplier,Mode=TwoWay}"
-                                            Watermark="Select Supplier"
-                                            TextSize="15" TextColor="#333"
-                                            MaximumDropDownHeight="400"
-                                            HeightRequest="45"
-                                            NoResultsFoundText="No result found"
-                                            NoResultsFoundTextColor="Gray"
-                                            NoResultsFoundFontSize="14"
-                                            IsEditableMode="False"
-                                            AllowFiltering="False"
-                                            HighlightedTextColor="#b66dff"
-                                            HighlightedTextFontAttributes="Bold"
-                                            DisplayMemberPath="FullName">
+                                    <!--<combobox:SfComboBox x:Name="comxLstSuppliers"
+                                                        DataSource="{Binding LstSuppliers}" 
+                                                        SelectedItem="{Binding OneSupplier,Mode=TwoWay}"
+                                                        Watermark="Select Supplier"
+                                                        TextSize="15" TextColor="#333"
+                                                        MaximumDropDownHeight="400"
+                                                        HeightRequest="45"
+                                                        NoResultsFoundText="No result found"
+                                                        NoResultsFoundTextColor="Gray"
+                                                        NoResultsFoundFontSize="14"
+                                                        IsEditableMode="False"
+                                                        AllowFiltering="False"
+                                                        HighlightedTextColor="#b66dff"
+                                                        HighlightedTextFontAttributes="Bold"
+                                                        DisplayMemberPath="FullName"
+                                                         SelectionChanged="comxLstSuppliers_SelectionChanged">
                                         <combobox:SfComboBox.DropDownHeaderView>
                                             <Label Text="Suppliers" Padding="5" TextColor="Gray"></Label>
                                         </combobox:SfComboBox.DropDownHeaderView>
-                                    </combobox:SfComboBox>
+                                    </combobox:SfComboBox>-->
 
                                     <yummy:PancakeView.Border>
                                         <yummy:Border Color="Gray" Thickness="1"></yummy:Border>
                                     </yummy:PancakeView.Border>
                                     <yummy:PancakeView.Shadow>
-                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                     </yummy:PancakeView.Shadow>
                                 </yummy:PancakeView>
                             </StackLayout>
@@ -89,7 +92,7 @@
                             <StackLayout HorizontalOptions="FillAndExpand" >
                                 <Label Text="Price" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                                <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                                <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10">
                                     <Entry x:Name="entryCost"
                                          Text="{Binding MaterialReceipt.Cost}"
                                          FontSize="15"
@@ -102,7 +105,7 @@
                                         <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                     </yummy:PancakeView.Border>
                                     <yummy:PancakeView.Shadow>
-                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                     </yummy:PancakeView.Shadow>
                                 </yummy:PancakeView>
                             </StackLayout>
@@ -111,7 +114,7 @@
                             <StackLayout  HorizontalOptions="FillAndExpand">
                                 <Label Text="Note" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                                <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" Margin="0,0,0,5" CornerRadius="10">
+                                <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" Margin="0,0,0,5" CornerRadius="10">
                                     <Editor x:Name="edtNotes"
                                         Text="{Binding MaterialReceipt.Notes}"
                                         Placeholder="Enter Description"
@@ -125,7 +128,7 @@
                                         <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                     </yummy:PancakeView.Border>
                                     <yummy:PancakeView.Shadow>
-                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                     </yummy:PancakeView.Shadow>
                                 </yummy:PancakeView>
                             </StackLayout>
@@ -190,7 +193,7 @@
                                         <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                     </yummy:PancakeView.Border>
                                     <yummy:PancakeView.Shadow>
-                                        <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                     </yummy:PancakeView.Shadow>
                                 </yummy:PancakeView>
                             </StackLayout>
@@ -204,7 +207,7 @@
 
                     </ActivityIndicator>
 
-                    <StackLayout x:Name="stkBtns" Orientation="Horizontal" Spacing="20" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="10">
+                    <StackLayout x:Name="stkBtns" Orientation="Horizontal" Spacing="20" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="{OnPlatform Android=10,iOS='10,10,10,80'}">
                         
                         <Button Text="OK"
                                 BackgroundColor="#b66dff"
@@ -212,6 +215,7 @@
                                 FontSize="16" 
                                 CornerRadius="10"
                                 HeightRequest="40"
+                                WidthRequest="{OnPlatform iOS=100}"
                                 TextColor="White" 
                                 x:Name="btnOk"
                                 Command="{Binding BindingContext.Apply,Source={x:Reference page}}" CommandParameter="{Binding MaterialReceipt}"></Button>
@@ -221,6 +225,7 @@
                                 FontAttributes="Bold" 
                                 FontSize="16"
                                 CornerRadius="10"
+                                WidthRequest="{OnPlatform iOS=100}"
                                 HeightRequest="40"
                                 BorderColor="#b66dff" 
                                 BorderWidth="1"

@@ -8,8 +8,8 @@ namespace FixPro.Models
     {
         public int? Id { set; get; }
         public int? ScheduleId { set; get; }
+        public int? ScheduleDateId { set; get; }
         public string ScheduleDate { set; get; }
-
         public int? EmployeeId { set; get; }
         public int? NotificationType { set; get; }
         public string NotificationHeader { set; get; }

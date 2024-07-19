@@ -66,32 +66,32 @@ namespace FixPro.Views.CustomerPages
         private void Picker_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             var selectedOption = (sender as Picker).SelectedItem;
-            ViewModel.ChooseCustomerCategory.Execute(selectedOption);
+            ViewModel?.ChooseCustomerCategory.Execute(selectedOption);
         }
 
         private void Picker_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectedOption = (sender as Picker).SelectedItem;
-            ViewModel.ChooseCustomerMemberShip.Execute(selectedOption);
+            ViewModel?.ChooseCustomerMemberShip.Execute(selectedOption);
         }
 
         private void Picker_SelectedIndexChanged_2(object sender, EventArgs e)
         {
             var selectedOption = (sender as Picker).SelectedItem;
-            ViewModel.ChooseCustomerTax.Execute(selectedOption);
+            ViewModel?.ChooseCustomerTax.Execute(selectedOption);
         }
 
         private void Picker_SelectedIndexChanged_3(object sender, EventArgs e)
         {
             var selectedOption = (sender as Picker).SelectedItem;
-            ViewModel.ChooseCustomerCampaign.Execute(selectedOption);
+            ViewModel?.ChooseCustomerCampaign.Execute(selectedOption);
         }
 
         //Address
         private void Entry_Focused(object sender, FocusEventArgs e)
         {
             var selectedOption = (sender as Entry).Text;
-            ViewModel.SelecteAddress.Execute(selectedOption);
+            ViewModel?.SelecteAddress.Execute(selectedOption);
         }
     }
 }

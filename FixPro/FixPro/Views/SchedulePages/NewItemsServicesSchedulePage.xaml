@@ -18,7 +18,7 @@
 
     <Grid Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <yummy:PancakeView x:Name="yummyAddItems"  CornerRadius="0" BackgroundColor="White" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <StackLayout Padding="20,20,20,20" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <StackLayout Padding="{OnPlatform iOS='20,60,20,10', Android=20}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                 <!--Header-->
                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                     <Image HorizontalOptions="Start">
@@ -46,7 +46,7 @@
 
                             <Label Text="Material" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                            <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10" HorizontalOptions="FillAndExpand">
 
                                 <!--<Picker ItemsSource="{Binding LstItemCategory}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedServiceCateory,Mode=TwoWay}" SelectedIndexChanged="Picker_SelectedIndexChanged"
                                             Title="Choose Item/Service"
@@ -54,7 +54,17 @@
                                             HorizontalOptions="FillAndExpand">
                                     </Picker>-->
 
-                                <combobox:SfComboBox x:Name="cobxLstItems" HorizontalOptions="FillAndExpand" 
+                                <Entry x:Name="entryName"
+                                       Text="{Binding ItemDetails.Name}"  
+                                       TextColor="#8f1fff"
+                                       Placeholder="Select Material"
+                                       FontSize="15"
+                                       HorizontalOptions="FillAndExpand"
+                                       VerticalTextAlignment="Center"
+                                       Focused="Entry_Focused">
+                                </Entry>
+
+                                <!--<combobox:SfComboBox x:Name="cobxLstItems" HorizontalOptions="FillAndExpand" 
                                                     DataSource="{Binding LstItemCategory}" 
                                                     SelectedItem="{Binding SelectedServiceCateory,Mode=TwoWay}"
                                                     SelectionChanged="SfComboBox_SelectionChanged"
@@ -73,13 +83,13 @@
                                     <combobox:SfComboBox.DropDownHeaderView>
                                         <Label Text="Materials" Padding="5" TextColor="Gray"></Label>
                                     </combobox:SfComboBox.DropDownHeaderView>
-                                </combobox:SfComboBox>
+                                </combobox:SfComboBox>-->
 
                                 <yummy:PancakeView.Border>
                                     <yummy:Border Color="Gray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -89,21 +99,26 @@
                         <StackLayout HorizontalOptions="FillAndExpand" >
                             <Label Text="Cost" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                            <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10">
                                 <Entry x:Name="entryCost"
                                      Text="{Binding ItemDetails.CostperUnit}"
                                      FontSize="15"
                                      Placeholder="Cost"
-                                     TextColor="#333"
+                                     TextColor="#8f1fff"
                                      Keyboard="Numeric"
                                      HorizontalOptions="FillAndExpand">
+                                     <Entry.Triggers>
+                                         <DataTrigger TargetType="Entry" Binding="{Binding EmployeePermission.ActiveEditPrice}" Value="False">
+                                             <Setter Property="IsReadOnly" Value="True"></Setter>
+                                         </DataTrigger>
+                                     </Entry.Triggers>
                                 </Entry>
 
                                 <yummy:PancakeView.Border>
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -112,11 +127,11 @@
                         <StackLayout HorizontalOptions="FillAndExpand" >
                             <Label Text="Qty" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" CornerRadius="10">
+                            <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10">
                                 <Entry x:Name="entryQty"
                                     Text="{Binding ItemDetails.QTYTime}"
                                     FontSize="15"
-                                    TextColor="#333"
+                                    TextColor="#8f1fff"
                                     Keyboard="Numeric"
                                     HorizontalOptions="FillAndExpand">
                                 </Entry>
@@ -125,7 +140,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                             <!--<StackLayout.Triggers>
@@ -140,11 +155,11 @@
                         <StackLayout  HorizontalOptions="FillAndExpand">
                             <Label Text="Description" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
 
-                            <yummy:PancakeView BackgroundColor="White" Padding="10,0,10,0" Margin="0,0,0,10" CornerRadius="10">
+                            <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" Margin="0,0,0,10" CornerRadius="10">
                                 <Editor x:Name="edtDescription"
                                         Text="{Binding ItemDetails.Description}"
                                         Placeholder="Enter Description"
-                                        TextColor="#333"
+                                        TextColor="#8f1fff"
                                         FontSize="15" 
                                         HeightRequest="150"
                                         HorizontalOptions="FillAndExpand">
@@ -154,7 +169,7 @@
                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                 </yummy:PancakeView.Border>
                                 <yummy:PancakeView.Shadow>
-                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=5}" Opacity="1"></yummy:DropShadow>
                                 </yummy:PancakeView.Shadow>
                             </yummy:PancakeView>
                         </StackLayout>
@@ -180,7 +195,7 @@
                 </StackLayout>
 
 
-                <StackLayout x:Name="stkBtns" Orientation="Horizontal" Spacing="20" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="10">
+                <StackLayout x:Name="stkBtns" Orientation="Horizontal" Spacing="10" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" Padding="{OnPlatform Android=10,iOS='10,10,10,50'}">
 
                     <Button Text="OK"
                             BackgroundColor="#b66dff"
@@ -188,6 +203,7 @@
                             FontSize="14" 
                             CornerRadius="10"
                             HeightRequest="40"
+                            WidthRequest="{OnPlatform iOS=100}"
                             TextColor="White" 
                             x:Name="btnOk"
                             Command="{Binding BindingContext.ApplyItems,Source={x:Reference page}}" CommandParameter="{Binding ItemDetails}">
@@ -197,6 +213,7 @@
                             BackgroundColor="Transparent" 
                             FontAttributes="Bold" 
                             FontSize="14"
+                            WidthRequest="{OnPlatform iOS=100}"
                             CornerRadius="10"
                             HeightRequest="40"
                             BorderColor="#b66dff" 
@@ -205,6 +222,36 @@
                             Clicked="Button_Clicked"></Button>
                 </StackLayout>
             </StackLayout>
+        </yummy:PancakeView>
+
+        <yummy:PancakeView
+                    x:Name="YumAddItemService"
+                    CornerRadius="{OnPlatform Android=100,iOS=25}"
+                    BackgroundColor="#8f1fff" 
+                    Padding="5" 
+                    VerticalOptions="End"
+                    HorizontalOptions="End" 
+                    Margin="{OnPlatform Android= '20,30,20,50', iOS='30,30,30,80'}"
+                    HeightRequest="40"
+                    WidthRequest="40">
+            <Label TranslationY="{OnPlatform Android=-8,iOS=-2}"
+                     VerticalOptions="Center"
+                     HorizontalTextAlignment="Center"
+                     VerticalTextAlignment="Center"
+                     Text="+"
+                     TextColor="White"
+                     FontSize="40"></Label>
+            <yummy:PancakeView.Shadow>
+                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
+            </yummy:PancakeView.Shadow>
+            <yummy:PancakeView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding BindingContext.CreateNewItem,Source={x:Reference page}}" ></TapGestureRecognizer>
+            </yummy:PancakeView.GestureRecognizers>
+            <yummy:PancakeView.Triggers>
+                <DataTrigger TargetType="yummy:PancakeView" Binding="{Binding EmployeePermission.ActiveItemsServices}" Value="False">
+                    <Setter Property="IsVisible" Value="False"></Setter>
+                </DataTrigger>
+            </yummy:PancakeView.Triggers>
         </yummy:PancakeView>
         <ActivityIndicator x:Name="actIndLoading" IsRunning="{Binding IsBusy}" IsVisible="False" PropertyChanged="actIndLoading_PropertyChanged">
 

@@ -12,13 +12,18 @@ using Stripe;
 using Xamarin.Essentials;
 using System.Text;
 using System.Threading;
-
+using OneSignalSDK.Xamarin.Core;
+using Newtonsoft.Json.Linq;
+using FixPro.Models;
+using System.Collections.Generic;
+using GoogleApi.Entities.Translate.Common.Enums;
 
 namespace FixPro.Helpers
 {
     public interface IGenericRepository
     {
         Task<T> GetAsync<T>(string uri, string authToken = "");
+        Task<Models.EmployeeModel> GetLoginAsync<T>(string uri, string authToken = "");
         Task<T> PostAsync<T>(string uri, T data, string authToken = "");
         Task<string> PostStrAsync<T>(string uri, T data, string authToken = "");
         Task<string> PostDataAsync<T>(string uri, T data, string authToken = "");
@@ -46,6 +51,7 @@ namespace FixPro.Helpers
             }
             return httpClient;
         }
+
 
         public async Task<T> GetAsync<T>(string uri, string authToken = "")
         {
@@ -98,6 +104,55 @@ namespace FixPro.Helpers
             }
         }
 
+
+        public async Task<Models.EmployeeModel> GetLoginAsync<T>(string uri, string authToken = "")
+        {
+
+            try
+            {
+                HttpClient httpClient = CreateHttpClient(Utility.ServerUrl + uri);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+
+                string jsonResult = string.Empty;
+
+                var responseMessage = await Policy
+                    .Handle<WebException>(ex =>
+                    {
+                        Debug.WriteLine($"{ex.GetType().Name + " : " + ex.Message}");
+                        return true;
+                    })
+                    .WaitAndRetryAsync
+                    (
+                        5,
+                        retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                    )
+                    .ExecuteAsync(async () =>
+                    await httpClient.GetAsync(Utility.ServerUrl + uri));
+
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    jsonResult = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var json = JsonConvert.DeserializeObject<EmployeeModel>(jsonResult);
+                    return json;
+                }
+                else
+                {
+                    jsonResult = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    Models.EmployeeModel obj = new Models.EmployeeModel()
+                    {
+                        EmployeeStatus = jsonResult
+                    };
+                    return obj;
+                }
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"{e.GetType().Name + " : " + e.Message}");
+                throw;
+            }
+        }
+
         public async Task<T> PostAsync<T>(string uri, T data, string authToken = "")
         {
             try
@@ -136,7 +191,10 @@ namespace FixPro.Helpers
                     throw new ServiceAuthenticationException(jsonResult);
                 }
 
-                throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
+                jsonResult = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var json2 = JsonConvert.DeserializeObject<T>(jsonResult);
+                return json2;
+                //throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
 
             }
             catch (Exception e)
@@ -197,6 +255,7 @@ namespace FixPro.Helpers
             }
         }
 
+     
 
         public async Task<string> PostDataAsync<T>(string uri, T data, string authToken = "")
         {
@@ -349,11 +408,14 @@ namespace FixPro.Helpers
                 HttpClient httpClient = CreateHttpClient(Utility.ServerUrl + uri);
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
 
+
                 var content = new StringContent(JsonConvert.SerializeObject(data, Formatting.None,
                         new JsonSerializerSettings()
                         {
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         }));
+
+
                 content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
                 string jsonResult = string.Empty;
@@ -381,10 +443,17 @@ namespace FixPro.Helpers
                 if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
                     responseMessage.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    throw new ServiceAuthenticationException(jsonResult);
+                    //throw new ServiceAuthenticationException(jsonResult);
+                    var jsonResult2 = await responseMessage.Content.ReadAsStringAsync();
+                    var json2 = JsonConvert.DeserializeObject<T>(jsonResult2);
+                    return json2.ToString();
                 }
 
-                throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
+                var jsonResult3 = await responseMessage.Content.ReadAsStringAsync();
+                var json3 = JsonConvert.DeserializeObject<T>(jsonResult3);
+                return json3.ToString();
+
+                //throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
 
             }
             catch (Exception e)
@@ -484,7 +553,8 @@ namespace FixPro.Helpers
                     return "";
                 }
 
-                return "";
+                jsonResult = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return jsonResult;
 
             }
             catch (Exception e)

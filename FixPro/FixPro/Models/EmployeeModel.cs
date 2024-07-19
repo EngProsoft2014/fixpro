@@ -14,6 +14,7 @@ namespace FixPro.Models
         public int Id { get; set; }
         public int? AccountId { get; set; }
         public string AccountName { get; set; }
+        public DateTime? AccountExpireDate { get; set; }
         public string DBConnection { get; set; }
         public string GernToken { get; set; }
         public string PathFileUpload { get; set; }
@@ -87,6 +88,7 @@ namespace FixPro.Models
         public bool? ActiveMessage { get; set; }
         public bool? ActiveItemsServicesSubCategory { get; set; }
         public bool? ActiveAccount { get; set; }
+        public bool? ActiveEditCustomer { get; set; }
         public string Notes { get; set; }
         public bool? Active { get; set; }
         public int? CreateUser { get; set; }
@@ -98,5 +100,8 @@ namespace FixPro.Models
         public bool IsChecked { get; set; }
         public string OneSignalPlayerId { get; set; }
         public bool? ActiveAllScdTr_FaorTrOnly { get; set; }
+        public bool? ActiveEditEstimate_Invoice { get; set; }
+        public string CompanyNameWithSpace { get; set; }
+        public string EmployeeStatus { get; set; }
     }
 }

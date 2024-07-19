@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Stripe;
+using Microsoft.Extensions.Primitives;
 
 namespace FixPro.Views.CallPages
 {
@@ -117,10 +118,11 @@ namespace FixPro.Views.CallPages
             request.Input = search;
 
             request.Language = GoogleApi.Entities.Common.Enums.Language.English;
-           
-            request.Key = "AIzaSyBrriO9GGKoeIAIiS3L8asTps80-sXzQgo";
 
-            var response = GoogleApi.GooglePlaces.AutoComplete.Query(request, null);
+            //request.Key = "AIzaSyBrriO9GGKoeIAIiS3L8asTps80-sXzQgo";
+            request.Key = Device.iOS == "iOS" ? "AIzaSyDY-9LWg_lY41hlxBA2-ngBydMGYaXxKA4" : Controls.StartData.Com_MainObj.AddressAutoCompleteKey;
+
+            var response = await GoogleApi.GooglePlaces.AutoComplete.QueryAsync(request, null);
 
             List<SuggestionAddressModel> ListsuggestionsAddress = new List<SuggestionAddressModel>();
             SuggestionAddressModel suggestionAddress;
@@ -135,7 +137,7 @@ namespace FixPro.Views.CallPages
                     Language = GoogleApi.Entities.Common.Enums.Language.English
                 };
 
-                var _response2 = GoogleApi.GooglePlaces.Details.Query(_request2);
+                var _response2 = await GoogleApi.GooglePlaces.Details.QueryAsync(_request2);
 
                 string[] ArrAdd = new string[7];
                 //int i = 0;
@@ -226,7 +228,8 @@ namespace FixPro.Views.CallPages
         {
             List<CustomersModel> Customers = new List<CustomersModel>();
 
-            Customers = Custs.Where(x => x.Phone1.Contains(search)).ToList();
+            //Customers = Custs.Where(x => x.Phone1.Contains(search)).ToList();
+            Customers = Custs.Where(x => (x.Phone1).Contains(search) || (x.FirstName.ToLower() + x.LastName.ToLower()).Contains(search.ToLower())).ToList();
 
             return Customers;
         }
@@ -287,11 +290,22 @@ namespace FixPro.Views.CallPages
         private async void Button_Clicked(object sender, EventArgs e)
         {
             CustomersModel Cust = new CustomersModel();
-            Cust.Phone1 = searchBar.Text;
 
-            DidClose?.Invoke(Cust);
+            long numericvalue;
+            bool isNumber = long.TryParse(searchBar.Text, out numericvalue);
 
-            await PopupNavigation.Instance.PopAsync();
+            if (searchBar.Text.Length == 10 && isNumber == true) 
+            {
+                Cust.Phone1 = searchBar.Text;
+
+                DidClose?.Invoke(Cust);
+
+                await PopupNavigation.Instance.PopAsync();
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert("warning", "Please enter a valid phone number", "Ok");
+            }
         }
     }
 }

@@ -21,7 +21,6 @@ namespace FixPro.Views
         public TimeSheetPage()
         {
             InitializeComponent();
-            string mxxx = "";
 
             if (lstEmployeesIn.ItemsSource.Equals(0))
             {
@@ -33,14 +32,14 @@ namespace FixPro.Views
         {
             base.OnAppearing();
 
-            Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
+            //Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
 
-            Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
+            //Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
         }
 
         private void actIndLoading_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -102,21 +101,21 @@ namespace FixPro.Views
         }
 
 
-        async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
-        {
-            if (e.NetworkAccess != NetworkAccess.Internet)
-            {
-                // Connection to internet is Not available
-                stkNoInternet.IsVisible = true;
-            }
-            else
-            {
-                // Connection to internet is available
-                stkNoInternet.IsVisible = false;
-                await App.Current.MainPage.Navigation.PushAsync(new Views.TimeSheetPage());
-                App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
-            }
-        }
+        //async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+        //{
+        //    if (e.NetworkAccess != NetworkAccess.Internet)
+        //    {
+        //        // Connection to internet is Not available
+        //        stkNoInternet.IsVisible = true;
+        //    }
+        //    else
+        //    {
+        //        // Connection to internet is available
+        //        stkNoInternet.IsVisible = false;
+        //        await App.Current.MainPage.Navigation.PushAsync(new Views.TimeSheetPage());
+        //        App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+        //    }
+        //}
 
         private async void TapGestureRecognizer_Tapped_1(object sender, EventArgs e)
         {

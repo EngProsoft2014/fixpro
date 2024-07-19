@@ -2,7 +2,6 @@
 using Acr.UserDialogs;
 using FixPro.Controls;
 using FixPro.ViewModels;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Syncfusion.SfCalendar.XForms;
 using System;
 using System.Collections.Generic;

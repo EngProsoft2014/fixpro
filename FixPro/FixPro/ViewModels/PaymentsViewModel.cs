@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using Plugin.PayCards;
 using FixPro.Models;
 using Stripe;
-using Stripe.Issuing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -219,7 +218,6 @@ namespace FixPro.ViewModels
             }
         }
 
-
         public ICommand CashPayNow { get; set; }
         public ICommand CreditPayNow { get; set; }
         public ICommand ScanCommand
@@ -287,8 +285,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -300,10 +298,9 @@ namespace FixPro.ViewModels
                     UserDialogs.Instance.HideLoading();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
             IsBusy = false;
         }
@@ -316,8 +313,8 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
@@ -333,8 +330,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", "Please complete all the payment fields", "OK");
             }
 
             IsBusy= false;
@@ -346,155 +342,164 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    //return;
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
                 }
                 else
                 {
-                    if (OnePayment.Amount <= model.Net)
+                    if(!string.IsNullOrEmpty(SignatureImageByte64))
                     {
-                        string UserToken = await _service.UserToken();
-
-                        OnePayment.AccountId = model.AccountId;
-                        OnePayment.BrancheId = model.BrancheId;
-                        OnePayment.CustomerId = model.CustomerId;
-                        //OnePayment.ContractId = model.ContractId;
-                        OnePayment.InvoiceId = model.Id;
-                        //OnePayment.ExpensesId = model.ExpensesId;
-                        OnePayment.PaymentDate = DateTime.Now;
-                        OnePayment.SignatureDraw = SignatureImageByte64;
-
-                        //OnePayment.Amount = model.Net;
-                        //OnePayment.OverAmount = model.OverAmount;
-
-                        //OnePayment.IncreaseDecrease = model.IncreaseDecrease;
-                        //OnePayment.TransactionID = model.TransactionID;
-                        //OnePayment.CheckNumber = model.CheckNumber;
-                        //OnePayment.BankName = model.BankName;
-                        //OnePayment.AccountNumber = model.AccountNumber;
-                        OnePayment.Notes = model.Notes;
-                        OnePayment.Active = model.Active;
-                        OnePayment.CreateUser = model.CreateUser;
-                        OnePayment.CreateDate = model.CreateDate;
-
-                        UserDialogs.Instance.ShowLoading();
-                        //var json = await Helpers.Utility.PostData("api/Payments/InsertPayment", JsonConvert.SerializeObject(OnePayment));
-                        var json = await ORep.PostDataAsync("api/Payments/InsertPayment", OnePayment, UserToken);
-                        UserDialogs.Instance.HideLoading();
-
-                        if (json != null && json != "api not responding")
+                        if (OnePayment.Amount <= model.Net || OnePayment.Amount == null)
                         {
-                            await App.Current.MainPage.DisplayAlert("FixPro", "Succes Payment for This Job.", "Ok");
-                            await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                            string UserToken = await _service.UserToken();
+
+                            OnePayment.AccountId = model.AccountId;
+                            OnePayment.BrancheId = model.BrancheId;
+                            OnePayment.CustomerId = model.CustomerId;
+                            //OnePayment.ContractId = model.ContractId;
+                            OnePayment.InvoiceId = model.Id;
+                            //OnePayment.ExpensesId = model.ExpensesId;
+                            OnePayment.PaymentDate = DateTime.Now;
+                            OnePayment.SignatureDraw = SignatureImageByte64;
+
+                            OnePayment.Amount = OnePayment.Amount == null ? model.Net : OnePayment.Amount;
+                            //OnePayment.OverAmount = model.OverAmount;
+
+                            //OnePayment.IncreaseDecrease = model.IncreaseDecrease;
+                            //OnePayment.TransactionID = model.TransactionID;
+                            //OnePayment.CheckNumber = model.CheckNumber;
+                            //OnePayment.BankName = model.BankName;
+                            //OnePayment.AccountNumber = model.AccountNumber;
+                            OnePayment.Notes = model.Notes;
+                            OnePayment.Active = model.Active;
+                            OnePayment.CreateUser = model.CreateUser;
+                            OnePayment.CreateDate = model.CreateDate;
+
+                            UserDialogs.Instance.ShowLoading();
+                            //var json = await Helpers.Utility.PostData("api/Payments/InsertPayment", JsonConvert.SerializeObject(OnePayment));
+                            var json = await ORep.PostDataAsync("api/Payments/InsertPayment", OnePayment, UserToken);
+                            UserDialogs.Instance.HideLoading();
+
+                            if (json != null && json != "api not responding")
+                            {
+                                await App.Current.MainPage.DisplayAlert("FixPro", "Payment completed successfully.", "Ok");
+                                await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                            }
+                            else
+                            {
+                                await App.Current.MainPage.DisplayAlert("FixPro", "Payment not accepted for this job", "Ok");
+                            }
                         }
                         else
                         {
-                            await App.Current.MainPage.DisplayAlert("FixPro", "Field Payment for This Job.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Please enter the right amount", "Ok");
                         }
-                    }
+                    }   
                     else
                     {
-                        await App.Current.MainPage.DisplayAlert("FixPro", "Please Enter Right Amount.", "Ok");
+                        await App.Current.MainPage.DisplayAlert("FixPro", "Please sign in the signature field", "Ok");
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
             
         }
 
         async Task GetSkretKey(int? BranchId)
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
 
-            var json = await ORep.GetAsync<StripeAccountModel>(string.Format("api/Payments/GetStripeAccount?" + "BranchId=" + BranchId), UserToken);
+                var json = await ORep.GetAsync<StripeAccountModel>(string.Format("api/Payments/GetStripeAccount?" + "BranchId=" + BranchId), UserToken);
 
-            if (json != null)
-            {  
-                StripeModel = json;
-            }
+                if (json != null)
+                {
+                    StripeModel = json;
+                }
 
-            UserDialogs.Instance.HideLoading();
+                UserDialogs.Instance.HideLoading();
+            }         
         }
-
 
         public async Task PayViaStripe()
         {
-            await GetSkretKey(OneInvoice.BrancheId);
-
-            StripeConfiguration.ApiKey = StripeModel.SecretKey;
-
-            //StripeConfiguration.ApiKey = "sk_test_IHINMHgrNTLUWqh3IcTcMdNB";
-
-            // step 2: Assign card to token object
-            var stripeCard = new TokenCreateOptions
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                Card = new TokenCardOptions
+                await GetSkretKey(OneInvoice.BrancheId);
+
+                StripeConfiguration.ApiKey = StripeModel.SecretKey;
+
+                //StripeConfiguration.ApiKey = "sk_test_IHINMHgrNTLUWqh3IcTcMdNB";
+
+                // step 2: Assign card to token object
+                var stripeCard = new TokenCreateOptions
                 {
-                    Number = CardNumber,
-                    Name = HolderName,
-                    ExpMonth = ExpirationDate.Split('/')[0],
-                    ExpYear = ExpirationDate.Split('/')[1],
-                    Cvc = cvv,
-                } 
-            };
+                    Card = new TokenCardOptions
+                    {
+                        Number = CardNumber,
+                        Name = HolderName,
+                        ExpMonth = ExpirationDate.Split('/')[0],
+                        ExpYear = ExpirationDate.Split('/')[1],
+                        Cvc = cvv,
+                    }
+                };
 
-            TokenService service = new TokenService();
-            Stripe.Token newToken = service.Create(stripeCard);
+                Stripe.TokenService service = new Stripe.TokenService();
+                Stripe.Token newToken = service.Create(stripeCard);
 
-            // step 3: assign the token to the source
-            var option = new SourceCreateOptions
-            {
-                Type = SourceType.Card,
-                Currency = "USD",
-                Token = newToken.Id
-            };
+                // step 3: assign the token to the source
+                var option = new SourceCreateOptions
+                {
+                    Type = SourceType.Card,
+                    Currency = "USD",
+                    Token = newToken.Id
+                };
 
-            var sourceService = new SourceService();
-            Stripe.Source source = sourceService.Create(option);
+                var sourceService = new SourceService();
+                Stripe.Source source = sourceService.Create(option);
 
-            // step 4: create customer
-            CustomerCreateOptions customer = new CustomerCreateOptions
-            {
-                Name = CustomerDetails.FirstName + "" + CustomerDetails.LastName,
-                Email = CustomerDetails.Email,
-                Description = OneInvoice.ScheduleName,
-                Address = new AddressOptions { City = CustomerDetails.City, Country = CustomerDetails.Country, Line1 = CustomerDetails.Address, Line2 = "", PostalCode = CustomerDetails.PostalcodeZIP, State = CustomerDetails.State }
-            };
+                // step 4: create customer
+                CustomerCreateOptions customer = new CustomerCreateOptions
+                {
+                    Name = CustomerDetails.FirstName + "" + CustomerDetails.LastName,
+                    Email = CustomerDetails.Email,
+                    Description = OneInvoice.ScheduleName,
+                    Address = new AddressOptions { City = CustomerDetails.City, Country = CustomerDetails.Country, Line1 = CustomerDetails.Address, Line2 = "", PostalCode = CustomerDetails.PostalcodeZIP, State = CustomerDetails.State }
+                };
 
-            var customerService = new CustomerService();
-            var cust = customerService.Create(customer);
+                var customerService = new CustomerService();
+                var cust = customerService.Create(customer);
 
-            // step 5: charge option
-            var chargeoption = new ChargeCreateOptions
-            {
-                Amount = Convert.ToInt64(OneInvoice.Total * 100),
-                Currency = "USD",
-                ReceiptEmail = CustomerDetails.Email,
-                Customer = cust.Id,
-                Source = source.Id
-            };
+                // step 5: charge option
+                var chargeoption = new ChargeCreateOptions
+                {
+                    Amount = Convert.ToInt64(OneInvoice.Total * 100),
+                    Currency = "USD",
+                    ReceiptEmail = CustomerDetails.Email,
+                    Customer = cust.Id,
+                    Source = source.Id
+                };
 
-            // step 6: charge the customer
-            var chargeService = new ChargeService();
-            Charge charge = chargeService.Create(chargeoption);
-            if (charge.Status == "succeeded")
-            {
-                // success
-                await InitiolizModel(OneInvoice);
+                // step 6: charge the customer
+                var chargeService = new ChargeService();
+                Charge charge = chargeService.Create(chargeoption);
+                if (charge.Status == "succeeded")
+                {
+                    // success
+                    await InitiolizModel(OneInvoice);
+                }
+                else
+                {
+                    // failed
+                    await App.Current.MainPage.DisplayAlert("Alert", "Job payment failed!", "Ok");
+                }
             }
-            else
-            {
-                // failed
-                await App.Current.MainPage.DisplayAlert("Alert", "failed Payment for This Job.", "Ok");
-            }
+               
         }
-
-
-
     }
 }

@@ -22,7 +22,7 @@
         </StackLayout>
 
         <!--Search Bar-->
-        <yummy:PancakeView BackgroundColor="White" HeightRequest="42" Margin="30,10,30,10" Padding="0" CornerRadius="25" HorizontalOptions="FillAndExpand">
+        <yummy:PancakeView BackgroundColor="White" HeightRequest="42" Margin="30,10,30,10" Padding="0" CornerRadius="{OnPlatform Android=25,iOS=20}" HorizontalOptions="FillAndExpand">
             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" >
                 <SearchBar x:Name="srcBarEmployee"
                            Placeholder="Search"    
@@ -37,7 +37,7 @@
                 <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
             </yummy:PancakeView.Border>
             <yummy:PancakeView.Shadow>
-                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black,iOS=Gray}" BlurRadius="{OnPlatform Android=5,iOS=3}" Opacity="1"></yummy:DropShadow>
             </yummy:PancakeView.Shadow>
         </yummy:PancakeView>
 
@@ -105,8 +105,8 @@
             </StackLayout>
 
             <!--No Data-->
-            <StackLayout x:Name="stkNoData2" Padding="0,50,0,0" IsVisible="False" HeightRequest="100" HorizontalOptions="CenterAndExpand" VerticalOptions="Start">
-                <Image Source="noresult.png" Aspect="AspectFill"></Image>
+            <StackLayout x:Name="stkNoData2" Padding="0,50,0,0" IsVisible="False" HeightRequest="250" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <Image Source="noresult.png" Aspect="AspectFill" VerticalOptions="FillAndExpand"></Image>
                 <StackLayout.Triggers>
                     <MultiTrigger TargetType="StackLayout">
                         <MultiTrigger.Conditions>

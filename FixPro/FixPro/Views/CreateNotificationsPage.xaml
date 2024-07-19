@@ -20,13 +20,13 @@
             <Controls:ToolBar Title="Create Notifications" HasBackButton="True" Margin="0,8,0,0"></Controls:ToolBar>
         </StackLayout>
 
-        <Frame BorderColor="LightGray" HorizontalOptions="FillAndExpand" CornerRadius="5" Padding="10" HeightRequest="35" Margin="20,5,20,0">
+        <Frame BorderColor="LightGray" HasShadow="False" HorizontalOptions="FillAndExpand" CornerRadius="5" Padding="10" Margin="20,5,20,5" HeightRequest="35">
             <Entry Placeholder="Enter Header" Text="{Binding HeaderNotify}" FontSize="13">
 
             </Entry>
         </Frame>
 
-        <Frame BorderColor="LightGray" HorizontalOptions="FillAndExpand" CornerRadius="5" Padding="10" HeightRequest="180" Margin="20,10,20,0">
+        <Frame BorderColor="LightGray" HasShadow="False" HorizontalOptions="FillAndExpand" CornerRadius="5" Padding="10" HeightRequest="180" Margin="20,10,20,0">
             <Editor Placeholder="Enter Content" Text="{Binding ContentNotify}" FontSize="13">
 
             </Editor>
@@ -34,7 +34,7 @@
 
         <StackLayout Orientation="Horizontal" HorizontalOptions="Start" Margin="20,20,20,0">
             <Label Text="All Employees" VerticalTextAlignment="Center"></Label>
-            <CheckBox x:Name="chBxAllEmployees" ScaleX=".8" ScaleY=".8" CheckedChanged="chBxAllEmployees_CheckedChanged">
+            <CheckBox x:Name="chBxAllEmployees" ScaleX="{OnPlatform Android=.8,iOS=1}" ScaleY="{OnPlatform Android=.8,iOS=1}" CheckedChanged="chBxAllEmployees_CheckedChanged">
                 
             </CheckBox>
         </StackLayout>
@@ -73,7 +73,7 @@
                                         <CheckBox x:Name="chBxChooseEmployees" 
                                                   HorizontalOptions="EndAndExpand" 
                                                   IsChecked="{Binding IsChecked}" 
-                                                  ScaleX=".8" ScaleY=".8">
+                                                  ScaleX="{OnPlatform Android=.8,iOS=1}" ScaleY="{OnPlatform Android=.8,iOS=1}">
                                             <CheckBox.Triggers>
                                                 <!--<DataTrigger TargetType="CheckBox" Binding="{Binding Source={x:Reference chBxAllEmployees}, Path=IsChecked}" Value="False">
                                                     <Setter Property="IsChecked" Value="False"></Setter>
@@ -97,12 +97,12 @@
                     <yummy:Border Color="LightGray" Thickness="2"></yummy:Border>
                 </yummy:PancakeView.Border>
                 <yummy:PancakeView.Shadow>
-                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Gray, iOS=LightGray}" BlurRadius="{OnPlatform Android=2,iOS=2}" Opacity="1"></yummy:DropShadow>
                 </yummy:PancakeView.Shadow>
             </yummy:PancakeView>
         </StackLayout>
 
-        <Button Text="Send" Margin="20,10,20,20"
+        <Button Text="Send" Margin="{OnPlatform iOS='20,10,20,50', Android='20,10,20,20'}"
                    HorizontalOptions="FillAndExpand"
                 HeightRequest="40"
                    TextColor="White"

@@ -16,6 +16,7 @@ namespace FixPro.Models
         public string ScheduleName { get; set; }
         public DateTime? InvoiceDate { get; set; }
         public int? CustomerId { get; set; }
+        public string CustomerEmail { get; set; }
         public decimal? Total { get; set; }
         public int? TaxId { get; set; }
         public decimal? Tax { get; set; }

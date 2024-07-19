@@ -10,6 +10,9 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
+using GoogleApi.Entities.Translate.Common.Enums;
+using Xamarin.Essentials;
+using System.Linq;
 
 namespace FixPro.ViewModels
 {
@@ -70,6 +73,23 @@ namespace FixPro.ViewModels
             }
         }
 
+        EmployeeModel _EmployeePermission;
+        public EmployeeModel EmployeePermission
+        {
+            get
+            {
+                return _EmployeePermission;
+            }
+            set
+            {
+                _EmployeePermission = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("EmployeePermission"));
+                }
+            }
+        }
+
         bool _ShowQty;
         public bool ShowQty
         {
@@ -113,24 +133,36 @@ namespace FixPro.ViewModels
 
         public ICommand ApplyItems { get; set; }
         public ICommand SelectedItemForGetCost { get; set; }
+        public ICommand OpenFilterMaterial { get; set; }
+        public ICommand CreateNewItem { get; set; }
+
 
         public ScheduleItemsServicesViewModel()
         {
-
+            GetPerrmission();
         }
 
         public ScheduleItemsServicesViewModel(bool ShowQTY)
         {
             ShowQty = ShowQTY;
 
+            GetPerrmission();
+
             AccountIdVM = int.Parse(Helpers.Settings.AccountId);
             LstItemCategory = new ObservableCollection<ItemsServicesModel>();
             ItemDetails = new ItemsServicesModel();
             ApplyItems = new Command<ItemsServicesModel>(OnApplyItems);
             SelectedItemForGetCost = new Command<ItemsServicesModel>(OnSelectedItemForGetCost);
+            OpenFilterMaterial = new Command(OnOpenFilterMaterial);
+            CreateNewItem = new Command(OnCreateNewItem);
 
+            CheckWayForGetRightData(ShowQty);
 
-            if(ShowQTY == true) // Show All Items And Services in Estimate or Invoice
+        }
+
+        void CheckWayForGetRightData(bool ShowQTY)
+        {
+            if (ShowQTY == true) // Show All Items And Services in Estimate or Invoice
             {
                 if (Controls.StaticMembers.WayAfterChooseCust == 0) //Way from Estimate or Invoice for Schedule
                 {
@@ -144,16 +176,26 @@ namespace FixPro.ViewModels
                         GetAllItemsServices();
                     }
                 }
-                else //Way from Estimate or Invoice for Customer Directe
+                else //Way from Estimate or Invoice for Customer Direct
                 {
                     GetAllItemsServices();
-                }    
+                }
             }
             else // show item invintory only in schedule material
             {
                 GetItemsInventory();
             }
-            
+        }
+
+        //Get Perrmission for User
+        public async void GetPerrmission()
+        {
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                EmployeePermission = new EmployeeModel();
+                await Controls.StartData.CheckPermissionEmployee();
+                EmployeePermission = Controls.StartData.EmployeeDataStatic;
+            }
         }
 
         async void OnApplyItems(ItemsServicesModel model)
@@ -164,74 +206,154 @@ namespace FixPro.ViewModels
             if (model.CategoryId != null)
             {
                 ItemClose.Invoke(model);
+                await App.Current.MainPage.Navigation.PopAsync();
             }
             else
             {
                 await App.Current.MainPage.DisplayAlert("Alert", "Please Complete All Fields.", "Ok");
             }
-            await App.Current.MainPage.Navigation.PopAsync();
+            
             IsBusy = false;
         }
 
         public async void GetItemsInventory()
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<ItemsServicesModel>>(string.Format("api/Schedules/GetItemsInventory?" + "AccountId=" + AccountIdVM),UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstItemCategory = json;
-            }
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<ItemsServicesModel>>(string.Format("api/Schedules/GetItemsInventory?" + "AccountId=" + AccountIdVM), UserToken);
 
-            UserDialogs.Instance.HideLoading();
+                if (json != null)
+                {
+                    LstItemCategory = json;
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }
         }
 
         public async void GetFreeServices()
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<ItemsServicesModel>>(string.Format("api/Schedules/GetServices?" + "AccountId=" + AccountIdVM), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstItemCategory = json;
-            }
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<ItemsServicesModel>>(string.Format("api/Schedules/GetServices?" + "AccountId=" + AccountIdVM), UserToken);
 
-            UserDialogs.Instance.HideLoading();
+                if (json != null)
+                {
+                    LstItemCategory = json;
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }
         }
 
         public async void GetAllItemsServices()
         {
-            UserDialogs.Instance.ShowLoading();
-
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<ItemsServicesModel>>(string.Format("api/Schedules/GetAllItemsServices?" + "AccountId=" + AccountIdVM), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstItemCategory = json;
-            }
+                UserDialogs.Instance.ShowLoading();
 
-            UserDialogs.Instance.HideLoading();
-        }
-
-
-        async void OnSelectedItemForGetCost(ItemsServicesModel model)
-        {
-            UserDialogs.Instance.ShowLoading();
-            if(model != null)
-            {
                 string UserToken = await _service.UserToken();
-                var json = await ORep.GetAsync<ItemsServicesModel>(string.Format("api/Schedules/GetServiceCost?" + "AccountId=" + AccountIdVM + "&" + "ServiceId=" + model.Id), UserToken);
+                var json = await ORep.GetAsync<ObservableCollection<ItemsServicesModel>>(string.Format("api/Schedules/GetAllItemsServices?" + "AccountId=" + AccountIdVM), UserToken);
 
                 if (json != null)
                 {
-                    ItemDetails = json;
+                    LstItemCategory = json;
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }
+        }
+
+        async void OnSelectedItemForGetCost(ItemsServicesModel model)
+        {
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                UserDialogs.Instance.ShowLoading();
+                if (model != null)
+                {
+                    string UserToken = await _service.UserToken();
+                    var json = await ORep.GetAsync<ItemsServicesModel>(string.Format("api/Schedules/GetServiceCost?" + "AccountId=" + AccountIdVM + "&" + "ServiceId=" + model.Id), UserToken);
+
+                    if (json != null)
+                    {
+                        ItemDetails = json;
+                    }
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }
+        }
+
+        async void OnOpenFilterMaterial()
+        {
+            try
+            {
+                if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
+                {
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
+                }
+                else
+                {
+                    var pageView = new Views.SchedulePages.FilterMaterials(LstItemCategory);
+                    pageView.DidClose += (item) =>
+                    {
+                        UserDialogs.Instance.ShowLoading();
+
+                        ItemDetails = item;
+
+                        UserDialogs.Instance.HideLoading();
+                    };
+
+                    await App.Current.MainPage.Navigation.PushAsync(pageView);
                 }
             }
+            catch (Exception)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Failed to choose this item", "OK");
+            }
 
-            UserDialogs.Instance.HideLoading();
+        }
+
+        async void OnCreateNewItem()
+        {
+            IsBusy = true;
+            try
+            {
+                if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
+                {
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    return;
+                }
+                else
+                {
+                    var popupView = new CreateItemViewModel();
+                    popupView.AddItemClose += async (item) =>
+                    {
+                        UserDialogs.Instance.ShowLoading();
+
+                        if (item != null)
+                        {
+                            await App.Current.MainPage.Navigation.PopAsync();
+                            CheckWayForGetRightData(ShowQty);
+                        }
+
+                        UserDialogs.Instance.HideLoading();
+                    };
+                    var page = new Views.SchedulePages.CreateItemPage();
+                    page.BindingContext = popupView;
+                    await App.Current.MainPage.Navigation.PushAsync(page);
+                }
+            }
+            catch (Exception)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Failed to add this item", "OK");
+            }
+            IsBusy = false;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace FixPro.Models
         public int? BrancheId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string FullName { get { return FirstName + " " + LastName; } }
+        public string FullName { get { return FirstName + " " + LastName; } set { } }
         public DateTime? Since { get; set; }
         public int? CustomerType { get; set; }
         public int? CategoryId { get; set; }
@@ -28,8 +28,9 @@ namespace FixPro.Models
         public string YearBuit { get; set; }
         public string Squirefootage { get; set; }
         public string YearEstimedValue { get; set; }
-        public string EstimedValue {  get; set; }   
-        public string EstimedValueView { get { return (!string.IsNullOrEmpty(EstimedValue) && EstimedValue.StartsWith("$") != true) ? string.Format("${0:#,0.#}", float.Parse(EstimedValue)) : ""; } set { } }
+        public string EstimedValue {  get; set; }
+
+        public string EstimedValueView { get { return (!string.IsNullOrEmpty(EstimedValue) && EstimedValue !="None" && EstimedValue.StartsWith("$") != true) ? string.Format("${0:#,0.#}", float.Parse(EstimedValue)) : (!string.IsNullOrEmpty(EstimedValue) && EstimedValue != "None" && EstimedValue.StartsWith("$") == true) ? EstimedValue : "None"; } set { } }
         public string locationlatitude { get; set; }
         public string locationlongitude { get; set; }
         public Position MPosition { get { return new Position(locationlatitude == null ? 0 : double.Parse(locationlatitude), locationlongitude == null ? 0 : double.Parse(locationlongitude)); } }
@@ -46,15 +47,17 @@ namespace FixPro.Models
         public bool? MemeberType { get; set; }
         public int? MemeberId { get; set; }
         public string MemberName { get; set; }
+        public DateTime? MemeberExpireDate { get; set; } = DateTime.Now;
         public decimal? Credit { get; set; }
         public string Notes { get; set; }
         public bool? Active { get; set; }
         public int? CreateUser { get; set; }
         public DateTime? CreateDate { get; set; }
-        public CustomersCategoryModel CustomerCategory { get; set; }
+        public CustomersCategoryModel CustomerCategory { get; set; } 
         public List<CustomersCustomFieldModel> LstCustomersCustomField { get; set; }
-        public MemberModel MemberDTO { get; set; }
-        public TaxModel TaxDTO { get; set; }
+        public MemberModel MemberDTO { get; set; } 
+        public TaxModel TaxDTO { get; set; } 
+        public CampaignModel CampaignDTO { get; set; }
         public List<SchedulesModel> LstSchedules { get; set; }
         public List<EstimateModel> LstEstimates { get; set; }
         public List<InvoiceModel> LstInvoices { get; set; }

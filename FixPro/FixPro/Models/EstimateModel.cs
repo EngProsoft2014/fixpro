@@ -13,6 +13,7 @@ namespace FixPro.Models
         public string ScheduleName { get; set; }
         public DateTime? EstimateDate { get; set; }
         public int? CustomerId { get; set; }
+        public string CustomerEmail { get; set; }
         public decimal? Total { get; set; }
         public int? TaxId { get; set; }
         public decimal? Tax { get; set; }
@@ -24,7 +25,7 @@ namespace FixPro.Models
         public int? Status { get; set; }
         public string SignaturePrintName { get; set; }
         public string SignatureDraw { get; set; }
-        public string SignatureDrawView { get { return Helpers.Utility.PathServerEstimateSignture + SignatureDraw; } }
+        public string SignatureDrawView { get { return Helpers.Utility.PathServerEstimateSignture + Helpers.Settings.AccountName + "/" + SignatureDraw; } }
         public string Terms { get; set; }
         public string NotesForCustomer { get; set; }
         public string Notes { get; set; }

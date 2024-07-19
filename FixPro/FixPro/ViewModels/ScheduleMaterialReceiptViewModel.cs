@@ -1,14 +1,19 @@
 ﻿using Acr.UserDialogs;
+using Acr.UserDialogs.Infrastructure;
 using FixPro.Models;
 using Plugin.Media;
 using Plugin.Media.Abstractions;
 using Rg.Plugins.Popup.Services;
+using Syncfusion.SfCalendar.XForms;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace FixPro.ViewModels
@@ -117,6 +122,8 @@ namespace FixPro.ViewModels
         public ICommand Apply { get; set; }
         public ICommand SelectePickSchedulePhoto { get; set; }
         public ICommand SelecteCamSchedulePhoto { get; set; }
+        public ICommand SelectSupplier { get; set; }
+
 
         public ScheduleMaterialReceiptViewModel()
         {
@@ -128,6 +135,7 @@ namespace FixPro.ViewModels
             Apply = new Command<ScheduleMaterialReceiptModel>(OnApply);
             SelectePickSchedulePhoto = new Command(OnSelectePickSchedulePhoto);
             SelecteCamSchedulePhoto = new Command(OnSelecteCamSchedulePhoto);
+            SelectSupplier = new Command<CustomersModel>(OnSelectSupplier);
 
             ReceiptImage = "photodef.png";
 
@@ -136,16 +144,20 @@ namespace FixPro.ViewModels
 
         public async void GetSuppliers()
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<CustomersModel>>(string.Format("api/Customers/GetAllCustSuppliers?" + "AccountId=" + AccountIdVM),UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstSuppliers = json;
-            }
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<CustomersModel>>(string.Format("api/Customers/GetAllCustSuppliers?" + "AccountId=" + AccountIdVM), UserToken);
 
-            UserDialogs.Instance.HideLoading();
+                if (json != null)
+                {
+                    LstSuppliers = json;
+
+                }
+
+                UserDialogs.Instance.HideLoading();
+            }                
         }
 
         async void OnApply(ScheduleMaterialReceiptModel model)
@@ -167,6 +179,12 @@ namespace FixPro.ViewModels
             IsBusy = false;
         }
 
+        void OnSelectSupplier(CustomersModel model)
+        {
+            IsBusy = true;
+            OneSupplier = model;
+            IsBusy = false;
+        }
 
         //Pick Photo
         private async void OnSelectePickSchedulePhoto()
@@ -185,7 +203,10 @@ namespace FixPro.ViewModels
                 {
                     var mediaOption = new PickMediaOptions()
                     {
-                        PhotoSize = PhotoSize.Medium
+                        PhotoSize = PhotoSize.Small,
+                        CompressionQuality = 75,
+                        CustomPhotoSize = 200,
+                        MaxWidthHeight = 400,
                     };
 
                     _mediaFile = await CrossMedia.Current.PickPhotoAsync();
@@ -207,7 +228,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "Failed you can try again !!!", "Ok");
+                await App.Current.MainPage.DisplayAlert("Error", "Failed to choose the material receipt!", "Ok");
             }
 
         }
@@ -229,8 +250,13 @@ namespace FixPro.ViewModels
                 var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
                 {
                     Directory = "Sample",
-                    Name = "test.jpg"
+                    Name = "test.jpg",
+                    PhotoSize = PhotoSize.Small,
+                    CompressionQuality = 75,
+                    CustomPhotoSize = 200,
+                    MaxWidthHeight = 400,
                 });
+
 
                 if (file == null)
                     return;
@@ -246,15 +272,16 @@ namespace FixPro.ViewModels
 
                 MaterialReceipt.ReceiptPhoto = Convert.ToBase64String(Helpers.Utility.ReadToEnd(file.GetStream()));
 
+                
                 UserDialogs.Instance.HideLoading();
             }
 
             catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "Failed you can try again !!!", "Ok");
+                await App.Current.MainPage.DisplayAlert("Error", "Failed to choose the material receipt!", "Ok");
             }
         }
 
-
+       
     }
 }

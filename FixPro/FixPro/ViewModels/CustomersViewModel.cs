@@ -17,6 +17,11 @@ using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Microsoft.IdentityModel.Tokens;
+using OneSignalSDK.Xamarin.Core;
+using FixPro.Views.CustomerPages;
+using System.Reflection;
+using System.Xml.Linq;
+using Stripe.FinancialConnections;
 
 namespace FixPro.ViewModels
 {
@@ -25,6 +30,23 @@ namespace FixPro.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         readonly Services.Data.ServicesService _service = new Services.Data.ServicesService();
+
+        CampaignModel _OneCampaign;
+        public CampaignModel OneCampaign
+        {
+            get
+            {
+                return _OneCampaign;
+            }
+            set
+            {
+                _OneCampaign = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("OneCampaign"));
+                }
+            }
+        }
 
         ObservableCollection<CustomersModel> _LstCustomers;
         public ObservableCollection<CustomersModel> LstCustomers
@@ -313,6 +335,57 @@ namespace FixPro.ViewModels
                 if (PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("OneEstimate"));
+                }
+            }
+        }
+
+        CustomersCategoryModel _OneCategoryModel;
+        public CustomersCategoryModel OneCategoryModel
+        {
+            get
+            {
+                return _OneCategoryModel;
+            }
+            set
+            {
+                _OneCategoryModel = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("OneCategoryModel"));
+                }
+            }
+        }
+
+        MemberModel _OneMemberModel;
+        public MemberModel OneMemberModel
+        {
+            get
+            {
+                return _OneMemberModel;
+            }
+            set
+            {
+                _OneMemberModel = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("OneMemberModel"));
+                }
+            }
+        }
+
+        TaxModel _OneTaxModel;
+        public TaxModel OneTaxModel
+        {
+            get
+            {
+                return _OneTaxModel;
+            }
+            set
+            {
+                _OneTaxModel = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("OneTaxModel"));
                 }
             }
         }
@@ -657,6 +730,23 @@ namespace FixPro.ViewModels
             }
         }
 
+        string _SignatureImageByte64Estimate;
+        public string SignatureImageByte64Estimate
+        {
+            get
+            {
+                return _SignatureImageByte64Estimate;
+            }
+            set
+            {
+                _SignatureImageByte64Estimate = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("SignatureImageByte64Estimate"));
+                }
+            }
+        }
+
         string _City;
         public string City
         {
@@ -812,6 +902,23 @@ namespace FixPro.ViewModels
             }
         }
 
+        bool _IsShowScheduleDates;
+        public bool IsShowScheduleDates
+        {
+            get
+            {
+                return _IsShowScheduleDates;
+            }
+            set
+            {
+                _IsShowScheduleDates = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsShowScheduleDates"));
+                }
+            }
+        }
+
         string _StrEstimateDates;
         public string StrEstimateDates
         {
@@ -846,6 +953,41 @@ namespace FixPro.ViewModels
             }
         }
 
+        int _IsUpdateCust;
+        public int IsUpdateCust
+        {
+            get
+            {
+                return _IsUpdateCust;
+            }
+            set
+            {
+                _IsUpdateCust = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsUpdateCust"));
+                }
+            }
+        }
+
+
+        bool _IsMemberShip;
+        public bool IsMemberShip
+        {
+            get
+            {
+                return _IsMemberShip;
+            }
+            set
+            {
+                _IsMemberShip = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsMemberShip"));
+                }
+            }
+        }
+
         Helpers.GenericRepository ORep = new Helpers.GenericRepository();
 
         public ICommand SelecteCustomerDetails { get; set; }
@@ -862,6 +1004,7 @@ namespace FixPro.ViewModels
         public ICommand SelecteEstimateDetails { get; set; }
         public ICommand ConvertToInvoice { get; set; }
         public ICommand SubmitEstimate { get; set; }
+        public ICommand CreateNewCustomerFromSchedule { get; set; }
         public ICommand CreateNewCustomer { get; set; }
         public ICommand ChooseCustomerCategory { get; set; }
         public ICommand ChooseCustomerMemberShip { get; set; }
@@ -879,6 +1022,10 @@ namespace FixPro.ViewModels
         public ICommand OpenInvoiceScheduleDates { get; set; }
         public ICommand RemoveInvoiceDate { get; set; }
         public ICommand RemoveEstimateDate { get; set; }
+        public ICommand SelectSendEmailInvoice { get; set; }
+        public ICommand SelectSendEmailEstimate { get; set; }
+        public ICommand UpdateCustomer { get; set; }
+        public ICommand DeleteEstimate { get; set; }
 
         public CustomersViewModel()
         {
@@ -887,6 +1034,7 @@ namespace FixPro.ViewModels
             LstCustomers = new ObservableCollection<CustomersModel>();
             SelecteCustomerDetails = new Command<CustomersModel>(OnSelecteCustomerDetails);
             CreateNewSchedule = new Command<CustomersModel>(OnCreateNewSchedule);
+            CreateNewCustomerFromSchedule = new Command(OnCreateNewCustomerFromSchedule);
             CreateNewCustomer = new Command(OnCreateNewCustomer);
 
             GetAllCustomers();
@@ -896,33 +1044,14 @@ namespace FixPro.ViewModels
         public CustomersViewModel(bool FeaturePart)
         {
             GetPerrmission();
-            
-            BranchIdVM = int.Parse(Helpers.Settings.BranchId);
-            CustomerDetails = new CustomersModel();
-            CustomerFeatures = new CustomerfeaturesModel();
-            LstCampaigns = new ObservableCollection<CampaignModel>();
+
+            Init();
 
             GetCampaigns();
             GetCustomerFeatures(int.Parse(Helpers.Settings.AccountId));
-            //LstSource.Add(new CustomerSourceModel() { Id = 1, Name = "UnKnown", });
-            //LstSource.Add(new CustomerSourceModel() { Id = 2, Name = "Door Hanger", });
-            //LstSource.Add(new CustomerSourceModel() { Id = 3, Name = "Facebook", });
-            //LstSource.Add(new CustomerSourceModel() { Id = 4, Name = "Twitter", });
-            //LstSource.Add(new CustomerSourceModel() { Id = 5, Name = "Youtube", });
-            //LstSource.Add(new CustomerSourceModel() { Id = 6, Name = "Yelp", });
-            //LstSource.Add(new CustomerSourceModel() { Id = 7, Name = "Google", });
-            //LstSource.Add(new CustomerSourceModel() { Id = 8, Name = "Other", });
-
-            ChooseCustomerCategory = new Command<CustomersCategoryModel>(OnChooseCustomerCategory);
-            ChooseCustomerMemberShip = new Command<MemberModel>(OnChooseCustomerMemberShip);
-            ChooseCustomerTax = new Command<TaxModel>(OnChooseCustomerTax);
-            ChooseCustomerCampaign = new Command<CampaignModel>(OnChooseCustomerCampaign);
-            InsertCustomer = new Command<CustomersModel>(OnInsertCustomer);
-            SelecteAddress = new Command(OnSelecteAddress);
-       
         }
 
-        //List Customers
+        //List Customers or Update Customer
         public CustomersViewModel(CustomersModel model)
         {
             GetPerrmission();
@@ -935,7 +1064,12 @@ namespace FixPro.ViewModels
             LstEstimates = new ObservableCollection<EstimateModel>();
             CustomerDetails.LstEstimates = new List<EstimateModel>();
 
+            Init();
+
             CustomerDetails = model;
+
+            GetCampaigns();
+            GetCustomerFeatures(int.Parse(Helpers.Settings.AccountId));
 
             //if (CustomerDetails.MemberDTO != null)
             //    Discount = CustomerDetails.MemberDTO.MemberValue;
@@ -966,12 +1100,73 @@ namespace FixPro.ViewModels
             SelectCustToCreateInvoicePage = new Command(OnSelectCustToCreateInvoicePage);
             ConvertToInvoice = new Command<EstimateModel>(OnConvertToInvoice);
             GoInvoice = new Command<int>(OnGoInvoice);
+            UpdateCustomer = new Command<CustomersModel>(OnUpdateCustomer);
+
         }
+
+        //Update Customer
+        public CustomersViewModel(CustomersModel model, int isUpdateCust)
+        {
+            IsUpdateCust = isUpdateCust;
+            Init();
+
+            CustomerDetails = model;
+
+            if (CustomerDetails.MemeberType == true)
+            {
+                if (CustomerDetails.MemberDTO != null)
+                {
+                    CustomerDetails.Discount = CustomerDetails.MemberDTO.MemberValue;
+                }
+            }
+
+            if (CustomerDetails.Discount == null || CustomerDetails.MemeberType == true)
+            { 
+                IsMemberShip = true; 
+            }
+            else
+            {
+                IsMemberShip = false;
+            }
+
+            GetCampaigns();
+            GetCustomerFeatures(int.Parse(Helpers.Settings.AccountId));
+
+            Address = CustomerDetails.Address;
+            YearBuilt = CustomerDetails.YearBuit;
+            HouseValue = CustomerDetails.EstimedValue;
+            SquareFootage = CustomerDetails.Squirefootage;
+        }
+
+        void Init()
+        {
+            BranchIdVM = int.Parse(Helpers.Settings.BranchId);
+            CustomerDetails = new CustomersModel();
+            CustomerDetails.LstCustomersCustomField = new List<CustomersCustomFieldModel>();
+            CustomerFeatures = new CustomerfeaturesModel();
+            LstCampaigns = new ObservableCollection<CampaignModel>();
+            OneCampaign = new CampaignModel();
+            CustomerFeatures = new CustomerfeaturesModel();
+            OneCategoryModel = new CustomersCategoryModel();
+            OneMemberModel = new MemberModel();
+            OneTaxModel = new TaxModel();
+
+            ChooseCustomerCategory = new Command<CustomersCategoryModel>(OnChooseCustomerCategory);
+            ChooseCustomerMemberShip = new Command<MemberModel>(OnChooseCustomerMemberShip);
+            ChooseCustomerTax = new Command<TaxModel>(OnChooseCustomerTax);
+            ChooseCustomerCampaign = new Command<CampaignModel>(OnChooseCustomerCampaign);
+            InsertCustomer = new Command<CustomersModel>(OnInsertCustomer);
+            SelecteAddress = new Command(OnSelecteAddress);
+
+        }
+
 
         //From Invoices Tab
         public CustomersViewModel(InvoiceModel model, CustomersModel Cust)
         {
             GetPerrmission();
+
+            IsShowScheduleDates = true; //Show schedule Dates
 
             if (model.ScheduleId != null)
                 ShowScheduleName = true;
@@ -986,7 +1181,7 @@ namespace FixPro.ViewModels
             {
                 LstInvoiceSchaduleDatesActual = new ObservableCollection<SchaduleDateModel>(model.LstScdDate);
             }
-            
+
             GetOneInvoiceDetails(model.Id, null);
 
             //OneInvoice = model;
@@ -1007,12 +1202,15 @@ namespace FixPro.ViewModels
             DeleteInvoice = new Command<int>(OnDeleteInvoice);
             OpenInvoiceScheduleDates = new Command(OnOpenInvoiceScheduleDates);
             RemoveInvoiceDate = new Command<SchaduleDateModel>(OnRemoveInvoiceDate);
+            SelectSendEmailInvoice = new Command<InvoiceModel>(OnSelectSendEmailInvoice);
         }
 
         //From Estimate Tab
         public CustomersViewModel(EstimateModel model, CustomersModel Cust)
         {
             GetPerrmission();
+
+            IsShowScheduleDates = true; //Show schedule Dates
 
             if (model.ScheduleId != null)
                 ShowScheduleName = true;
@@ -1023,11 +1221,11 @@ namespace FixPro.ViewModels
             LstEstimateDates = new ObservableCollection<SchaduleDateModel>();
             OneEstimate = new EstimateModel();
 
-            if(model.LstScdDate != null)
+            if (model.LstScdDate != null)
             {
                 LstEstimateSchaduleDatesActual = new ObservableCollection<SchaduleDateModel>(model.LstScdDate);
             }
-                
+
             GetOneInvoiceDetails(null, model.Id);
 
             //OneInvoice = model;
@@ -1050,7 +1248,9 @@ namespace FixPro.ViewModels
             GoInvoice = new Command<int>(OnGoInvoice);
             OpenEstimateScheduleDates = new Command(OnOpenEstimateScheduleDates);
             RemoveEstimateDate = new Command<SchaduleDateModel>(OnRemoveEstimateDate);
-            
+            SelectSendEmailEstimate = new Command<EstimateModel>(OnSelectSendEmailEstimate);
+            DeleteEstimate = new Command<int>(OnDeleteEstimate);
+
         }
 
         //From Invoices Tab
@@ -1068,38 +1268,52 @@ namespace FixPro.ViewModels
         //Get Perrmission for User
         public async void GetPerrmission()
         {
-            EmployeePermission = new EmployeeModel();
-            await Controls.StartData.CheckPermissionEmployee();
-            EmployeePermission = Controls.StartData.EmployeeDataStatic;
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                EmployeePermission = new EmployeeModel();
+                await Controls.StartData.CheckPermissionEmployee();
+                EmployeePermission = Controls.StartData.EmployeeDataStatic;
+            }
         }
-
 
         async Task GetScheduleDates(int ScheduleId, int Type)
         {
-            UserDialogs.Instance.ShowLoading();
-            string UserToken = await _service.UserToken();
-            var json = await ORep.GetAsync<ObservableCollection<SchaduleDateModel>>(string.Format("api/Schedules/GetScheduleDates?" + "ScheduleId=" + ScheduleId + "&" + "Type=" + Type), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstEstimateSchaduleDates = json;
-                LstInvoiceSchaduleDates = json;
+                UserDialogs.Instance.ShowLoading();
+                string UserToken = await _service.UserToken();
+                var json = await ORep.GetAsync<ObservableCollection<SchaduleDateModel>>(string.Format("api/Schedules/GetScheduleDates?" + "ScheduleId=" + ScheduleId + "&" + "Type=" + Type), UserToken);
+
+                if (json != null)
+                {
+                    LstEstimateSchaduleDates = json;
+                    LstInvoiceSchaduleDates = json;
+                }
+
+                UserDialogs.Instance.HideLoading();
             }
 
-            UserDialogs.Instance.HideLoading();
         }
 
         //Get Campaigns
         async void GetCampaigns()
         {
             string UserToken = await _service.UserToken();
-
-            var json = await ORep.GetAsync<ObservableCollection<CampaignModel>>(string.Format("api/Calls/GetCampaigns?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstCampaigns = json;
+                var json = await ORep.GetAsync<ObservableCollection<CampaignModel>>(string.Format("api/Calls/GetCampaigns?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
+
+                if (json != null)
+                {
+                    LstCampaigns = json;
+
+                    if (IsUpdateCust == 2)
+                    {
+                        OneCampaign = LstCampaigns.Where(x => x.Id == CustomerDetails.Source.Value).FirstOrDefault();
+                    }
+                }
             }
+
         }
 
 
@@ -1110,144 +1324,163 @@ namespace FixPro.ViewModels
 
             string UserToken = await _service.UserToken();
 
-            var Customer = await ORep.GetAsync<ObjectOfCustomerModel>(string.Format("api/Customers/GetObjectOfCustomer?" + "InvoiceId=" + InvoiceId + "&" + "EstimateId=" + EstimateId), UserToken);
-
-            if (Customer != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                if (Customer.ObjInvoice != null)
+                var Customer = await ORep.GetAsync<ObjectOfCustomerModel>(string.Format("api/Customers/GetObjectOfCustomer?" + "InvoiceId=" + InvoiceId + "&" + "EstimateId=" + EstimateId), UserToken);
+
+                if (Customer != null)
                 {
-                    OneInvoice = Customer.ObjInvoice;
-
-                    AmountOrPersent = OneInvoice.DiscountAmountOrPercent == "%" ? false : true;
-                    Discount = OneInvoice.Discount;
-
-                    if (OneInvoice.ContractId != null)
+                    if (Customer.ObjInvoice != null)
                     {
-                        WithContract = true;
-                    }
+                        OneInvoice = Customer.ObjInvoice;
 
-                    if (Customer.ObjInvoice.ScheduleId != null && Customer.ObjInvoice.ScheduleId != 0)
-                    {
-                        ShowDropdownDatesInvoice = true;
+                        AmountOrPersent = OneInvoice.DiscountAmountOrPercent == "%" ? false : true;
+                        Discount = OneInvoice.Discount;
 
-                        await GetScheduleDates(Customer.ObjInvoice.ScheduleId.Value, 1); // All Schedule Dates
-
-                        LstInvoiceSchaduleDatesActual = new ObservableCollection<SchaduleDateModel>(Customer.ObjInvoice.LstScdDate);
-
-                        string str = "";
-                        foreach (var Date in Customer.ObjInvoice.LstScdDate)
+                        if (OneInvoice.ContractId != null)
                         {
-                            str += (" , " + Date.Date);
-                            LstInvoiceDates.Add(new SchaduleDateModel
-                            {
-                                Id = Date.Id,
-                                Date = Date.Date,
-                            });
+                            WithContract = true;
                         }
 
-                        if (!string.IsNullOrEmpty(StrInvoiceDates))
+                        if (Customer.ObjInvoice.ScheduleId != null && Customer.ObjInvoice.ScheduleId != 0)
                         {
-                            StrInvoiceDates = string.Empty;
-                            StrInvoiceDates += str;
-                            StrInvoiceDates = str.Remove(0, 2);
+                            ShowDropdownDatesInvoice = true;
+
+                            await GetScheduleDates(Customer.ObjInvoice.ScheduleId.Value, 1); // All Schedule Dates
+
+                            LstInvoiceSchaduleDatesActual = new ObservableCollection<SchaduleDateModel>(Customer.ObjInvoice.LstScdDate);
+
+                            if (LstInvoiceSchaduleDatesActual.Count == 1)
+                            {
+                                IsShowScheduleDates = false; //Don't Show schedule Dates
+                            }
+
+                            string str = "";
+                            LstInvoiceDates = new ObservableCollection<SchaduleDateModel>();
+                            foreach (var Date in Customer.ObjInvoice.LstScdDate)
+                            {
+                                str += (" , " + Date.Date);
+                                LstInvoiceDates.Add(new SchaduleDateModel
+                                {
+                                    Id = Date.Id,
+                                    Date = Date.Date,
+                                });
+                            }
+
+                            if (!string.IsNullOrEmpty(str))
+                            {
+                                if (!string.IsNullOrEmpty(StrInvoiceDates))
+                                {
+                                    StrInvoiceDates = string.Empty;
+                                    StrInvoiceDates += str;
+                                    StrInvoiceDates = str.Remove(0, 2);
+                                }
+                                else
+                                {
+                                    StrInvoiceDates = str.Remove(0, 2);
+                                }
+                            }
+                        }
+
+                        if (OneInvoice.LstInvoiceItemServices != null)
+                        {
+                            if (OneInvoice.LstInvoiceItemServices.Count > 4)
+                            {
+                                LstHeight = 1;
+                            }
+
+                            TotalInvoice(OneInvoice);
+
+                            LstItemsInvoice = new ObservableCollection<InvoiceItemServicesModel>(OneInvoice.LstInvoiceItemServices);
                         }
                         else
                         {
-                            StrInvoiceDates = str.Remove(0, 2);
-                        }
-
-                    }
-
-                    if (OneInvoice.LstInvoiceItemServices != null)
-                    {
-                        if (OneInvoice.LstInvoiceItemServices.Count > 4)
-                        {
-                            LstHeight = 1;
-                        }
-
-                        TotalInvoice(OneInvoice);
-
-                        LstItemsInvoice = new ObservableCollection<InvoiceItemServicesModel>(OneInvoice.LstInvoiceItemServices);
-                    }
-                    else
-                    {
-                        SubTotal = 0;
-                        Net = 0;
-                        Paid = 0;
-                        TotalDue = 0;
-                    }
-                }
-
-                if (Customer.ObjEstimate != null)
-                {
-                    //if (Customer.ObjEstimate.InvoiceId != 0 && Customer.ObjEstimate.InvoiceId != null || Customer.ObjEstimate.Status != 1)
-                    if ((Customer.ObjEstimate.InvoiceId != 0 && Customer.ObjEstimate.InvoiceId != null) || (Customer.ObjEstimate.Status != 1 && Customer.ObjEstimate.Status != 0))
-                    {
-                        Customer.ObjEstimate.NotShowConvert = true;//NotShowConvert
-                        if (Customer.ObjEstimate.InvoiceId > 0)
-                        {
-                            Customer.ObjEstimate.GoToInvoice = true;
+                            SubTotal = 0;
+                            Net = 0;
+                            Paid = 0;
+                            TotalDue = 0;
                         }
                     }
 
-                    if(Customer.ObjEstimate.ScheduleId != null &&  Customer.ObjEstimate.ScheduleId != 0)
+                    if (Customer.ObjEstimate != null)
                     {
-                        ShowDropdownDatesEstimate = true;
-
-                        await GetScheduleDates(Customer.ObjEstimate.ScheduleId.Value, 1); // All Schedule Dates
-
-                        LstEstimateSchaduleDatesActual = new ObservableCollection<SchaduleDateModel>(Customer.ObjEstimate.LstScdDate);
-
-                        string str = "";
-                        foreach (var Date in Customer.ObjEstimate.LstScdDate)
+                        //if (Customer.ObjEstimate.InvoiceId != 0 && Customer.ObjEstimate.InvoiceId != null || Customer.ObjEstimate.Status != 1)
+                        if ((Customer.ObjEstimate.InvoiceId != 0 && Customer.ObjEstimate.InvoiceId != null) || (Customer.ObjEstimate.Status != 1 && Customer.ObjEstimate.Status != 0))
                         {
-                            str += (" , " + Date.Date);
-                            LstEstimateDates.Add(new SchaduleDateModel
+                            Customer.ObjEstimate.NotShowConvert = true;//NotShowConvert
+                            if (Customer.ObjEstimate.InvoiceId > 0)
                             {
-                                Id = Date.Id,
-                                Date = Date.Date,
-                            });
+                                Customer.ObjEstimate.GoToInvoice = true;
+                            }
                         }
 
-                        if (!string.IsNullOrEmpty(StrEstimateDates))
+                        if (Customer.ObjEstimate.ScheduleId != null && Customer.ObjEstimate.ScheduleId != 0)
                         {
-                            StrEstimateDates = string.Empty;
-                            StrEstimateDates += str;
-                            StrEstimateDates = str.Remove(0, 2);
+                            ShowDropdownDatesEstimate = true;
+
+                            await GetScheduleDates(Customer.ObjEstimate.ScheduleId.Value, 1); // All Schedule Dates
+
+                            LstEstimateSchaduleDatesActual = new ObservableCollection<SchaduleDateModel>(Customer.ObjEstimate.LstScdDate);
+
+                            if (LstEstimateSchaduleDatesActual.Count == 1)
+                            {
+                                IsShowScheduleDates = false; //Don't Show schedule Dates
+                            }
+
+                            string str = "";
+                            LstEstimateDates = new ObservableCollection<SchaduleDateModel>();
+                            foreach (var Date in Customer.ObjEstimate.LstScdDate)
+                            {
+                                str += (" , " + Date.Date);
+                                LstEstimateDates.Add(new SchaduleDateModel
+                                {
+                                    Id = Date.Id,
+                                    Date = Date.Date,
+                                });
+                            }
+
+                            if (!string.IsNullOrEmpty(str))
+                            {
+                                if (!string.IsNullOrEmpty(StrEstimateDates))
+                                {
+                                    StrEstimateDates = string.Empty;
+                                    StrEstimateDates += str;
+                                    StrEstimateDates = str.Remove(0, 2);
+                                }
+                                else
+                                {
+                                    StrEstimateDates = str.Remove(0, 2);
+                                }
+                            }
+                        }
+
+                        OneEstimate = Customer.ObjEstimate;
+
+                        AmountOrPersent = OneEstimate.DiscountAmountOrPercent == "%" ? false : true;
+                        Discount = OneEstimate.Discount;
+
+                        Pending = OneEstimate.Status == 0 ? true : false;
+                        Accept = OneEstimate.Status == 1 ? true : false;
+                        Declind = OneEstimate.Status == 2 ? true : false;
+
+                        if (OneEstimate.LstEstimateItemServices != null)
+                        {
+                            if (OneEstimate.LstEstimateItemServices.Count > 4)
+                            {
+                                LstHeight = 1;
+                            }
+
+                            TotalEstimate(OneEstimate);
+
+                            LstItemsEstimate = new ObservableCollection<EstimateItemServicesModel>(OneEstimate.LstEstimateItemServices);
                         }
                         else
                         {
-                            StrEstimateDates = str.Remove(0, 2);
+                            SubTotal = 0;
+                            Net = 0;
+                            Paid = 0;
+                            TotalDue = 0;
                         }
-                       
-                    }
-
-                    OneEstimate = Customer.ObjEstimate;
-
-                    AmountOrPersent = OneEstimate.DiscountAmountOrPercent == "%" ? false : true;
-                    Discount = OneEstimate.Discount;
-
-                    Pending = OneEstimate.Status == 0 ? true : false;
-                    Accept = OneEstimate.Status == 1 ? true : false;
-                    Declind = OneEstimate.Status == 2 ? true : false;
-
-                    if (OneEstimate.LstEstimateItemServices != null)
-                    {
-                        if (OneEstimate.LstEstimateItemServices.Count > 4)
-                        {
-                            LstHeight = 1;
-                        }
-
-                        TotalEstimate(OneEstimate);
-
-                        LstItemsEstimate = new ObservableCollection<EstimateItemServicesModel>(OneEstimate.LstEstimateItemServices);
-                    }
-                    else
-                    {
-                        SubTotal = 0;
-                        Net = 0;
-                        Paid = 0;
-                        TotalDue = 0;
                     }
                 }
             }
@@ -1261,12 +1494,14 @@ namespace FixPro.ViewModels
             UserDialogs.Instance.ShowLoading();
 
             string UserToken = await _service.UserToken();
-
-            var json = await ORep.GetAsync<ObservableCollection<CustomersModel>>(string.Format("api/Customers/GetAllCustInBranch?" + "AccountId=" + Helpers.Settings.AccountId),UserToken);
-
-            if (json != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                LstCustomers = json;
+                var json = await ORep.GetAsync<ObservableCollection<CustomersModel>>(string.Format("api/Customers/GetAllCustInBranch?" + "AccountId=" + Helpers.Settings.AccountId), UserToken);
+
+                if (json != null)
+                {
+                    LstCustomers = json;
+                }
             }
 
             UserDialogs.Instance.HideLoading();
@@ -1280,50 +1515,67 @@ namespace FixPro.ViewModels
 
             string UserToken = await _service.UserToken();
 
-            var Customer = await ORep.GetAsync<CustomersModel>(string.Format("api/Customers/GetListsOfCustomer?" + "CustomerId=" + CustomerId), UserToken);
-
-            if (Customer != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                CustomerDetails = Customer;
-                Discount = CustomerDetails.Discount == null ? 0 : CustomerDetails.Discount.Value;
-                ShowArrowsBar = CustomerDetails.LstCustomersCustomField.Count > 4 ? true : false;
+                var Customer = await ORep.GetAsync<CustomersModel>(string.Format("api/Customers/GetListsOfCustomer?" + "CustomerId=" + CustomerId), UserToken);
 
-
-                foreach (EstimateModel ets in CustomerDetails.LstEstimates)
+                if (Customer != null)
                 {
-                    if ((ets.InvoiceId != 0 && ets.InvoiceId != null) || ets.Status != 1 || EmployeePermission.UserRole == 1 || EmployeePermission.ActiveEstimate == false || EmployeePermission.ActiveEditPrice == false)
-                    {
-                        ets.NotShowConvert = true;//NotShowConvert
-                        if (ets.InvoiceId > 0)
-                        {
-                            ets.GoToInvoice = true;
-                        }
-                    }
-                    //CustomerDetails.LstEstimates.Add(ets);
-                }
+                    CustomerDetails = Customer;
+                    Discount = CustomerDetails.Discount == null ? 0 : CustomerDetails.Discount.Value;
+                    ShowArrowsBar = CustomerDetails.LstCustomersCustomField.Count > 4 ? true : false;
 
-                LstInvoices = new ObservableCollection<InvoiceModel>(CustomerDetails.LstInvoices);
-                LstSchedules = new ObservableCollection<SchedulesModel>(CustomerDetails.LstSchedules);
-                LstEstimates = new ObservableCollection<EstimateModel>(CustomerDetails.LstEstimates);
+
+                    foreach (EstimateModel ets in CustomerDetails.LstEstimates)
+                    {
+                        if ((ets.InvoiceId != 0 && ets.InvoiceId != null) || ets.Status != 1 || EmployeePermission.UserRole == 1 || EmployeePermission.ActiveEstimate == false || EmployeePermission.ActiveEditPrice == false)
+                        {
+                            ets.NotShowConvert = true;//NotShowConvert
+                            if (ets.InvoiceId > 0)
+                            {
+                                ets.GoToInvoice = true;
+                            }
+                        }
+                        //CustomerDetails.LstEstimates.Add(ets);
+                    }
+
+                    LstInvoices = new ObservableCollection<InvoiceModel>(CustomerDetails.LstInvoices);
+                    LstSchedules = new ObservableCollection<SchedulesModel>(CustomerDetails.LstSchedules);
+                    LstEstimates = new ObservableCollection<EstimateModel>(CustomerDetails.LstEstimates);
+                }
             }
 
             UserDialogs.Instance.HideLoading();
         }
 
-        // New Customer
+        // New Customer or Update Customer
         async void GetCustomerFeatures(int? AccountId)
         {
             UserDialogs.Instance.ShowLoading();
 
             string UserToken = await _service.UserToken();
-
-            var Features = await ORep.GetAsync<CustomerfeaturesModel>(string.Format("api/Customers/GetCustomerFeatures?" + "AccountId=" + AccountId), UserToken);
-
-            if (Features != null)
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                CustomerFeatures = Features;
+                var Features = await ORep.GetAsync<CustomerfeaturesModel>(string.Format("api/Customers/GetCustomerFeatures?" + "AccountId=" + AccountId), UserToken);
 
-                ShowArrowsBarFeatures = CustomerFeatures.LstCustomersCustomField.Count > 4 ? true : false;
+                if (Features != null)
+                {
+                    CustomerFeatures = Features;
+
+                    ShowArrowsBarFeatures = CustomerFeatures.LstCustomersCustomField.Count > 4 ? true : false;
+
+                    if (IsUpdateCust == 2)// Update Customer
+                    {
+
+                        CustomerDetails.LstCustomersCustomField = CustomerFeatures.LstCustomersCustomField;
+
+                        OneCategoryModel = CustomerFeatures.LstCustomerCategory.Where(x => x.Id == CustomerDetails.CategoryId).FirstOrDefault();
+
+                        OneMemberModel = CustomerFeatures.LstMemberships.Where(x => x.Id == CustomerDetails.MemberDTO?.Id).FirstOrDefault();
+
+                        OneTaxModel = CustomerFeatures.LstTaxes.Where(x => x.Id == CustomerDetails.TaxDTO?.Id).FirstOrDefault();
+                    }
+                }
             }
 
             UserDialogs.Instance.HideLoading();
@@ -1348,11 +1600,16 @@ namespace FixPro.ViewModels
                 Net = model.DiscountAmountOrPercent == "%" ? Math.Round(((SumCost - DiscountVal) + model?.Taxval).Value, 2, MidpointRounding.ToEven) : Math.Round(((SumCost - DiscountVal) + model?.Taxval).Value, 2, MidpointRounding.ToEven);
                 TotalDue = model.DiscountAmountOrPercent == "%" ? Math.Round(((SumCost - DiscountVal) + model.Taxval - Paid).Value, 2, MidpointRounding.ToEven) : Math.Round(((SumCost - DiscountVal) + model.Taxval - Paid).Value, 2, MidpointRounding.ToEven);
             }
-            else
+            else if (model.Tax > 0)
             {
                 decimal? TaxValue = model.DiscountAmountOrPercent == "%" ? ((SumCost - DiscountVal) * model.Tax / 100) : ((SumCost - DiscountVal) * model.Tax / 100);
                 Net = model.DiscountAmountOrPercent == "%" ? Math.Round(((SumCost - DiscountVal) + TaxValue).Value, 2, MidpointRounding.ToEven) : Math.Round(((SumCost - DiscountVal) + TaxValue).Value, 2, MidpointRounding.ToEven);
                 TotalDue = model.DiscountAmountOrPercent == "%" ? Math.Round(((SumCost - DiscountVal) + TaxValue - Paid).Value, 2, MidpointRounding.ToEven) : Math.Round(((SumCost - DiscountVal) + TaxValue - Paid).Value, 2, MidpointRounding.ToEven);
+            }
+            else
+            {
+                Net = model.DiscountAmountOrPercent == "%" ? Math.Round((SumCost - DiscountVal).Value, 2, MidpointRounding.ToEven) : Math.Round((SumCost - DiscountVal).Value, 2, MidpointRounding.ToEven);
+                TotalDue = model.DiscountAmountOrPercent == "%" ? Math.Round(((SumCost - DiscountVal) - Paid).Value, 2, MidpointRounding.ToEven) : Math.Round(((SumCost - DiscountVal) - Paid).Value, 2, MidpointRounding.ToEven);
             }
         }
 
@@ -1376,11 +1633,16 @@ namespace FixPro.ViewModels
                 Net = model.DiscountAmountOrPercent == "%" ? Math.Round(((SumCost - DiscountVal) + model?.Taxval).Value, 2, MidpointRounding.ToEven) : Math.Round(((SumCost - DiscountVal) + model?.Taxval).Value, 2, MidpointRounding.ToEven);
                 TotalDue = model.DiscountAmountOrPercent == "%" ? Math.Round(((SumCost - DiscountVal) + model.Taxval - Paid).Value, 2, MidpointRounding.ToEven) : Math.Round(((SumCost - DiscountVal) + model.Taxval - Paid).Value, 2, MidpointRounding.ToEven);
             }
-            else
+            else if (model.Tax > 0)
             {
                 decimal? TaxValue = model.DiscountAmountOrPercent == "%" ? ((SumCost - DiscountVal) * model.Tax / 100) : ((SumCost - DiscountVal) * model.Tax / 100);
                 Net = model.DiscountAmountOrPercent == "%" ? Math.Round(((SumCost - DiscountVal) + TaxValue).Value, 2, MidpointRounding.ToEven) : Math.Round(((SumCost - DiscountVal) + TaxValue).Value, 2, MidpointRounding.ToEven);
                 TotalDue = model.DiscountAmountOrPercent == "%" ? Math.Round(((SumCost - DiscountVal) + TaxValue - Paid).Value, 2, MidpointRounding.ToEven) : Math.Round(((SumCost - DiscountVal) + TaxValue - Paid).Value, 2, MidpointRounding.ToEven);
+            }
+            else
+            {
+                Net = model.DiscountAmountOrPercent == "%" ? Math.Round((SumCost - DiscountVal).Value, 2, MidpointRounding.ToEven) : Math.Round((SumCost - DiscountVal).Value, 2, MidpointRounding.ToEven);
+                TotalDue = model.DiscountAmountOrPercent == "%" ? Math.Round(((SumCost - DiscountVal) - Paid).Value, 2, MidpointRounding.ToEven) : Math.Round(((SumCost - DiscountVal) - Paid).Value, 2, MidpointRounding.ToEven);
             }
         }
 
@@ -1391,7 +1653,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -1430,6 +1692,7 @@ namespace FixPro.ViewModels
                                 LstItemsInvoice.Add(InvoiceModel);
                                 OneInvoice.LstInvoiceItemServices.Add(InvoiceModel);
                             }
+
                         }
                         else
                         {
@@ -1454,7 +1717,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 
@@ -1479,7 +1742,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -1540,7 +1803,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 
@@ -1593,7 +1856,8 @@ namespace FixPro.ViewModels
             IsBusy = true;
             UserDialogs.Instance.ShowLoading();
             var ViewModel = new SchedulesViewModel(model.Id, model.ScheduleDateId);
-            var page = new Views.SchedulePages.NewSchedulePage();
+            //var page = new NewSchedulePage();
+            var page = new ScheduleDetailsPage();
             page.BindingContext = ViewModel;
             await App.Current.MainPage.Navigation.PushAsync(page);
             UserDialogs.Instance.HideLoading();
@@ -1645,7 +1909,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -1685,7 +1949,7 @@ namespace FixPro.ViewModels
 
                                 if (json != "Bad Request" && json != "api not responding" && json.Contains("Not_Enough") != true && json.Contains("This Invoice Already Exist") != true && json.Contains("Already Exist For This Schedule Date#") != true)
                                 {
-                                    await App.Current.MainPage.DisplayAlert("Project Services", "Succes Save Invoice.", "Ok");
+                                    await App.Current.MainPage.DisplayAlert("FixPro", "Invoice saved successfully.", "Ok");
                                     var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
                                     var page = new Views.PopupPages.PaymentMethodsPopup();
                                     page.BindingContext = ViewModel;
@@ -1701,19 +1965,19 @@ namespace FixPro.ViewModels
                             }
                             else
                             {
-                                await App.Current.MainPage.DisplayAlert("Alert", "Please Don't Check all Item-Service Out for this Invoice.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("Alert", "Please don’t check all the items/services out for this invoice", "Ok");
                             }
                         }
                         else
                         {
-                            await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Item-Service for this Invoice.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("Alert", "No item/service chosen for this invoice", "Ok");
                         }
                     }
                 }
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 
@@ -1727,7 +1991,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -1746,10 +2010,12 @@ namespace FixPro.ViewModels
                             OneEstimate.Total = SubTotal;
                             OneEstimate.Net = Net;
                             OneEstimate.Discount = Discount;
+                            OneEstimate.SignatureDraw = SignatureImageByte64Estimate == null ? OneEstimate.SignatureDraw : SignatureImageByte64Estimate;
 
                             var json = "";
                             if (OneEstimate.Id == 0)
                             {
+                                
                                 UserDialogs.Instance.ShowLoading();
                                 //json = await Helpers.Utility.PostData("api/Estimates/PostEstimate", JsonConvert.SerializeObject(OneEstimate));
                                 json = await ORep.PostDataAsync("api/Estimates/PostEstimate", OneEstimate, UserToken);
@@ -1765,7 +2031,7 @@ namespace FixPro.ViewModels
 
                             if (json != "Bad Request" && json != "api not responding" && json.Contains("Already Exist For This Schedule Date#") != true)
                             {
-                                await App.Current.MainPage.DisplayAlert("Project Services", "Succes Save Estimate.", "Ok");
+                                await App.Current.MainPage.DisplayAlert("FixPro", "Estimate saved successfully", "Ok");
 
                                 var ViewModel = new CustomersViewModel(CustomerDetails);
                                 var page = new Views.CustomerPages.CustomersDetailsPage();
@@ -1791,14 +2057,14 @@ namespace FixPro.ViewModels
                         }
                         else
                         {
-                            await App.Current.MainPage.DisplayAlert("Alert", "Please Choose Item-Service for this Estimate.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("Alert", "No item/service chosen for this estimate!", "Ok");
                         }
                     }
                 }
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
 
@@ -1825,7 +2091,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -1866,6 +2132,7 @@ namespace FixPro.ViewModels
                         OneInvoice.Active = OneEstimate.Active;
                         OneInvoice.CreateUser = int.Parse(Helpers.Settings.UserId);
                         OneInvoice.CreateDate = DateTime.Now;
+                        OneInvoice.LstScdDate = OneEstimate.LstScdDate;
 
                         foreach (EstimateItemServicesModel item in OneEstimate.LstEstimateItemServices)
                         {
@@ -1902,7 +2169,7 @@ namespace FixPro.ViewModels
 
                         if (json != null && json != "api not responding" && json.Contains("Not_Enough") != true && json.Contains("This Invoice Already Exist") != true)
                         {
-                            await App.Current.MainPage.DisplayAlert("Project Services", "Succes Convert To Inovice.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Converted to invoice successfully", "Ok");
                             OneInvoice.Id = int.Parse(json.Trim('"'));
 
                             var ViewModel = new CustomersViewModel(OneInvoice, CustomerDetails);
@@ -1922,7 +2189,7 @@ namespace FixPro.ViewModels
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                 //throw;
             }
             IsBusy = false;
@@ -1932,7 +2199,20 @@ namespace FixPro.ViewModels
         {
             IsBusy = true;
             UserDialogs.Instance.ShowLoading();
-            Controls.StaticMembers.WayCreateCust = 0;
+            Controls.StaticMembers.WayCreateCust = 0; //From Customers page
+            var ViewModel = new CustomersViewModel(true);
+            var page = new Views.CustomerPages.CreateNewCustomerPage();
+            page.BindingContext = ViewModel;
+            await App.Current.MainPage.Navigation.PushAsync(page);
+            UserDialogs.Instance.HideLoading();
+            IsBusy = false;
+        }
+
+        async void OnCreateNewCustomerFromSchedule()
+        {
+            IsBusy = true;
+            UserDialogs.Instance.ShowLoading();
+            Controls.StaticMembers.WayCreateCust = 2; //From Schedule
             var ViewModel = new CustomersViewModel(true);
             var page = new Views.CustomerPages.CreateNewCustomerPage();
             page.BindingContext = ViewModel;
@@ -1959,6 +2239,7 @@ namespace FixPro.ViewModels
         void OnChooseCustomerCampaign(CampaignModel model)
         {
             CustomerDetails.Source = model.Id;
+            CustomerDetails.CampaignDTO = model;
         }
 
         async void OnSelecteAddress()
@@ -1968,7 +2249,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -1986,13 +2267,18 @@ namespace FixPro.ViewModels
                         ZipCode = CustomerDetails.PostalcodeZIP = str.Zip;
                         CustomerDetails.Country = str.Country;
 
-                        CustomersModel oCust = Controls.StartData.GetAddressDetails(CustomerDetails);
+                        CustomersModel oCust = await Controls.StartData.GetAddressDetails(CustomerDetails);
 
-                        CustomerDetails.EstimedValue = oCust.EstimedValue;
-                        HouseValue = string.Format("${0:#,0.#}", float.Parse(oCust.EstimedValue));
-                        YearBuilt = CustomerDetails.YearBuit = oCust.YearBuit;
-                        SquareFootage = CustomerDetails.Squirefootage = oCust.Squirefootage;
-                        CustomerDetails.YearEstimedValue = oCust.YearEstimedValue;
+                        HouseValue = (!string.IsNullOrEmpty(oCust.EstimedValue) && oCust.EstimedValue != "None") ? string.Format("${0:#,0.#}", float.Parse(oCust.EstimedValue)) : "None";
+                        CustomerDetails.EstimedValue = HouseValue;
+
+                        YearBuilt = (!string.IsNullOrEmpty(oCust.YearBuit) && oCust.YearBuit != "None") ? oCust.YearBuit : "None";
+                        CustomerDetails.YearBuit = YearBuilt;
+
+                        SquareFootage = (!string.IsNullOrEmpty(oCust.Squirefootage) && oCust.Squirefootage != "None") ? oCust.Squirefootage : "None";
+                        CustomerDetails.Squirefootage = SquareFootage;
+
+                        CustomerDetails.YearEstimedValue = (!string.IsNullOrEmpty(oCust.YearEstimedValue) && oCust.YearEstimedValue != "None") ? oCust.YearEstimedValue : "None";
 
 
                         //HouseProperty oHouseProperty = await Controls.StartData.GetPropertyByAddress(Address);
@@ -2008,10 +2294,9 @@ namespace FixPro.ViewModels
                     await PopupNavigation.Instance.PushAsync(popupView);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                //throw;
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
 
             IsBusy = false;
@@ -2050,16 +2335,16 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
                 {
-                    if(string.IsNullOrEmpty(model.FirstName))
+                    if (string.IsNullOrEmpty(model.FirstName))
                     {
                         await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : First Name.", "Ok");
                     }
-                    else if(string.IsNullOrEmpty(model.LastName))
+                    else if (string.IsNullOrEmpty(model.LastName))
                     {
                         await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Last Name.", "Ok");
                     }
@@ -2071,14 +2356,18 @@ namespace FixPro.ViewModels
                     {
                         await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Source.", "Ok");
                     }
+                    else if ((model.MemeberExpireDate.Value.Day <= DateTime.Now.Day || model.MemeberExpireDate.Value.Month < DateTime.Now.Month) && model.MemeberType == true)
+                    {
+                        await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Member Expire Date after today date.", "Ok");
+                    }
                     else if (string.IsNullOrEmpty(model.Phone1))
                     {
                         await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Customer Phone.", "Ok");
                     }
-                    else if (string.IsNullOrEmpty(model.Email))
-                    {
-                        await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Customer Email.", "Ok");
-                    }
+                    //else if (string.IsNullOrEmpty(model.Email))
+                    //{
+                    //    await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Customer Email.", "Ok");
+                    //}
                     else if (string.IsNullOrEmpty(model.Address))
                     {
                         await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Customer Address.", "Ok");
@@ -2090,42 +2379,55 @@ namespace FixPro.ViewModels
                         model.AccountId = int.Parse(Helpers.Settings.AccountId);
                         model.BrancheId = int.Parse(Helpers.Settings.BranchId);
                         model.CreateUser = int.Parse(Helpers.Settings.UserId);
+                        model.Phone1 = model.Phone1.Replace("(", "").Replace(")", "").Replace("-", "").Replace(" ", "").Trim();
                         model.CustomerType = 1;
                         model.AllowLogin = false;
                         model.Credit = 0;
                         model.Since = DateTime.Now;
                         model.Active = true;
+                        model.Source = OneCampaign.Id;
                         model.CreateDate = DateTime.Now;
                         model.State = CustomerDetails.State != null ? CustomerDetails.State : State;
                         model.City = CustomerDetails.City != null ? CustomerDetails.City : City;
                         model.PostalcodeZIP = CustomerDetails.PostalcodeZIP != null ? CustomerDetails.PostalcodeZIP : ZipCode;
-
-                        model.LstCustomersCustomField = new List<CustomersCustomFieldModel>();
-                        foreach (CustomersCustomFieldModel item in CustomerFeatures.LstCustomersCustomField.ToList())
+                        if((model.MemeberType == false || model.MemeberType == null) && model.MemberDTO == null)
                         {
-                            if (item.Required == false || string.IsNullOrEmpty(item.DefaultValue?.Trim()) != true)
-                            {
-                                if (item.FieldType == 4 && item.DefaultValue == "True")
-                                {
-                                    item.DefaultValue = "Yes";
-                                }
-                                else if (item.FieldType == 4 && item.DefaultValue == "False")
-                                {
-                                    item.DefaultValue = "No";
-                                }
-                                else if (item.FieldType == 3)
-                                {
-                                    item.DefaultValue = DateTime.Parse(item.DefaultValue).ToString("yyyy-MM-dd");
-                                }
+                            model.MemeberExpireDate = null;
+                        }
+                        if (model.TaxDTO == null)
+                        {
+                            model.Taxable = null;
+                        }
 
-                                model.LstCustomersCustomField.Add(item);
-                            }
-                            else
-                            {
-                                await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field : {item.CustomFieldName} Required For Custom Field.", "Ok");
-                                return;
-                            }
+                        if (IsUpdateCust != 2) // Create New Customer
+                        {
+                            model.LstCustomersCustomField = new List<CustomersCustomFieldModel>();
 
+                            foreach (CustomersCustomFieldModel item in CustomerFeatures.LstCustomersCustomField.ToList())
+                            {
+                                if (item.Required == false || string.IsNullOrEmpty(item.DefaultValue?.Trim()) != true)
+                                {
+                                    if (item.FieldType == 4 && item.DefaultValue == "True")
+                                    {
+                                        item.DefaultValue = "Yes";
+                                    }
+                                    else if (item.FieldType == 4 && item.DefaultValue == "False")
+                                    {
+                                        item.DefaultValue = "No";
+                                    }
+                                    else if (item.FieldType == 3)
+                                    {
+                                        item.DefaultValue = DateTime.Parse(item.DefaultValue).ToString("yyyy-MM-dd");
+                                    }
+
+                                    model.LstCustomersCustomField.Add(item);
+                                }
+                                else
+                                {
+                                    await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field : {item.CustomFieldName} Required For Custom Field.", "Ok");
+                                    return;
+                                }
+                            }
                         }
 
                         //model.LstCustomersCustomField = CustomerFeatures.LstCustomersCustomField;
@@ -2148,15 +2450,29 @@ namespace FixPro.ViewModels
                         if (CustomerDetails.CustomerCategory != null)
                             model.CategoryId = CustomerDetails.CustomerCategory.Id;
 
-                        UserDialogs.Instance.ShowLoading();
                         //var json = await Helpers.Utility.PostData("api/Customers/PostCustomer", JsonConvert.SerializeObject(model));
-                        var json = await ORep.PostDataAsync("api/Customers/PostCustomer", model, UserToken);
+                        //var json = await ORep.PostDataAsync("api/Customers/PostCustomer", model, UserToken);
 
+
+                        var json = "";
+                        if (model.Id == 0)
+                        {
+                            UserDialogs.Instance.ShowLoading();
+                            json = await ORep.PostDataAsync("api/Customers/PostCustomer", model, UserToken);
+                            UserDialogs.Instance.HideLoading();
+                        }
+                        else
+                        {
+                            UserDialogs.Instance.ShowLoading();
+                            json = await ORep.PutDataAsync("api/Customers/PutCustomer", model, UserToken);
+                            UserDialogs.Instance.HideLoading();
+                        }
                         if (json != null && json != "api not responding" && json != "Multiple Choices")
                         {
+                            CustomersModel Customer = JsonConvert.DeserializeObject<CustomersModel>(json);
+
                             if (Controls.StaticMembers.WayCreateCust == 1)//From CallPage
                             {
-                                CustomersModel Customer = JsonConvert.DeserializeObject<CustomersModel>(json);
                                 var ViewModel = new CallsViewModel(Customer);
                                 var page = new Views.CallPages.NewCallPage();
                                 page.BindingContext = ViewModel;
@@ -2165,22 +2481,62 @@ namespace FixPro.ViewModels
                                 App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                                 await PopupNavigation.Instance.PopAsync();
                             }
+                            else if (Controls.StaticMembers.WayCreateCust == 2) //From Schedule create new customer
+                            {
+                                var ViewModel = new SchedulesViewModel(Customer);
+                                var page = new NewSchedulePage();
+                                page.BindingContext = ViewModel;
+                                await App.Current.MainPage.Navigation.PushAsync(page);
+                                App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                            }
+                            else if (Controls.StaticMembers.WayCreateCust == 3) //From Schedule can edit customer and return schedule again
+                            {
+                                var ViewModel = new SchedulesViewModel(Controls.StaticMembers.ScheduleIdStatic, Controls.StaticMembers.ScheduleDateIdStatic);
+                                //var page = new NewSchedulePage();
+                                var page = new ScheduleDetailsPage();
+                                page.BindingContext = ViewModel;
+                                await App.Current.MainPage.Navigation.PushAsync(page);
+                                App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                            }
                             else
                             {
-                                await App.Current.MainPage.DisplayAlert("Project Services", "Succes Insert Customer.", "Ok");
-                                await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                if (model.Id == 0) // new Customer
+                                {
+                                    await App.Current.MainPage.DisplayAlert("FixPro", "Customer added successfully", "Ok");
+                                    await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                }
+                                else // Update Customer
+                                {
+                                    await App.Current.MainPage.DisplayAlert("FixPro", "Customer updated successfully", "Ok");
+                                    var VM = new CustomersViewModel();
+                                    var page = new CustomersPage();
+                                    page.BindingContext = VM;
+                                    await App.Current.MainPage.Navigation.PushAsync(page);
+                                    App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                    App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+
+                                }
                             }
                         }
                         else if (json == "Multiple Choices")
                         {
-                            await App.Current.MainPage.DisplayAlert("Project Services", "This Customer phone or Email already exists.", "Ok");
+                            await App.Current.MainPage.DisplayAlert("FixPro", "This Customer phone already exists.", "Ok");
                         }
                         else
                         {
-                            await App.Current.MainPage.DisplayAlert("Project Services", "Field Insert Customer.", "Ok");
+                            if (model.Id == 0)
+                            {
+                                await App.Current.MainPage.DisplayAlert("FixPro", "Failed to add customer", "Ok");
+                            }
+                            else
+                            {
+                                await App.Current.MainPage.DisplayAlert("FixPro", "Customer updating failed", "Ok");
+                            }
+
                         }
-                        UserDialogs.Instance.HideLoading();
-                    } 
+                    }
                 }
             }
             catch (Exception ex)
@@ -2218,6 +2574,60 @@ namespace FixPro.ViewModels
             IsBusy = false;
         }
 
+
+        async void OnDeleteEstimate(int EstId)
+        {
+            IsBusy = true;
+            try
+            {
+                if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
+                {
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    //return;
+                }
+                else
+                {
+                    UserDialogs.Instance.ShowLoading();
+
+                    bool check = await App.Current.MainPage.DisplayAlert("FixPro", "Do you want to delete this estimate?", "Yes", "No");
+
+                    if (check == true)
+                    {
+                        string UserToken = await _service.UserToken();
+
+                        var json = await ORep.DeleteStrItemAsync(string.Format("api/Estimates/DeleteEstimate/{0}", EstId), UserToken);
+
+                        if (json != null && json != "api not responding" && json.Contains("This Estimate Can`t Deleted") != true)
+                        {
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Estimate deleted successfully", "Ok");
+                            //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+
+                            var ViewModel = new CustomersViewModel(CustomerDetails);
+                            var page = new Views.CustomerPages.CustomersDetailsPage();
+                            page.BindingContext = ViewModel;
+                            await App.Current.MainPage.Navigation.PushAsync(page);
+                            App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+
+                        }
+                        else
+                        {
+                            await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
+                            //await App.Current.MainPage.DisplayAlert("Alert", "Failed Delete Inovice.", "Ok");
+                        }
+                    }
+                        
+                    UserDialogs.Instance.HideLoading();
+                }
+            }
+            catch (Exception)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "Failed to delete this estimate", "OK");
+                //throw;
+            }
+
+            IsBusy = false;
+        }
+
         async void OnDeleteInvoice(int InvoiceId)
         {
             IsBusy = true;
@@ -2225,32 +2635,45 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
                 {
                     UserDialogs.Instance.ShowLoading();
-                    string UserToken = await _service.UserToken();
 
-                    var json = await ORep.DeleteStrItemAsync(string.Format("api/Invoices/DeleteInvoice/{0}", InvoiceId, UserToken));
 
-                    if (json != null && json != "api not responding" && json.Contains("Is Not Deleted") != true)
+                    bool check = await App.Current.MainPage.DisplayAlert("FixPro", "Do you want to delete this invoice?", "Yes", "No");
+
+                    if (check == true)
                     {
-                        await App.Current.MainPage.DisplayAlert("Project Services", "Succes Delete Inovice.", "Ok");
-                        await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                        string UserToken = await _service.UserToken();
+
+                        var json = await ORep.DeleteStrItemAsync(string.Format("api/Invoices/DeleteInvoice/{0}", InvoiceId), UserToken);
+
+                        if (json != null && json != "api not responding" && json.Contains("Is Not Deleted") != true)
+                        {
+                            await App.Current.MainPage.DisplayAlert("FixPro", "Invoice deleted successfully", "Ok");
+                            //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                            var ViewModel = new CustomersViewModel(CustomerDetails);
+                            var page = new Views.CustomerPages.CustomersDetailsPage();
+                            page.BindingContext = ViewModel;
+                            await App.Current.MainPage.Navigation.PushAsync(page);
+                            App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                        }
+                        else
+                        {
+                            await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
+                            //await App.Current.MainPage.DisplayAlert("Alert", "Failed Delete Inovice.", "Ok");
+                        }
                     }
-                    else
-                    {
-                        await App.Current.MainPage.DisplayAlert("Alert", json, "Ok");
-                        //await App.Current.MainPage.DisplayAlert("Alert", "Failed Delete Inovice.", "Ok");
-                    }
+
                     UserDialogs.Instance.HideLoading();
                 }
             }
             catch (Exception)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", "Failed to delete this invoice", "OK");
                 //throw;
             }
 
@@ -2264,7 +2687,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -2292,7 +2715,7 @@ namespace FixPro.ViewModels
                             LstEstimateDates.Clear();
                             foreach (var Date in Dates)
                             {
-                                str += (" , " + Date.Date);    
+                                str += (" , " + Date.Date);
                                 LstEstimateDates.Add(new SchaduleDateModel
                                 {
                                     Id = Date.Id,
@@ -2318,9 +2741,9 @@ namespace FixPro.ViewModels
                     await PopupNavigation.Instance.PushAsync(popupView);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
                 //throw;
             }
 
@@ -2334,7 +2757,7 @@ namespace FixPro.ViewModels
             {
                 if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
                 {
-                    await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
                     //return;
                 }
                 else
@@ -2363,7 +2786,7 @@ namespace FixPro.ViewModels
                             LstInvoiceDates.Clear();
                             foreach (var Date in Dates)
                             {
-                                str += (" , " + Date.Date);      
+                                str += (" , " + Date.Date);
                                 LstInvoiceDates.Add(new SchaduleDateModel
                                 {
                                     Id = Date.Id,
@@ -2389,9 +2812,9 @@ namespace FixPro.ViewModels
                     await PopupNavigation.Instance.PushAsync(popupView);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
                 //throw;
             }
 
@@ -2427,13 +2850,13 @@ namespace FixPro.ViewModels
         }
 
         void OnRemoveInvoiceDate(SchaduleDateModel Date)
-        {      
+        {
             LstInvoiceDates.Remove(Date);
             SchaduleDateModel DataOfScddt = LstInvoiceSchaduleDatesActual.Where(x => x.Id == Date.Id).FirstOrDefault();
             LstInvoiceSchaduleDatesActual.Remove(DataOfScddt);
 
             foreach (SchaduleDateModel dt in LstInvoiceSchaduleDates)
-            { 
+            {
                 foreach (SchaduleDateModel dt2 in LstInvoiceSchaduleDatesActual)
                 {
                     if (dt.Id == dt2.Id)
@@ -2453,5 +2876,79 @@ namespace FixPro.ViewModels
             int index3 = StrInvoiceDates.IndexOf(Date.Date);
             StrInvoiceDates = (index3 < 0) ? StrInvoiceDates : StrInvoiceDates.Remove(index3, (Date.Date).Length);
         }
+
+        async void OnSelectSendEmailInvoice(InvoiceModel model)
+        {
+            IsBusy = true;
+            if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                //return;
+            }
+            else
+            {
+                string UserToken = await _service.UserToken();
+
+                UserDialogs.Instance.ShowLoading();
+                var json = await ORep.PostStrAsync("api/Invoices/PostInvoiceEmail", model, UserToken);
+                UserDialogs.Instance.HideLoading();
+
+                if (!string.IsNullOrEmpty(json) && json.Contains("Send Success") == true)
+                {
+                    await App.Current.MainPage.DisplayAlert("FixPro", "Email sent successfully to customer", "Ok");
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("FixPro", "Failed to send e-mail to the customer", "Ok");
+                }
+
+            }
+
+            IsBusy = false;
+        }
+
+        async void OnSelectSendEmailEstimate(EstimateModel model)
+        {
+            IsBusy = true;
+
+            if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
+            {
+                await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                //return;
+            }
+            else
+            {
+                string UserToken = await _service.UserToken();
+
+                UserDialogs.Instance.ShowLoading();
+                var json = await ORep.PostStrAsync("api/Estimates/PostEstimateEmail", model, UserToken);
+                UserDialogs.Instance.HideLoading();
+
+                if (!string.IsNullOrEmpty(json) && json.Contains("Send Success") == true)
+                {
+                    await App.Current.MainPage.DisplayAlert("FixPro", "Email sent successfully to customer", "Ok");
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("FixPro", "Failed to send e-mail to the customer", "Ok");
+                }
+
+            }
+
+            IsBusy = false;
+        }
+
+        async void OnUpdateCustomer(CustomersModel model)
+        {
+            IsBusy = true;
+            UserDialogs.Instance.ShowLoading();
+            var ViewModel = new CustomersViewModel(model, 2); // update Cust
+            var page = new Views.CustomerPages.CreateNewCustomerPage();
+            page.BindingContext = ViewModel;
+            await App.Current.MainPage.Navigation.PushAsync(page);
+            UserDialogs.Instance.HideLoading();
+            IsBusy = false;
+        }
+
     }
 }

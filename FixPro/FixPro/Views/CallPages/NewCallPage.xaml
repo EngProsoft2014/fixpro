@@ -17,7 +17,7 @@
     <StackLayout>
 
         <!--Toolbar-->
-        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="20,10,20,10">
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="{OnPlatform iOS='20,50,20,10', Android='15,15,15,10'}">
 
             <Image x:Name="imgBack">
                 <Image.Source>
@@ -62,11 +62,12 @@
                 <StackLayout HorizontalOptions="FillAndExpand">
                     <Label Text="Phone Number" TextColor="Black"></Label>
                     <StackLayout Orientation="Horizontal" Spacing="10">
-                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                        <yummy:PancakeView Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
                             <Entry x:Name="entryPhone" 
                                    Text="{Binding OneCall.PhoneNum}"
                                    Keyboard="Telephone"
                                    IsReadOnly="True"
+                                   BackgroundColor="#debdff"
                                    Placeholder="Enter Phone" 
                                    PlaceholderColor="Gray"
                                    TextColor="Black" 
@@ -80,7 +81,7 @@
                                 </Entry.Triggers>
                             </Entry>
                             <yummy:PancakeView.Shadow>
-                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                             </yummy:PancakeView.Shadow>
                         </yummy:PancakeView>
 
@@ -92,7 +93,7 @@
                                 </Label>
                             </StackLayout>
                             <yummy:PancakeView.Shadow>
-                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                             </yummy:PancakeView.Shadow>
                             <yummy:PancakeView.BackgroundGradientStops>
                                 <yummy:GradientStopCollection>
@@ -118,7 +119,7 @@
                                 </Label>
                             </StackLayout>
                             <yummy:PancakeView.Shadow>
-                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                             </yummy:PancakeView.Shadow>
                             <yummy:PancakeView.BackgroundGradientStops>
                                 <yummy:GradientStopCollection>
@@ -158,21 +159,20 @@
                 <!--Cust Name Get-->
                 <StackLayout x:Name="stkCustNameGet" HorizontalOptions="FillAndExpand">
                     <Label Text="Customer Name" TextColor="Black"></Label>
-                    <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                    <yummy:PancakeView Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
                         <Entry x:Name="entryNameGet" Text="{Binding OneCall.CustomerName,Mode=TwoWay}"
                                PlaceholderColor="Gray"
-                               TextColor="Black" 
-                               FontSize="13"
-                               Focused="entryNameGet_Focused"
-                               Unfocused="entryNameGet_Unfocused">
+                               TextColor="Black"
+                               BackgroundColor="#debdff"
+                               FontSize="13">
                             <Entry.Triggers>
                                 <DataTrigger TargetType="Entry" Binding="{Binding OneCall.CustomerName}" Value="">
-                                    <Setter Property="Text" Value="Please choose customer"></Setter>
+                                    <Setter Property="Placeholder" Value="Enter customer"></Setter>
                                 </DataTrigger>
                             </Entry.Triggers>
                         </Entry>
                         <yummy:PancakeView.Shadow>
-                            <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
                     </yummy:PancakeView>
                     <!--<StackLayout.Triggers>
@@ -189,15 +189,16 @@
                     <!--Call Reason-->
                     <StackLayout>
                         <Label Text="Call Reason" TextColor="Black"></Label>
-                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                        <yummy:PancakeView Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
                             <Picker x:Name="pkrReason" ItemsSource="{Binding LstReasons}" ItemDisplayBinding="{Binding Lable}" SelectedItem="{Binding OneReason,Mode=TwoWay}" 
-                                    Title="Select Reason" 
+                                    Title="Select Reason"
+                                    BackgroundColor="#debdff"
                                     TitleColor ="Gray" 
                                     TextColor="Black"
                                     FontFamily="AlmaraiRegular" FontSize="13">
                             </Picker>
                             <yummy:PancakeView.Shadow>
-                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                             </yummy:PancakeView.Shadow>
                         </yummy:PancakeView>
                     </StackLayout>
@@ -219,31 +220,33 @@
                     <!--Campaign-->
                     <StackLayout>
                         <Label Text="Campaign" TextColor="Black"></Label>
-                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                        <yummy:PancakeView Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
                             <Picker x:Name="pkrCampaign" ItemsSource="{Binding LstCampaigns}" ItemDisplayBinding="{Binding Lable}" SelectedItem="{Binding OneCampaign,Mode=TwoWay}" 
                                 Title="Select Campaign" 
-                                FontFamily="AlmaraiRegular" 
+                                FontFamily="AlmaraiRegular"
+                                    BackgroundColor="#debdff"
                                 FontSize="13" 
                                 TitleColor ="Gray" 
                                 TextColor="Black">
                             </Picker>
                             <yummy:PancakeView.Shadow>
-                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                             </yummy:PancakeView.Shadow>
                         </yummy:PancakeView>
                     </StackLayout>
                     <!--Employee-->
                     <StackLayout>
                         <Label Text="Created by" TextColor="Black"></Label>
-                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                        <yummy:PancakeView Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
                             <Label x:Name="lblEmployee"
                                 Text="{Binding OneCall.EmployeeName}" 
-                                FontFamily="AlmaraiRegular" 
+                                FontFamily="AlmaraiRegular"
+                                   BackgroundColor="#debdff"
                                 FontSize="13" Padding="5,10,5,10"
                                 TextColor="Black">
                             </Label>
                             <yummy:PancakeView.Shadow>
-                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                             </yummy:PancakeView.Shadow>
                         </yummy:PancakeView>
                         <StackLayout.Triggers>
@@ -282,16 +285,17 @@
                     <!--Notes-->
                     <StackLayout>
                         <Label Text="Notes" TextColor="Black"></Label>
-                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HeightRequest="170" HorizontalOptions="FillAndExpand">
+                        <yummy:PancakeView Padding="10,0,10,0" CornerRadius="10" BackgroundColor="#debdff" HeightRequest="{OnPlatform Android=170 ,iOS=140}" HorizontalOptions="FillAndExpand">
                             <Editor x:Name="pkrNotes" Text="{Binding OneCall.Notes}"
                                     Placeholder="Enter Notes" 
                                     PlaceholderColor="Gray"
+                                    BackgroundColor="#debdff"
                                     FontFamily="AlmaraiRegular" 
                                     FontSize="13" 
                                     TextColor="Black">
                             </Editor>
                             <yummy:PancakeView.Shadow>
-                                <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="5" Opacity="1"></yummy:DropShadow>
+                                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                             </yummy:PancakeView.Shadow>
                         </yummy:PancakeView>
                     </StackLayout>
@@ -299,7 +303,7 @@
 
             </StackLayout>
         </ScrollView>
-        <StackLayout VerticalOptions="EndAndExpand" Margin="0,0,0,7">
+        <StackLayout VerticalOptions="EndAndExpand" Margin="{OnPlatform Android='0,0,0,7', iOS='0,0,0,50'}">
             <Button  Text="Apply"  
                      Margin="30,5,30,10"
                      FontSize="15"
