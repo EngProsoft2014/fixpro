@@ -132,7 +132,7 @@ namespace FixPro
             {
                 if (Helpers.Settings.UserName != "" && Helpers.Settings.Password != "")
                 {
-                    if (!string.IsNullOrEmpty(arg1) && arg1 != Helpers.Settings.PlayerId && arg2 == Helpers.Settings.UserName)
+                    if (!string.IsNullOrEmpty(arg1) && arg1 != Helpers.Settings.PlayerId && arg2.ToLower() == (Helpers.Settings.UserName).ToLower())
                     {
                         //await SignalRNotservice();
                         Helpers.Settings.UserName = "";
@@ -175,6 +175,8 @@ namespace FixPro
                 await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
                 await App.Current.MainPage.DisplayAlert("Alert", "You’ve been logged out.\r\n(account is opened on another device)\r\n", "Ok");
             }
+
+            _signalRService.OnMessageReceived -= _signalRService_OnMessageReceivedInSleep;
 
             await SignalRservice();
         }
@@ -261,7 +263,7 @@ namespace FixPro
             {
                 if (Helpers.Settings.UserName != "" && Helpers.Settings.Password != "")
                 {
-                    if (!string.IsNullOrEmpty(arg1) && arg1 != Helpers.Settings.PlayerId && arg2 == Helpers.Settings.UserName)
+                    if (!string.IsNullOrEmpty(arg1) && arg1 != Helpers.Settings.PlayerId && arg2.ToLower() == (Helpers.Settings.UserName).ToLower())
                     {
                         //await SignalRNotservice();
                         Helpers.Settings.UserName = "";
