@@ -93,8 +93,11 @@ namespace FixPro
             await GetPlayerIdFromOneSignal();
 
             await SignalRservice();
-
-            await Init(int.Parse(Helpers.Settings.AccountId));
+            
+            if(Helpers.Settings.AccountId != "0")
+            {
+                await Init(int.Parse(Helpers.Settings.AccountId));
+            }
 
             await Controls.StartData.GetCom_Main();
 
@@ -135,6 +138,8 @@ namespace FixPro
                     if (!string.IsNullOrEmpty(arg1) && arg1 != Helpers.Settings.PlayerId && arg2.ToLower() == (Helpers.Settings.UserName).ToLower())
                     {
                         //await SignalRNotservice();
+                        Helpers.Settings.AccountId = "0";
+                        Helpers.Settings.UserId = "0";
                         Helpers.Settings.UserName = "";
                         Helpers.Settings.UserFristName = "";
                         Helpers.Settings.Email = "";
@@ -266,6 +271,8 @@ namespace FixPro
                     if (!string.IsNullOrEmpty(arg1) && arg1 != Helpers.Settings.PlayerId && arg2.ToLower() == (Helpers.Settings.UserName).ToLower())
                     {
                         //await SignalRNotservice();
+                        Helpers.Settings.AccountId = "0";
+                        Helpers.Settings.UserId = "0";
                         Helpers.Settings.UserName = "";
                         Helpers.Settings.UserFristName = "";
                         Helpers.Settings.Email = "";
