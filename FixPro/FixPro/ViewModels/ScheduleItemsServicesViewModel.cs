@@ -205,8 +205,21 @@ namespace FixPro.ViewModels
             //model.OneItemService = SelectedServiceCateory as ItemsServicesModel;
             if (model.CategoryId != null)
             {
-                ItemClose.Invoke(model);
-                await App.Current.MainPage.Navigation.PopAsync();
+
+                if (model.Type == 2 && model.QTYTime < 1) //items
+                {
+                    await App.Current.MainPage.DisplayAlert("Alert", "Enter QTY field bigger than 0", "Ok");
+                }
+                else
+                {
+                    if (model.Type == 1) //Service
+                    {
+                        model.QTYTime = 1;
+                    }
+
+                    ItemClose.Invoke(model);
+                    await App.Current.MainPage.Navigation.PopAsync();
+                }
             }
             else
             {

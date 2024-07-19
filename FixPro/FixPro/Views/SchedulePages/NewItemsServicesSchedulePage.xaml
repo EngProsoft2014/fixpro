@@ -134,6 +134,12 @@
                                     TextColor="#8f1fff"
                                     Keyboard="Numeric"
                                     HorizontalOptions="FillAndExpand">
+                                    <Entry.Triggers>
+                                        <DataTrigger TargetType="Entry" Binding="{Binding ItemDetails.Type}" Value="1">
+                                            <Setter Property="Text" Value="1"></Setter>
+                                            <Setter Property="IsReadOnly" Value="True"></Setter>
+                                        </DataTrigger>
+                                    </Entry.Triggers>
                                 </Entry>
 
                                 <yummy:PancakeView.Border>

@@ -3453,6 +3453,8 @@ namespace FixPro.ViewModels
             IsBusy = true;
             UserDialogs.Instance.ShowLoading();
             model.InvoiceOrEstimate = 1; //Invoice
+            Controls.StaticMembers.WayAfterChooseCust = 0; //From Schedule
+
             if (model.InvoiceDTO != null)
             {
                 var ViewModel = new CustomersViewModel(model.InvoiceDTO, model.CustomerDTO);
@@ -3476,6 +3478,8 @@ namespace FixPro.ViewModels
         {
             IsBusy = true;
             UserDialogs.Instance.ShowLoading();
+
+            Controls.StaticMembers.WayAfterChooseCust = 0; //From Schedule
 
             if (model.EstimateDTO == null)
             {
