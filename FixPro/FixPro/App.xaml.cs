@@ -106,7 +106,8 @@ namespace FixPro
 
         protected async override void OnSleep()
         {
-            
+
+            await SignalRNotservice();
 
             // Save the current page state
             var currentPage = Application.Current.MainPage as NavigationPage;
@@ -116,11 +117,40 @@ namespace FixPro
             Controls.StartData.IsRunning = false;
             //MainThread();
 
-            await SignalRservice();
+            _signalRService.OnMessageReceived += _signalRService_OnMessageReceivedInSleep;
+
 
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
 
             base.OnSleep();
+
+        }
+
+        private void _signalRService_OnMessageReceivedInSleep(string arg1, string arg2, string arg3, string arg4)
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                if (Helpers.Settings.UserName != "" && Helpers.Settings.Password != "")
+                {
+                    if (!string.IsNullOrEmpty(arg1) && arg1 != Helpers.Settings.PlayerId && arg2 == Helpers.Settings.UserName)
+                    {
+                        //await SignalRNotservice();
+                        Helpers.Settings.UserName = "";
+                        Helpers.Settings.UserFristName = "";
+                        Helpers.Settings.Email = "";
+                        Helpers.Settings.Phone = "";
+                        Helpers.Settings.Password = "";
+                        Helpers.Settings.CreateDate = "";
+                        Helpers.Settings.BranchId = "";
+                        Helpers.Settings.BranchName = "";
+                        Helpers.Settings.UserRole = "";
+                        Helpers.Utility.ServerUrl = Helpers.Utility.ServerUrlStatic;
+
+                        Controls.StartData.IsRunning = false;
+
+                    }
+                }
+            });
         }
 
         protected async override void OnResume()
@@ -139,6 +169,13 @@ namespace FixPro
 
             Controls.StartData.IsRunning = true;
             //MainThread();
+
+            if (Helpers.Settings.UserName == "" && Helpers.Settings.Password == "")
+            {
+                await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
+                await App.Current.MainPage.DisplayAlert("Alert", "You’ve been logged out.\r\n(account is opened on another device)\r\n", "Ok");
+            }
+
             await SignalRservice();
         }
 
@@ -203,10 +240,10 @@ namespace FixPro
         }
 
 
-        //public async Task SignalRNotservice()
-        //{
-        //    _signalRService.OnMessageReceived -= _signalRService_OnMessageReceived;
-        //}
+        public async Task SignalRNotservice()
+        {
+            _signalRService.OnMessageReceived -= _signalRService_OnMessageReceived;
+        }
 
         public async Task SignalRservice()
         {
@@ -236,7 +273,7 @@ namespace FixPro
                         Helpers.Settings.BranchId = "";
                         Helpers.Settings.BranchName = "";
                         Helpers.Settings.UserRole = "";
-                        Helpers.Utility.ServerUrl = Helpers.Utility.ServerUrlStatic; 
+                        Helpers.Utility.ServerUrl = Helpers.Utility.ServerUrlStatic;
                         await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
                         Controls.StartData.IsRunning = false;
                         await App.Current.MainPage.DisplayAlert("Alert", "You’ve been logged out.\r\n(account is opened on another device)\r\n", "Ok");
