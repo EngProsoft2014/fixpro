@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="5" android:versionName="1.0.0.5" package="com.companyname.fixprous" android:installLocation="preferExternal">
-	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
+	<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34" />
 	<application android:label="FixPro.Android" android:theme="@style/MainTheme" android:supportsRtl="true" android:usesCleartextTraffic="true" android:icon="@mipmap/logo">
 		<!--For GoogleMaps-->
 		<!--<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyARWU8W2TY1AIC-5vgRAs5ulMJeh6Qpw7c" />-->
@@ -32,7 +32,6 @@
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.CALL_PHONE" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
 	<!--For Get Locations-->
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -56,7 +55,7 @@
 	<queries>
 		<intent>
 			<action android:name="android.intent.action.DIAL" />
-			<data android:scheme="tel"/>
+			<data android:scheme="tel" />
 		</intent>
 	</queries>
 </manifest>
