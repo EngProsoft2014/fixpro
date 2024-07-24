@@ -4467,12 +4467,26 @@ namespace FixPro.ViewModels
                                                 }
                                             }
 
-                                            OneInvoice.Id = int.Parse(json.Replace("\"", "").Trim());
-                                            var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
-                                            var page = new Views.PopupPages.PaymentMethodsPopup();
-                                            page.BindingContext = ViewModel;
-                                            await PopupNavigation.Instance.PushAsync(page);
-                                            //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                            if (OneInvoice.Net > 0)
+                                            {
+                                                OneInvoice.Id = int.Parse(json.Replace("\"", "").Trim());
+                                                var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
+                                                var page = new Views.PopupPages.PaymentMethodsPopup();
+                                                page.BindingContext = ViewModel;
+                                                await PopupNavigation.Instance.PushAsync(page);
+                                                //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                            }
+                                            else
+                                            {
+                                                var VM = new SchedulesViewModel(model.Id, model.ScheduleDateId);
+                                                //var page = new NewSchedulePage();
+                                                var page = new ScheduleDetailsPage();
+                                                page.BindingContext = VM;
+                                                await App.Current.MainPage.Navigation.PushAsync(page);
+                                                App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                            }
+
+
                                         }
                                         else
                                         {
@@ -4742,13 +4756,26 @@ namespace FixPro.ViewModels
                                             }
                                         }
 
-                                        OneInvoice.Id = int.Parse(json.Replace("\"", "").Trim());
-                                        var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
-                                        var page = new Views.PopupPages.PaymentMethodsPopup();
-                                        page.BindingContext = ViewModel;
-                                        await PopupNavigation.Instance.PushAsync(page);
-                                        //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
-                                        // App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                        if (OneInvoice.Net > 0)
+                                        {
+                                            OneInvoice.Id = int.Parse(json.Replace("\"", "").Trim());
+                                            var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
+                                            var page = new Views.PopupPages.PaymentMethodsPopup();
+                                            page.BindingContext = ViewModel;
+                                            await PopupNavigation.Instance.PushAsync(page);
+                                            //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                            // App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                        }
+                                        else
+                                        {
+                                            var ViewModel = new CustomersViewModel(CustomerDetails);
+                                            var page = new Views.CustomerPages.CustomersDetailsPage();
+                                            page.BindingContext = ViewModel;
+                                            await App.Current.MainPage.Navigation.PushAsync(page);
+                                            App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                            App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                        }
+
                                     }
                                     else
                                     {

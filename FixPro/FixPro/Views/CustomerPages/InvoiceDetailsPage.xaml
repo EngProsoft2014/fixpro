@@ -1017,25 +1017,33 @@
                             </Image.Triggers>
                         </Image>
 
-                        <!--Credit-->
-                        <Image>
-                            <Image.Source>
-                                <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="20"></FontImageSource>
-                            </Image.Source>
-                            <Image.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BindingContext.CreditPayment,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></TapGestureRecognizer>
-                            </Image.GestureRecognizers>
-                        </Image>
+                        <StackLayout>
+                            <!--Credit-->
+                            <Image>
+                                <Image.Source>
+                                    <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="20"></FontImageSource>
+                                </Image.Source>
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.CreditPayment,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></TapGestureRecognizer>
+                                </Image.GestureRecognizers>
+                            </Image>
 
-                        <!--Cash-->
-                        <Image>
-                            <Image.Source>
-                                <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="20"></FontImageSource>
-                            </Image.Source>
-                            <Image.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BindingContext.CashPayment,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></TapGestureRecognizer>
-                            </Image.GestureRecognizers>
-                        </Image>
+                            <!--Cash-->
+                            <Image>
+                                <Image.Source>
+                                    <FontImageSource FontFamily="FontIconSolid" Color="White" Glyph="" Size="20"></FontImageSource>
+                                </Image.Source>
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.CashPayment,Source={x:Reference page}}" CommandParameter="{Binding OneInvoice}"></TapGestureRecognizer>
+                                </Image.GestureRecognizers>
+                            </Image>
+                            <StackLayout.Triggers>
+                                <DataTrigger TargetType="StackLayout" Binding="{Binding IsNotShowPayment}" Value="True">
+                                    <Setter Property="IsVisible" Value="False"></Setter>
+                                </DataTrigger>
+                            </StackLayout.Triggers>
+                        </StackLayout>
+
                     </StackLayout>
                 </xct:Expander>
                 <yummy:PancakeView.Shadow>

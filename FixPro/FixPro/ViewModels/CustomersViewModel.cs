@@ -988,6 +988,24 @@ namespace FixPro.ViewModels
             }
         }
 
+
+        bool _IsNotShowPayment;
+        public bool IsNotShowPayment
+        {
+            get
+            {
+                return _IsNotShowPayment;
+            }
+            set
+            {
+                _IsNotShowPayment = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsNotShowPayment"));
+                }
+            }
+        }
+
         Helpers.GenericRepository ORep = new Helpers.GenericRepository();
 
         public ICommand SelecteCustomerDetails { get; set; }
@@ -1119,8 +1137,8 @@ namespace FixPro.ViewModels
                     CustomerDetails.Discount = CustomerDetails.MemberDTO.MemberValue;
                 }
             }
-
-            if (CustomerDetails.Discount == null || CustomerDetails.MemeberType == true)
+            //CustomerDetails.Discount == null ||
+            if (CustomerDetails.MemeberType == true)
             { 
                 IsMemberShip = true; 
             }
@@ -1390,6 +1408,11 @@ namespace FixPro.ViewModels
                             }
 
                             TotalInvoice(OneInvoice);
+
+                            if(Net <= 0)
+                            {
+                                IsNotShowPayment = true;
+                            }
 
                             LstItemsInvoice = new ObservableCollection<InvoiceItemServicesModel>(OneInvoice.LstInvoiceItemServices);
                         }
@@ -1950,12 +1973,25 @@ namespace FixPro.ViewModels
                                 if (json != "Bad Request" && json != "api not responding" && json.Contains("Not_Enough") != true && json.Contains("This Invoice Already Exist") != true && json.Contains("Already Exist For This Schedule Date#") != true)
                                 {
                                     await App.Current.MainPage.DisplayAlert("FixPro", "Invoice saved successfully.", "Ok");
-                                    var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
-                                    var page = new Views.PopupPages.PaymentMethodsPopup();
-                                    page.BindingContext = ViewModel;
-                                    await PopupNavigation.Instance.PushAsync(page);
-                                    //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
-                                    //App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+
+                                    if(OneInvoice.Net > 0)
+                                    {
+                                        var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
+                                        var page = new Views.PopupPages.PaymentMethodsPopup();
+                                        page.BindingContext = ViewModel;
+                                        await PopupNavigation.Instance.PushAsync(page);
+                                        //await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+                                        //App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                    }
+                                    else
+                                    {
+                                        var ViewModel = new CustomersViewModel(CustomerDetails);
+                                        var page = new Views.CustomerPages.CustomersDetailsPage();
+                                        page.BindingContext = ViewModel;
+                                        await App.Current.MainPage.Navigation.PushAsync(page);
+                                        App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                        App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                    }
                                 }
                                 else
                                 {

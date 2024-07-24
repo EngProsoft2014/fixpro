@@ -68,19 +68,27 @@ namespace FixPro.Controls
         public static string SendSMS(string Phone, string Msg)
         {
             //var accountSid = "AC2aa33faec930e6bddfef1daa25e3b945";
-            //var authToken = "744fd3259244985557d4d0c1aa2617eb";            
-            var accountSid = Controls.StartData.Com_MainObj.TwilioAccountSid;
-            var authToken = Controls.StartData.Com_MainObj.TwilioauthToken;
-            TwilioClient.Init(accountSid, authToken);
+            //var authToken = "744fd3259244985557d4d0c1aa2617eb";
+            try
+            {
+                var accountSid = Controls.StartData.Com_MainObj.TwilioAccountSid;
+                var authToken = Controls.StartData.Com_MainObj.TwilioauthToken;
+                TwilioClient.Init(accountSid, authToken);
 
-            var messageOptions = new CreateMessageOptions(
-              new PhoneNumber("+1" + Phone));
+                var messageOptions = new CreateMessageOptions(
+                  new PhoneNumber("+1" + Phone));
 
-            messageOptions.From = new PhoneNumber(Controls.StartData.Com_MainObj.TwilioFromPhoneNumber);
-            messageOptions.Body = Msg;
-            var message = MessageResource.Create(messageOptions);
+                messageOptions.From = new PhoneNumber(Controls.StartData.Com_MainObj.TwilioFromPhoneNumber);
+                messageOptions.Body = Msg;
+                var message = MessageResource.Create(messageOptions);
+                return message.Sid;
+            }
+            catch (Exception)
+            {
 
-            return message.Sid;
+                return ""; 
+            }
+
         }
 
         //Get Com_Main
