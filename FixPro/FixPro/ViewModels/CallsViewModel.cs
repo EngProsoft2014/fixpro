@@ -496,11 +496,11 @@ namespace FixPro.ViewModels
                     OneCall.ReasonId = OneReason != null ? OneReason.Id : 0;
                     OneCall.CampaignId = OneCampaign != null ? OneCampaign.Id : 0;
 
-                    if (model.CustomerId == 0 || model.CustomerId == null)
-                    {
-                        await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required: Choose Customer.", "Ok");
-                    }
-                    else if(string.IsNullOrEmpty(model.PhoneNum))
+                    //if (model.CustomerId == 0 || model.CustomerId == null)
+                    //{
+                    //    await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required: Choose Customer.", "Ok");
+                    //}
+                    if(string.IsNullOrEmpty(model.PhoneNum))
                     {
                         await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required: Phone.", "Ok");
                     }
