@@ -1716,7 +1716,7 @@ namespace FixPro.ViewModels
             ScheduleDetails.LstScheduleItemsServices = new List<ScheduleItemsServicesModel>();
             ScheduleDetails.LstFreeServices = new List<ScheduleItemsServicesModel>();
             ScheduleDetails.LstFirstCreateServices = new List<ScheduleItemsServicesModel>();
-            ScheduleDetails.LstScheduleEmployeeDTO = new List<ScheduleEmployeesModel>();           
+            ScheduleDetails.LstScheduleEmployeeDTO = new List<ScheduleEmployeesModel>();
             CustomerDetails.LstCustItemsServices = new List<ScheduleItemsServicesModel>();
             LstColors = new ObservableCollection<SheetColorModel>();
             LstEmpCategory = new ObservableCollection<EmployeesCategoryModel>();
@@ -1851,8 +1851,8 @@ namespace FixPro.ViewModels
 
             //estimate
             SubTotalEst = 0;
-            NetEst = 0; 
-            PaidEst = 0; 
+            NetEst = 0;
+            PaidEst = 0;
             TotalDueEst = 0;
 
             //if (model.LstFreeServices.Count > 0)
@@ -2409,7 +2409,7 @@ namespace FixPro.ViewModels
             {
                 bool check = await App.Current.MainPage.DisplayAlert("FixPro", "Are you sure that you want to dispatch?", "Yes", "No");
 
-                if(check == true)
+                if (check == true)
                 {
                     string UserToken = await _service.UserToken();
 
@@ -3106,10 +3106,12 @@ namespace FixPro.ViewModels
                         //StrEmployees = "";
                         //StrEmployeesId = "";
 
+                        string str = "";
+                        string strId = "";
+
                         if (Empolyees.Count != 0)
                         {
-                            string str = "";
-                            string strId = "";
+
                             foreach (var Emp in Empolyees)
                             {
                                 var obj = LstEmps.ToList().Find(x => x.EmpId == Emp.Id);
@@ -3138,6 +3140,29 @@ namespace FixPro.ViewModels
                                 StrEmployeesId = strId.Remove(0, 1);
                             }
                         }
+
+                        foreach (var Employee in LstEmpInOneCategory)
+                        {
+                            if (Employee.IsChecked == false)
+                            {
+                                var obj = LstEmps.ToList().Find(x => x.EmpId == Employee.Id);
+                                if (obj != null)
+                                {
+                                    LstEmps.Remove(obj);
+                                    StrEmployees = "," + StrEmployees;
+                                    StrEmployeesId = "," + StrEmployeesId;
+                                    StrEmployees = StrEmployees.Replace(("," + obj.EmpUserName), string.Empty);
+                                    StrEmployeesId = StrEmployeesId.Replace(("," + obj.EmpId.ToString()), string.Empty);
+
+                                    if (StrEmployees.StartsWith(","))
+                                    {
+                                        StrEmployees = StrEmployees.Remove(0, 1);
+                                        StrEmployeesId = StrEmployeesId.Remove(0, 1);
+                                    }
+                                }
+                            }
+                        }
+
 
                         UserDialogs.Instance.HideLoading();
                     };
@@ -3259,11 +3284,12 @@ namespace FixPro.ViewModels
                         AccountId = model.AccountId,
                         BrancheId = model.BrancheId,
                         ScheduleId = model.Id,
-                        ItemsServicesId = SelectedService.Id,
-                        ItemServiceDescription = SelectedService.Description,
-                        CostRate = SelectedService.CostperUnit,
-                        Notes = SelectedService.Notes,
-                        Active = SelectedService.Active,
+                        ItemsServicesId = SelectedService?.Id,
+                        ItemsServicesName = SelectedService?.Name,
+                        ItemServiceDescription = SelectedService?.Description,
+                        CostRate = SelectedService?.CostperUnit,
+                        Notes = SelectedService?.Notes,
+                        Active = SelectedService?.Active,
                         CreateUser = model.CreateUser,
                         CreateDate = DateTime.Now,
                     };
@@ -3307,6 +3333,10 @@ namespace FixPro.ViewModels
                     else if (string.IsNullOrEmpty(ScheduleDetails.Employees))
                     {
                         await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Choose Employees.", "Ok");
+                    }
+                    else if (ScheduleDetails.OneScheduleService?.Id == 0)
+                    {
+                        await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Service.", "Ok");
                     }
                     else
                     {
