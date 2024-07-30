@@ -3146,7 +3146,7 @@ namespace FixPro.ViewModels
                             if (Employee.IsChecked == false)
                             {
                                 var obj = LstEmps.ToList().Find(x => x.EmpId == Employee.Id);
-                                if (obj != null)
+                                if (obj != null && obj.Status != 1 && obj.Status != 2)
                                 {
                                     LstEmps.Remove(obj);
                                     StrEmployees = "," + StrEmployees;
@@ -3334,7 +3334,7 @@ namespace FixPro.ViewModels
                     {
                         await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Choose Employees.", "Ok");
                     }
-                    else if (ScheduleDetails.OneScheduleService?.Id == 0)
+                    else if ((ScheduleDetails.OneScheduleService?.ItemsServicesId == 0 || ScheduleDetails.OneScheduleService?.ItemsServicesId == null) && ScheduleDetails.LstFirstCreateServices.Count == 0)
                     {
                         await App.Current.MainPage.DisplayAlert("Alert", $"Please Complete This Field Required : Service.", "Ok");
                     }

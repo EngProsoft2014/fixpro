@@ -107,6 +107,23 @@ namespace FixPro.ViewModels
             }
         }
 
+        int _TitleTypeView;
+        public int TitleTypeView
+        {
+            get
+            {
+                return _TitleTypeView;
+            }
+            set
+            {
+                _TitleTypeView = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("TitleTypeView"));
+                }
+            }
+        }
+
         bool _IsBusy;
         public bool IsBusy
         {
@@ -170,20 +187,24 @@ namespace FixPro.ViewModels
                     if (Helpers.Settings.TypeTrackingSch_Invo == "2")
                     {
                         GetFreeServices();
+                        TitleTypeView = 1;
                     }
                     else
                     {
                         GetAllItemsServices();
+                        TitleTypeView = 3;
                     }
                 }
                 else //Way from Estimate or Invoice for Customer Direct
                 {
                     GetAllItemsServices();
+                    TitleTypeView = 3;
                 }
             }
             else // show item invintory only in schedule material
             {
                 GetItemsInventory();
+                TitleTypeView = 2;
             }
         }
 

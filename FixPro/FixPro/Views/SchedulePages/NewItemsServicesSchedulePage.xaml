@@ -30,7 +30,27 @@
                         </Image.GestureRecognizers>
                     </Image>
 
-                    <Label Text="Materials" TextColor="#b66dff" FontSize="16" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center" Padding="0,0,0,10"></Label>
+                    <Label 
+                           TextColor="#b66dff"
+                           FontSize="16" 
+                           HorizontalOptions="CenterAndExpand" 
+                           VerticalTextAlignment="Center" 
+                           Padding="0,0,0,10">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding TitleTypeView}" Value="0">
+                                <Setter Property="Text" Value="Materials"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding TitleTypeView}" Value="1">
+                                <Setter Property="Text" Value="Services"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding TitleTypeView}" Value="2">
+                                <Setter Property="Text" Value="Materials"></Setter>
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding TitleTypeView}" Value="3">
+                                <Setter Property="Text" Value="Materials - Services"></Setter>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
 
                 </StackLayout>
 
@@ -44,7 +64,26 @@
                         <!--Item/Service-->
                         <StackLayout  HorizontalOptions="FillAndExpand">
 
-                            <Label Text="Material" FontSize="15" TextColor="#333" HorizontalOptions="Start" VerticalTextAlignment="Center"></Label>
+                            <Label Text="Material"
+                                   FontSize="15" 
+                                   TextColor="#333" 
+                                   HorizontalOptions="Start"
+                                   VerticalTextAlignment="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding TitleTypeView}" Value="0">
+                                        <Setter Property="Text" Value="Materials"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label" Binding="{Binding TitleTypeView}" Value="1">
+                                        <Setter Property="Text" Value="Services"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label" Binding="{Binding TitleTypeView}" Value="2">
+                                        <Setter Property="Text" Value="Materials"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Label" Binding="{Binding TitleTypeView}" Value="3">
+                                        <Setter Property="Text" Value="Materials - Services"></Setter>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
 
                             <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10" HorizontalOptions="FillAndExpand">
 
@@ -57,11 +96,24 @@
                                 <Entry x:Name="entryName"
                                        Text="{Binding ItemDetails.Name}"  
                                        TextColor="#8f1fff"
-                                       Placeholder="Select Material"
                                        FontSize="15"
                                        HorizontalOptions="FillAndExpand"
                                        VerticalTextAlignment="Center"
                                        Focused="Entry_Focused">
+                                    <Entry.Triggers>
+                                        <DataTrigger TargetType="Entry" Binding="{Binding TitleTypeView}" Value="0">
+                                            <Setter Property="Text" Value="Select Materials"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Entry" Binding="{Binding TitleTypeView}" Value="1">
+                                            <Setter Property="Text" Value="Select Services"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Entry" Binding="{Binding TitleTypeView}" Value="2">
+                                            <Setter Property="Text" Value="Select Materials"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Entry" Binding="{Binding TitleTypeView}" Value="3">
+                                            <Setter Property="Text" Value="Select Materials - Services"></Setter>
+                                        </DataTrigger>
+                                    </Entry.Triggers>
                                 </Entry>
 
                                 <!--<combobox:SfComboBox x:Name="cobxLstItems" HorizontalOptions="FillAndExpand" 
