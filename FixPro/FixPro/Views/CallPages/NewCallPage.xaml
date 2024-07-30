@@ -89,7 +89,7 @@
                         <yummy:PancakeView x:Name="yumMkSch" HorizontalOptions="End" IsVisible="False" Padding="10" CornerRadius="10" BackgroundGradientStartPoint="1,0" BackgroundGradientEndPoint="0,1">
                             <StackLayout Spacing="0" VerticalOptions="Center">
                                 <Label Text="Add Job" FontSize="12" TextColor="#333" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
-                                    
+
                                 </Label>
                             </StackLayout>
                             <yummy:PancakeView.Shadow>
@@ -108,7 +108,7 @@
                             </yummy:PancakeView.Triggers>
                             <yummy:PancakeView.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding BindingContext.CreateScheduleFromCall,Source={x:Reference page}}" CommandParameter="{Binding CustomerDetails}"></TapGestureRecognizer>
-                            </yummy:PancakeView.GestureRecognizers>      
+                            </yummy:PancakeView.GestureRecognizers>
                         </yummy:PancakeView>
 
                         <!--Go Job-->
@@ -137,7 +137,7 @@
                             </yummy:PancakeView.GestureRecognizers>
                         </yummy:PancakeView>
                     </StackLayout>
-                    
+
                 </StackLayout>
 
                 <!--Cust Name-->
@@ -159,21 +159,30 @@
                 <!--Cust Name Get-->
                 <StackLayout x:Name="stkCustNameGet" HorizontalOptions="FillAndExpand">
                     <Label Text="Customer Name" TextColor="Black"></Label>
-                    <yummy:PancakeView Padding="{OnPlatform Android='10,0,10,0', iOS='10,5,10,5'}" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
-                        <Entry x:Name="entryNameGet" Text="{Binding OneCall.CustomerName,Mode=TwoWay}"
-                               PlaceholderColor="Gray"
+                    <yummy:PancakeView Padding="{OnPlatform Android='10,12,10,12', iOS='10,17,10,17'}" CornerRadius="10" BackgroundColor="#debdff" HorizontalOptions="FillAndExpand">
+                        <Label x:Name="entryNameGet" Text="{Binding OneCall.CustomerName,Mode=TwoWay}"
                                TextColor="Black"
                                BackgroundColor="#debdff"
                                FontSize="13">
-                            <Entry.Triggers>
-                                <DataTrigger TargetType="Entry" Binding="{Binding OneCall.CustomerName}" Value="">
-                                    <Setter Property="Placeholder" Value="Enter customer"></Setter>
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding OneCall.CustomerName}" Value="">
+                                    <Setter Property="Text" Value="Enter customer"></Setter>
                                 </DataTrigger>
-                            </Entry.Triggers>
-                        </Entry>
+                                <DataTrigger TargetType="Label" Binding="{Binding Source={x:Reference entryNameGet},Path=Text}" Value="Enter customer">
+                                    <Setter Property="TextColor" Value="Gray"></Setter>
+                                </DataTrigger>
+                            </Label.Triggers>
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"></TapGestureRecognizer>
+                            </Label.GestureRecognizers>
+                        </Label>
                         <yummy:PancakeView.Shadow>
                             <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="5" Opacity="1"></yummy:DropShadow>
                         </yummy:PancakeView.Shadow>
+
+                        <yummy:PancakeView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"></TapGestureRecognizer>
+                        </yummy:PancakeView.GestureRecognizers>
                     </yummy:PancakeView>
                     <!--<StackLayout.Triggers>
                         <DataTrigger TargetType="StackLayout" Binding="{Binding Source={x:Reference stkCustName},Path=IsVisible}" Value="True">

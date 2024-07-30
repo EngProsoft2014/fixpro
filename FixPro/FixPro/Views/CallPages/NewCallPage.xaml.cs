@@ -19,7 +19,8 @@ namespace FixPro.Views.CallPages
     {
         CallsViewModel ViewModel { get => BindingContext as CallsViewModel; set => BindingContext = value; }
 
-        private bool _isHandlingFocus;
+        private bool _isHandlingFocusPhone;
+        private bool _isHandlingFocusCustName;
 
         public NewCallPage()
         {
@@ -33,7 +34,7 @@ namespace FixPro.Views.CallPages
 
             if (string.IsNullOrEmpty(entryNameGet.Text))
             {
-                entryNameGet.Placeholder = "Enter customer";
+                entryNameGet.Text = "Enter customer";
             }
         }
 
@@ -52,8 +53,8 @@ namespace FixPro.Views.CallPages
 
         private async void entryPhone_Focused(object sender, FocusEventArgs e)
         {
-            if (_isHandlingFocus) return;
-            _isHandlingFocus = true;
+            if (_isHandlingFocusPhone) return;
+            _isHandlingFocusPhone = true;
 
             if (e.IsFocused == true)
             {
@@ -82,13 +83,13 @@ namespace FixPro.Views.CallPages
                             {
                                 stkCustNameGet.IsVisible = true;
                                 entryNameGet.Text = str.FirstName + " " + str.LastName;
-                                entryNameGet.IsReadOnly = true;
+                                entryNameGet.IsEnabled = false;
                             }
                             else
                             {
                                 ViewModel.OneCall.CustomerName = entryNameGet.Text = "";
-                                entryNameGet.Placeholder = "Enter customer";
-                                entryNameGet.IsReadOnly = false;
+                                entryNameGet.Text = "Enter customer";
+                                entryNameGet.IsEnabled = true;
                             }
                         };
 
@@ -105,7 +106,7 @@ namespace FixPro.Views.CallPages
                 actIndLoading.IsRunning = false;
             }
 
-            _isHandlingFocus = false;
+            _isHandlingFocusPhone = false;
         }
 
         private void entryPhone_Unfocused(object sender, FocusEventArgs e)
@@ -117,10 +118,75 @@ namespace FixPro.Views.CallPages
 
 
 
+        private async void TapGestureRecognizer_Tapped_1(object sender, EventArgs e)
+        {
+            if (ViewModel?.OneCall?.Id != 0 && ViewModel?.OneCall?.ScheduleDateId == 0 || ViewModel?.OneCall?.ScheduleDateId == null)
+            {
+                if (_isHandlingFocusCustName) return;
+                _isHandlingFocusCustName = true;
+
+                actIndLoading.IsRunning = true;
+                entryNameGet.IsEnabled = false;
+
+                try
+                {
+                    if (Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
+                    {
+                        await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                        return;
+                    }
+                    else
+                    {
+
+                        //if (ViewModel?.OneCall?.CustomerId == 0 || ViewModel?.OneCall?.CustomerId == null)
+                        if ((ViewModel?.OneCall?.CustomerId == 0 || ViewModel?.OneCall?.CustomerId == null) && entryPhone.Text != null)
+                        {
+                            var popupView = new Views.CallPages.SearchCustomerPopup();
+
+                            popupView.DidClose += (str) =>
+                            {
+                                //ViewModel.OneCall.PhoneNum = str.Phone1;
+                                ViewModel.OneCall.CustomerId = str.Id;
+                                ViewModel.OneCall.CustomerName = str.FirstName + " " + str.LastName;
+
+                                if (!string.IsNullOrEmpty(str.FirstName) && !string.IsNullOrEmpty(str.LastName))
+                                {
+                                    stkCustNameGet.IsVisible = true;
+                                    entryNameGet.Text = str.FirstName + " " + str.LastName;
+                                }
+                                else
+                                {
+                                    entryNameGet.Text = "Please Choose Customer";
+                                }
+                            };
+
+                            await PopupNavigation.Instance.PushAsync(popupView);
+                        }
+                    }
+                }
+
+                catch (Exception)
+                {
+                    await App.Current.MainPage.DisplayAlert("Error", "No Internet connection!", "OK");
+                    throw;
+                }
+
+                entryNameGet.IsEnabled = true;
+                actIndLoading.IsRunning = false;
+
+
+                _isHandlingFocusCustName = false;
+            }
+
+        }
+
+
+
+
         //private async void entryNameGet_Focused(object sender, FocusEventArgs e)
         //{
-        //    if (_isHandlingFocus) return;
-        //    _isHandlingFocus = true;
+        //    if (_isHandlingFocusCustName) return;
+        //    _isHandlingFocusCustName = true;
 
         //    if (e.IsFocused == true)
         //    {
@@ -137,7 +203,7 @@ namespace FixPro.Views.CallPages
         //            else
         //            {
 
-        //                if (ViewModel.OneCall.CustomerId == 0)
+        //                if (ViewModel?.OneCall?.CustomerId == 0 || ViewModel?.OneCall?.CustomerId == null)
         //                {
         //                    var popupView = new Views.CallPages.SearchCustomerPopup();
 
@@ -159,7 +225,7 @@ namespace FixPro.Views.CallPages
         //                    };
 
         //                    await PopupNavigation.Instance.PushAsync(popupView);
-        //                } 
+        //                }
         //            }
         //        }
 
@@ -173,10 +239,10 @@ namespace FixPro.Views.CallPages
         //        actIndLoading.IsRunning = false;
         //    }
 
-        //    _isHandlingFocus = false;
+        //    _isHandlingFocusCustName = false;
         //}
 
-        //private void entryNameGet_Unfocused(object sender, FocusEventArgs e)
+        //private async void entryNameGet_Unfocused(object sender, FocusEventArgs e)
         //{
         //    actIndLoading.IsRunning = true;
         //    entryNameGet.IsReadOnly = false;

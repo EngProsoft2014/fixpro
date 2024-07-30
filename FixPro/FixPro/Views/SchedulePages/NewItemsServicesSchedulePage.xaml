@@ -102,16 +102,16 @@
                                        Focused="Entry_Focused">
                                     <Entry.Triggers>
                                         <DataTrigger TargetType="Entry" Binding="{Binding TitleTypeView}" Value="0">
-                                            <Setter Property="Text" Value="Select Materials"></Setter>
+                                            <Setter Property="Placeholder" Value="Select Materials"></Setter>
                                         </DataTrigger>
                                         <DataTrigger TargetType="Entry" Binding="{Binding TitleTypeView}" Value="1">
-                                            <Setter Property="Text" Value="Select Services"></Setter>
+                                            <Setter Property="Placeholder" Value="Select Services"></Setter>
                                         </DataTrigger>
                                         <DataTrigger TargetType="Entry" Binding="{Binding TitleTypeView}" Value="2">
-                                            <Setter Property="Text" Value="Select Materials"></Setter>
+                                            <Setter Property="Placeholder" Value="Select Materials"></Setter>
                                         </DataTrigger>
                                         <DataTrigger TargetType="Entry" Binding="{Binding TitleTypeView}" Value="3">
-                                            <Setter Property="Text" Value="Select Materials - Services"></Setter>
+                                            <Setter Property="Placeholder" Value="Select Materials - Services"></Setter>
                                         </DataTrigger>
                                     </Entry.Triggers>
                                 </Entry>
