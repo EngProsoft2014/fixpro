@@ -64,6 +64,7 @@ namespace FixPro
             {
                 
                 MainPage = new NavigationPage(new MainPage());
+                //==============================================
             }
             else
             {
