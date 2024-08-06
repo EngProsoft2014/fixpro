@@ -51,7 +51,7 @@ namespace FixPro
             lblLoginName.Text = Helpers.Settings.UserName;
             lblLoginPhone.Text = Helpers.Settings.Phone;
 
-            StartGetLocation();
+            //StartGetLocation();
 
         }
 

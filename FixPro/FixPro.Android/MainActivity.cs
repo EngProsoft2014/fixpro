@@ -125,9 +125,9 @@ namespace FixPro.Droid
                     Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
                     await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
 
-                    StartService(new Intent(this, typeof(AndroidLocationService)));
-                    serviceIntent = new Intent(this, typeof(AndroidLocationService));
-                    SetServiceMethods();
+                    //StartService(new Intent(this, typeof(AndroidLocationService)));
+                    //serviceIntent = new Intent(this, typeof(AndroidLocationService));
+                    //SetServiceMethods();
 
                     //bool answer = await App.Current.MainPage.DisplayAlert("Location Track Permission", "Allow to Collcet and track your location in the following cases :\r\n\r\n- always in use \r\n- when the app is not in use\r\n\r\nto assign you to a job next to you?", "Yes", "No");
                     //if (answer)
