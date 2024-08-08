@@ -59,7 +59,7 @@ namespace FixPro.Models
         public string StartTimeAc { get; set; }
         public string EndTimeAc { get; set; }
         public int? Status { get; set; }
-        public int ShowCheckBtn { get { return (!string.IsNullOrEmpty(StartTimeAc) && string.IsNullOrEmpty(EndTimeAc)) ? 1 : (!string.IsNullOrEmpty(StartTimeAc) && !string.IsNullOrEmpty(EndTimeAc)) ? 2 : Status == 0 ? 3 : 0; } set { } } // 0 = show start job btn only // 1 = show end job btn only // 2 = No show eny btns(complete job)// 3 = Not service
+        public int ShowCheckBtn { get { return (!string.IsNullOrEmpty(StartTimeAc) && string.IsNullOrEmpty(EndTimeAc) && Controls.StartData.EmployeeDataStatic.UserRole != 4) ? 1 : (!string.IsNullOrEmpty(StartTimeAc) && !string.IsNullOrEmpty(EndTimeAc) && Controls.StartData.EmployeeDataStatic.UserRole != 4) ? 2 : (Status == 0 && Controls.StartData.EmployeeDataStatic.UserRole != 4) ? 3 : Controls.StartData.EmployeeDataStatic.UserRole == 4 ? 4 : 0; } set { } } // 0 = show start job btn only // 1 = show end job btn only // 2 = No show eny btns(complete job)// 3 = Not service
 
         public ScheduleItemsServicesModel OneScheduleService { get; set; }  
         public List<ScheduleItemsServicesModel> LstScheduleItemsServices { get; set; }

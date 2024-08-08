@@ -320,7 +320,7 @@
 
                                 </StackLayout>
 
-                                <StackLayout IsVisible="False" HorizontalOptions="End" Margin="{OnPlatform Android=0,iOS='0,0,3,3'}" VerticalOptions="End"  WidthRequest="70" HeightRequest="32">
+                                <StackLayout x:Name="stkStartBtn" IsVisible="False" HorizontalOptions="End" Margin="{OnPlatform Android=0,iOS='0,0,3,3'}" VerticalOptions="End"  WidthRequest="70" HeightRequest="32">
                                     <Button Text="Start" 
                                             TextColor="White"
                                             BackgroundColor="#538dd4" 
@@ -331,6 +331,7 @@
                                             HeightRequest="32"
                                             Command="{Binding BindingContext.StartScheduleOutSide,Source={x:Reference page}}" CommandParameter="{Binding}"></Button>
                                     <StackLayout.Triggers>
+
                                         <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="3">
                                             <Setter Property="IsVisible" Value="False"></Setter>
                                         </DataTrigger>
@@ -346,10 +347,13 @@
                                         <DataTrigger TargetType="StackLayout" Binding="{Binding OneScheduleDate.Status}" Value="2">
                                             <Setter Property="IsVisible" Value="False"></Setter>
                                         </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="4">
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
                                     </StackLayout.Triggers>
                                 </StackLayout>
 
-                                <StackLayout IsVisible="False" HorizontalOptions="End" Margin="{OnPlatform Android=0,iOS='0,0,3,3'}" VerticalOptions="End"  WidthRequest="70" HeightRequest="32">
+                                <StackLayout x:Name="stkEndBtn" IsVisible="False" HorizontalOptions="End" Margin="{OnPlatform Android=0,iOS='0,0,3,3'}" VerticalOptions="End"  WidthRequest="70" HeightRequest="32">
                                     <Button Text="End" 
                                             TextColor="White"
                                             BackgroundColor="#538dd4" 
@@ -360,6 +364,7 @@
                                             HeightRequest="32"
                                             Command="{Binding BindingContext.EndScheduleOutSide,Source={x:Reference page}}" CommandParameter="{Binding}"></Button>
                                     <StackLayout.Triggers>
+
                                         <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="3">
                                             <Setter Property="IsVisible" Value="False"></Setter>
                                         </DataTrigger>
@@ -373,6 +378,9 @@
                                             <Setter Property="IsVisible" Value="False"></Setter>
                                         </DataTrigger>
                                         <DataTrigger TargetType="StackLayout" Binding="{Binding OneScheduleDate.Status}" Value="2">
+                                            <Setter Property="IsVisible" Value="False"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="StackLayout" Binding="{Binding ShowCheckBtn}" Value="4">
                                             <Setter Property="IsVisible" Value="False"></Setter>
                                         </DataTrigger>
                                     </StackLayout.Triggers>

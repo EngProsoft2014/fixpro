@@ -3123,7 +3123,7 @@ namespace FixPro.ViewModels
                                     {
                                         EmpId = Emp.Id,
                                         EmpFullName = Emp.FirstName + " " + Emp.LastName,
-                                        EmpUserName = Emp.UserName,        
+                                        EmpUserName = Emp.UserName,
                                     });
                                 }
 
