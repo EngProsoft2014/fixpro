@@ -43,7 +43,7 @@ namespace FixPro
         private SignalRService _signalRService;
 
         public App()
-        {
+        {          
 
             InitializeComponent();
 
@@ -79,7 +79,7 @@ namespace FixPro
             if (e.NetworkAccess != NetworkAccess.Internet)
             {
                 // Connection to internet is Not available
-                await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage());
+                await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
                 return;
             }
         }
@@ -90,16 +90,24 @@ namespace FixPro
         {
             base.OnStart();
 
-            await GetPlayerIdFromOneSignal();
-
-            await SignalRservice();
-            
-            if(Helpers.Settings.AccountId != "0")
+            if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                await Init(int.Parse(Helpers.Settings.AccountId));
-            }
+                await GetPlayerIdFromOneSignal();
 
-            await Controls.StartData.GetCom_Main();
+                await SignalRservice();
+
+                if (Helpers.Settings.AccountId != "0")
+                {
+                    await Init(int.Parse(Helpers.Settings.AccountId));
+                }
+
+                await Controls.StartData.GetCom_Main();
+            }
+            else
+            {
+                await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
+                return;
+            }
 
             //HandleDeepLinking();
 

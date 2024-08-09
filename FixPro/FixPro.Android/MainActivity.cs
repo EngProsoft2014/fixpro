@@ -111,35 +111,35 @@ namespace FixPro.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
 
+            Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
+            await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+            //try
+            //{
+            //    if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            //    {
+            //        ////await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
+            //        await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
+            //        return;
+            //    }
+            //    else
+            //    {
+                    
 
-            try
-            {
-                if (Connectivity.NetworkAccess != NetworkAccess.Internet)
-                {
-                    ////await App.Current.MainPage.DisplayAlert("Error", "No Internet Avialable !!!", "OK");
-                    await App.Current.MainPage.Navigation.PushAsync(new NoInternetPage(new MainPage()));
-                    return;
-                }
-                else
-                {
-                    Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
-                    await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+            //        //StartService(new Intent(this, typeof(AndroidLocationService)));
+            //        //serviceIntent = new Intent(this, typeof(AndroidLocationService));
+            //        //SetServiceMethods();
 
-                    //StartService(new Intent(this, typeof(AndroidLocationService)));
-                    //serviceIntent = new Intent(this, typeof(AndroidLocationService));
-                    //SetServiceMethods();
+            //        //bool answer = await App.Current.MainPage.DisplayAlert("Location Track Permission", "Allow to Collcet and track your location in the following cases :\r\n\r\n- always in use \r\n- when the app is not in use\r\n\r\nto assign you to a job next to you?", "Yes", "No");
+            //        //if (answer)
+            //        //{
 
-                    //bool answer = await App.Current.MainPage.DisplayAlert("Location Track Permission", "Allow to Collcet and track your location in the following cases :\r\n\r\n- always in use \r\n- when the app is not in use\r\n\r\nto assign you to a job next to you?", "Yes", "No");
-                    //if (answer)
-                    //{
-
-                    //}
-                }
-            }
-            catch (Exception ex)
-            {
-                await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
-            }
+            //        //}
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    await App.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+            //}
 
         }
 
