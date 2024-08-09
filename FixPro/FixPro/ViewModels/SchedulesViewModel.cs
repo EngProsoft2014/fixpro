@@ -3340,6 +3340,7 @@ namespace FixPro.ViewModels
                     }
                     else
                     {
+
                         if (ScheduleDetails != null)
                         {
                             string UserToken = await _service.UserToken();
@@ -3389,6 +3390,10 @@ namespace FixPro.ViewModels
                             else
                             {
                                 await App.Current.MainPage.DisplayAlert("Alert", "Failed to add or edit this schedule", "Ok");
+
+                                await App.Current.MainPage.Navigation.PushAsync(new SchedulePage());
+                                App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
+                                App.Current.MainPage.Navigation.RemovePage(App.Current.MainPage.Navigation.NavigationStack[App.Current.MainPage.Navigation.NavigationStack.Count - 2]);
                             }
                         }
                     }
