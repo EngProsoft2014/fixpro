@@ -31,7 +31,7 @@ namespace FixPro.Helpers
         //#else
         //        //public static readonly string ServerUrl = "https://www.psaiahf.com/horse";
         //#endif
-        public static readonly string ServerUrlIIS = "http://192.168.1.4:8012/";
+        //public static readonly string ServerUrlIIS = "http://192.168.1.4:8012/";
 
 
         public static readonly string PathServerScheduleImages = $"https://app.fixprous.com/ScheduleAttachments_";
@@ -44,10 +44,12 @@ namespace FixPro.Helpers
 
         public static readonly string PathServerMapTracking = $"https://app.fixprous.com/XMLData_";
 
+        public static string ServerUrl = "https://fixproapi.engprosoft.net/";
+
+        public static string ServerUrlStatic = "https://fixproapi.engprosoft.net/";
+
 
         //public static readonly string ServerUrl = "https://projectservicesapi.engprosoft.com/";
-        public static string ServerUrl = "https://fixproapi.engprosoft.net/";
-        public static string ServerUrlStatic = "https://fixproapi.engprosoft.net/";
 
         //public static string ServerUrl = "https://api.fixprous.com/";
         //public static string ServerUrlStatic = "https://api.fixprous.com/";
