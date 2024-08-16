@@ -44,6 +44,7 @@ namespace FixPro.Helpers
 
         public static readonly string PathServerMapTracking = $"https://app.fixprous.com/XMLData_";
 
+        //public static string ServerUrl = "https://api.fixprous.com/";
         public static string ServerUrl = "https://fixproapi.engprosoft.net/";
 
         public static string ServerUrlStatic = "https://fixproapi.engprosoft.net/";

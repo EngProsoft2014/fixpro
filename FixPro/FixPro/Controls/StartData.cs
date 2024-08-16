@@ -115,19 +115,34 @@ namespace FixPro.Controls
                     //string UserToken = await _service.UserToken();
                     //string json = await Helpers.Utility.CallWebApi("api/Employee/GetLogin?" + "UserName=" + Helpers.Settings.UserName + "&" + "Password=" + Helpers.Settings.Password);
 
-                    var json = await ORep.GetAsync<EmployeeModel>("api/Login/GetLogin?" + "UserName=" + Helpers.Settings.UserName + "&" + "Password=" + Helpers.Settings.Password + "&" + "PlayerId=" + Helpers.Settings.PlayerId);
+                    var json = await ORep.GetLoginAsync<EmployeeModel>("api/Login/GetLogin?" + "UserName=" + Helpers.Settings.UserName + "&" + "Password=" + Helpers.Settings.Password + "&" + "PlayerId=" + Helpers.Settings.PlayerId);
 
                     if (json != null)
                     {
-                        //EmployeeModel MLogin = JsonConvert.DeserializeObject<EmployeeModel>(json);
-
-                        //if (MLogin != null)
-                        //{
-                        //    EmployeeDataStatic = MLogin;
-                        //}
-
-                        EmployeeDataStatic = json;
+                        if(!string.IsNullOrEmpty(json.EmployeeStatus) && json.EmployeeStatus.Contains("Try Again"))
+                        {
+                            Helpers.Settings.AccountId = "0";
+                            Helpers.Settings.UserId = "0";
+                            Helpers.Settings.UserName = "";
+                            Helpers.Settings.UserFristName = "";
+                            Helpers.Settings.Email = "";
+                            Helpers.Settings.Phone = "";
+                            Helpers.Settings.Password = "";
+                            Helpers.Settings.CreateDate = "";
+                            Helpers.Settings.BranchId = "";
+                            Helpers.Settings.BranchName = "";
+                            Helpers.Settings.UserRole = "";
+                            Helpers.Utility.ServerUrl = Helpers.Utility.ServerUrlStatic;
+                            await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
+                            Controls.StartData.IsRunning = false;
+                            await App.Current.MainPage.DisplayAlert("Alert", "You’ve been logged out.\r\n(account is changed username and password)\r\n", "Ok");
+                        }
+                        else
+                        {
+                            EmployeeDataStatic = json;
+                        }   
                     }
+
                 }
             }
                
@@ -240,7 +255,27 @@ namespace FixPro.Controls
             }
         }
 
+        public async static Task UserLogout()
+        {
+            UserDialogs.Instance.ShowLoading();
 
+            Helpers.Settings.AccountId = "0";
+            Helpers.Settings.UserId = "0";
+            Helpers.Settings.UserName = "";
+            Helpers.Settings.UserFristName = "";
+            Helpers.Settings.Email = "";
+            Helpers.Settings.Phone = "";
+            Helpers.Settings.Password = "";
+            Helpers.Settings.CreateDate = "";
+            Helpers.Settings.BranchId = "";
+            Helpers.Settings.BranchName = "";
+            Helpers.Settings.UserRole = "";
+            Helpers.Utility.ServerUrl = Helpers.Utility.ServerUrlStatic;
+            await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
+            Controls.StartData.IsRunning = false;
+
+            UserDialogs.Instance.HideLoading();
+        }
 
         private const string BaseUrl = "https://realty-mole-property-api.p.rapidapi.com/";
         //private const string ApiKey = "47e9dcb44emsh0d093dc49db704fp123a6ejsn5eedc26ab2cd";

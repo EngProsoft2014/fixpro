@@ -41,6 +41,7 @@ namespace FixPro
 
         //public static string UserStateKey = "UserStateKey";
         private SignalRService _signalRService;
+        private SignalRServiceChangeUserData _signalRServiceChangeUserData;
 
         public App()
         {          
@@ -95,6 +96,7 @@ namespace FixPro
                 await GetPlayerIdFromOneSignal();
 
                 await SignalRservice();
+                await SignalRserviceChangeUserData();
 
                 if (Helpers.Settings.AccountId != "0")
                 {
@@ -119,6 +121,7 @@ namespace FixPro
         {
 
             await SignalRNotservice();
+            await SignalRNotserviceChangeUserData();
 
             // Save the current page state
             var currentPage = Application.Current.MainPage as NavigationPage;
@@ -129,7 +132,7 @@ namespace FixPro
             //MainThread();
 
             _signalRService.OnMessageReceived += _signalRService_OnMessageReceivedInSleep;
-
+            _signalRServiceChangeUserData.OnMessageReceived += _signalRService_OnMessageReceivedChangeUserDataInSleep;
 
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
 
@@ -166,6 +169,31 @@ namespace FixPro
             });
         }
 
+        private void _signalRService_OnMessageReceivedChangeUserDataInSleep(string arg1, string arg2, string arg3, string arg4)
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                if (Helpers.Settings.AccountId == arg1 && Helpers.Settings.UserId == arg2 && (Helpers.Settings.UserName != arg3 || Helpers.Settings.Password != arg4))
+                {
+                        Helpers.Settings.AccountId = "0";
+                        Helpers.Settings.UserId = "0";
+                        Helpers.Settings.UserName = "";
+                        Helpers.Settings.UserFristName = "";
+                        Helpers.Settings.Email = "";
+                        Helpers.Settings.Phone = "";
+                        Helpers.Settings.Password = "";
+                        Helpers.Settings.CreateDate = "";
+                        Helpers.Settings.BranchId = "";
+                        Helpers.Settings.BranchName = "";
+                        Helpers.Settings.UserRole = "";
+                        Helpers.Utility.ServerUrl = Helpers.Utility.ServerUrlStatic;
+
+                        Controls.StartData.IsRunning = false;    
+                }
+            });
+        }
+
+
         protected async override void OnResume()
         {
             base.OnResume(); 
@@ -190,8 +218,10 @@ namespace FixPro
             }
 
             _signalRService.OnMessageReceived -= _signalRService_OnMessageReceivedInSleep;
+            _signalRServiceChangeUserData.OnMessageReceived -= _signalRService_OnMessageReceivedChangeUserDataInSleep;
 
             await SignalRservice();
+            await SignalRserviceChangeUserData();
         }
 
         public async Task GetPlayerIdFromOneSignal()
@@ -270,6 +300,21 @@ namespace FixPro
         }
 
 
+        public async Task SignalRNotserviceChangeUserData()
+        {
+            _signalRServiceChangeUserData.OnMessageReceived -= _signalRService_OnMessageReceivedChangeUserData;
+        }
+
+        public async Task SignalRserviceChangeUserData()
+        {
+            _signalRServiceChangeUserData = new SignalRServiceChangeUserData();
+
+            _signalRServiceChangeUserData.OnMessageReceived += _signalRService_OnMessageReceivedChangeUserData;
+
+            await _signalRServiceChangeUserData.StartAsync();
+        }
+
+
         private async void _signalRService_OnMessageReceived(string arg1, string arg2, string arg3, string arg4)
         {
             Device.BeginInvokeOnMainThread(async() =>
@@ -299,6 +344,38 @@ namespace FixPro
             });
 
         }
+
+
+
+        private async void _signalRService_OnMessageReceivedChangeUserData(string arg1, string arg2, string arg3, string arg4)
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                if (Helpers.Settings.AccountId == arg1 && Helpers.Settings.UserId == arg2 && (Helpers.Settings.UserName != arg3 || Helpers.Settings.Password != arg4))
+                {
+
+                        //await SignalRNotservice();
+                        Helpers.Settings.AccountId = "0";
+                        Helpers.Settings.UserId = "0";
+                        Helpers.Settings.UserName = "";
+                        Helpers.Settings.UserFristName = "";
+                        Helpers.Settings.Email = "";
+                        Helpers.Settings.Phone = "";
+                        Helpers.Settings.Password = "";
+                        Helpers.Settings.CreateDate = "";
+                        Helpers.Settings.BranchId = "";
+                        Helpers.Settings.BranchName = "";
+                        Helpers.Settings.UserRole = "";
+                        Helpers.Utility.ServerUrl = Helpers.Utility.ServerUrlStatic;
+                        await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
+                        Controls.StartData.IsRunning = false;
+                        await App.Current.MainPage.DisplayAlert("Alert", "You’ve been logged out.\r\n(account is changed username or password)\r\n", "Ok");
+                }
+            });
+
+        }
+
+
 
         async void MainThread()
         {

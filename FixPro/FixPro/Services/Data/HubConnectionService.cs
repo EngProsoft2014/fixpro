@@ -24,8 +24,8 @@ namespace FixPro.Services.Data
 
         public HubConnectionService()
         {
-            //connection = new Microsoft.AspNet.SignalR.Client.HubConnection("https://projectservicesapi.engprosoft.com/");
-            connection = new Microsoft.AspNet.SignalR.Client.HubConnection("https://fixproapi.engprosoft.net/");
+            connection = new Microsoft.AspNet.SignalR.Client.HubConnection("https://projectservicesapi.engprosoft.com/");
+            //connection = new Microsoft.AspNet.SignalR.Client.HubConnection("https://api.fixprous.com/");
             hubProxy = connection.CreateHubProxy("ChatHub");
 
             hubProxy.On<string, string, string, string>("addMessage", (name, message, fromUserId, toUserId) =>

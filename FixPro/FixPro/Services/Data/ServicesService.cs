@@ -9,6 +9,7 @@ using Akavache;
 using System.Reactive.Linq;
 using Xamarin.Forms;
 using Xamarin.Essentials;
+using OneSignalSDK.Xamarin.Core;
 
 
 namespace FixPro.Services.Data
@@ -56,15 +57,36 @@ namespace FixPro.Services.Data
                 {
                     if (Helpers.Settings.Phone != "" && Helpers.Settings.Password != "")
                     {
-                        var loginModel = await ORep.GetAsync<EmployeeModel>("api/Login/GetLogin?" + "UserName=" + Helpers.Settings.UserName + "&" + "Password=" + Helpers.Settings.Password + "&" + "PlayerId=" + Helpers.Settings.PlayerId);
+                        var loginModel = await ORep.GetLoginAsync<EmployeeModel>("api/Login/GetLogin?" + "UserName=" + Helpers.Settings.UserName + "&" + "Password=" + Helpers.Settings.Password + "&" + "PlayerId=" + Helpers.Settings.PlayerId);
 
                         if (loginModel != null)
                         {
-                            MUserToken = loginModel.GernToken;
+                            if (!string.IsNullOrEmpty(loginModel.EmployeeStatus) && loginModel.EmployeeStatus.Contains("Try Again"))
+                            {
+                                Helpers.Settings.AccountId = "0";
+                                Helpers.Settings.UserId = "0";
+                                Helpers.Settings.UserName = "";
+                                Helpers.Settings.UserFristName = "";
+                                Helpers.Settings.Email = "";
+                                Helpers.Settings.Phone = "";
+                                Helpers.Settings.Password = "";
+                                Helpers.Settings.CreateDate = "";
+                                Helpers.Settings.BranchId = "";
+                                Helpers.Settings.BranchName = "";
+                                Helpers.Settings.UserRole = "";
+                                Helpers.Utility.ServerUrl = Helpers.Utility.ServerUrlStatic;
+                                await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
+                                Controls.StartData.IsRunning = false;
+                                await App.Current.MainPage.DisplayAlert("Alert", "You’ve been logged out.\r\n(account is changed username and password)\r\n", "Ok");
+                            }
+                            else
+                            {
+                                MUserToken = loginModel.GernToken;
 
-                            await BlobCache.LocalMachine.InsertObject(UserTokenServiceKey, loginModel.GernToken, DateTimeOffset.Now.AddHours(24));
+                                await BlobCache.LocalMachine.InsertObject(UserTokenServiceKey, loginModel.GernToken, DateTimeOffset.Now.AddHours(24));
 
-                            return loginModel.GernToken;
+                                return loginModel.GernToken;
+                            }
                         }
                     }
                 }        

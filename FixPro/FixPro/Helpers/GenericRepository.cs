@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using FixPro.Models;
 using System.Collections.Generic;
 using GoogleApi.Entities.Translate.Common.Enums;
+using FixPro.Controls;
 
 namespace FixPro.Helpers
 {
@@ -85,10 +86,16 @@ namespace FixPro.Helpers
                     return json;
                 }
 
-                if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
-                    responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
                 {
-                    throw new ServiceAuthenticationException(jsonResult);
+                    //throw new ServiceAuthenticationException(jsonResult);
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
+                }
+
+                if(responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
                 }
 
                 //throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
@@ -128,6 +135,17 @@ namespace FixPro.Helpers
                     )
                     .ExecuteAsync(async () =>
                     await httpClient.GetAsync(Utility.ServerUrl + uri));
+
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
+                }
+
+                if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
+                }
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
@@ -185,10 +203,15 @@ namespace FixPro.Helpers
                     return json;
                 }
 
-                if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
-                    responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
                 {
-                    throw new ServiceAuthenticationException(jsonResult);
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
+                }
+
+                if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
                 }
 
                 jsonResult = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -239,9 +262,16 @@ namespace FixPro.Helpers
                     return jsonResult;
                 }
 
-                if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
-                    responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
                 {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
+                    return "";
+                }
+
+                if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
                     return "";
                 }
 
@@ -286,6 +316,17 @@ namespace FixPro.Helpers
                     )
                     .ExecuteAsync(async () => await httpClient.PostAsync(Utility.ServerUrl + uri, content, CancellationToken.None));
 
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
+                }
+
+                if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
+                }
+
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     jsonResult = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -313,13 +354,9 @@ namespace FixPro.Helpers
                     }
                 }
 
-                if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
-                    responseMessage.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    throw new ServiceAuthenticationException(jsonResult);
-                }
+                
 
-                throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
+                //throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
 
             }
             catch (Exception e)
@@ -354,6 +391,17 @@ namespace FixPro.Helpers
                     )
                     .ExecuteAsync(async () => await httpClient.PostAsync(Utility.ServerUrl + uri, content, CancellationToken.None));
 
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
+                }
+
+                if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
+                }
+
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     jsonResult = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -385,13 +433,8 @@ namespace FixPro.Helpers
                     }
                 }
 
-                if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
-                    responseMessage.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    throw new ServiceAuthenticationException(jsonResult);
-                }
 
-                throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
+                //throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
 
             }
             catch (Exception e)
@@ -440,14 +483,25 @@ namespace FixPro.Helpers
                     return json.ToString();
                 }
 
-                if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
-                    responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
                 {
-                    //throw new ServiceAuthenticationException(jsonResult);
-                    var jsonResult2 = await responseMessage.Content.ReadAsStringAsync();
-                    var json2 = JsonConvert.DeserializeObject<T>(jsonResult2);
-                    return json2.ToString();
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
                 }
+
+                if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
+                }
+
+                //if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
+                //    responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                //{
+                //    //throw new ServiceAuthenticationException(jsonResult);
+                //    var jsonResult2 = await responseMessage.Content.ReadAsStringAsync();
+                //    var json2 = JsonConvert.DeserializeObject<T>(jsonResult2);
+                //    return json2.ToString();
+                //}
 
                 var jsonResult3 = await responseMessage.Content.ReadAsStringAsync();
                 var json3 = JsonConvert.DeserializeObject<T>(jsonResult3);
@@ -497,13 +551,18 @@ namespace FixPro.Helpers
                     return json;
                 }
 
-                if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
-                    responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
                 {
-                    throw new ServiceAuthenticationException(jsonResult);
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
                 }
 
-                throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
+                if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
+                }
+
+                return JsonConvert.DeserializeObject<T>(await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             }
             catch (Exception e)
@@ -547,9 +606,16 @@ namespace FixPro.Helpers
                     return jsonResult;
                 }
 
-                if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
-                    responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
                 {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
+                    return "";
+                }
+
+                if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
                     return "";
                 }
 
@@ -591,6 +657,17 @@ namespace FixPro.Helpers
                     )
                     .ExecuteAsync(async () => await httpClient.PutAsync(Utility.ServerUrl + uri, content, CancellationToken.None));
 
+                if (responseMessage.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
+                }
+
+                if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
+                }
+
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     jsonResult = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -612,12 +689,6 @@ namespace FixPro.Helpers
                     {
                         return "api not responding";
                     }
-                }
-
-                if (responseMessage.StatusCode == HttpStatusCode.Forbidden ||
-                    responseMessage.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    throw new ServiceAuthenticationException(jsonResult);
                 }
 
                 throw new HttpRequestExceptionEx(responseMessage.StatusCode, jsonResult);
@@ -656,6 +727,18 @@ namespace FixPro.Helpers
             {
                 response = await httpLient.DeleteAsync(Utility.ServerUrl + uri);
                 var responseData = await response.Content.ReadAsStringAsync();
+
+                if (response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates\r\nthat the server refuses to fulfill the request.", "OK");
+                }
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates\r\nthat the requested resource requires authentication.", "OK");
+                    await StartData.UserLogout();
+                }
+
                 if (response.IsSuccessStatusCode)
                 {   
                     return responseData;
