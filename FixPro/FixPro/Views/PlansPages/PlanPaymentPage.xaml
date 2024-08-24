@@ -130,6 +130,7 @@
                             <StackLayout >
                                 <RadioButton x:Name="rdYearly" IsChecked="{Binding IsYearly}"
                                              GroupName="Group1"
+                                             BackgroundColor="Transparent"
                                              HorizontalOptions="End"
                                              VerticalOptions="Start" 
                                              CheckedChanged="rdYearly_CheckedChanged"></RadioButton>
@@ -139,6 +140,7 @@
                                         Margin="0,4,0,4" 
                                         HorizontalOptions="Center"
                                         CornerRadius="10"
+                                        WidthRequest="100"
                                         HeightRequest="40"
                                         TextColor="White"
                                         BackgroundColor="#3570b8">
@@ -164,6 +166,7 @@
                             <StackLayout>
                                 <RadioButton x:Name="rdMonthly" IsChecked="{Binding IsMonthly}"
                                              GroupName="Group1"
+                                             BackgroundColor="Transparent"
                                              HorizontalOptions="End"
                                              VerticalOptions="Start"
                                              CheckedChanged="rdMonthly_CheckedChanged"></RadioButton>
@@ -173,6 +176,7 @@
                                         Margin="0,4,0,4" 
                                         HorizontalOptions="Center"
                                         CornerRadius="10"
+                                        WidthRequest="100"
                                         HeightRequest="40"
                                         TextColor="White"
                                         BackgroundColor="#3570b8">
