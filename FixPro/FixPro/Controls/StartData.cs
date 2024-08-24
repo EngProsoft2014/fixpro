@@ -106,6 +106,28 @@ namespace FixPro.Controls
             }
         }
 
+
+        public async static Task<AccountModel> GetExpiredDate(int AccountId)
+        {
+            try
+            {
+                var ExpDate = await ORep.GetAsync<AccountModel>("api/Login/GetExpiredDate?AccountId=" + AccountId);
+                if (ExpDate != null)
+                {
+                    return ExpDate;
+                }
+                else
+                {
+                    return new AccountModel();
+                }
+            }
+            catch (Exception ex)
+            {
+                return new AccountModel();
+            }
+
+        }
+
         public async static Task CheckPermissionEmployee()
         {
             if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)

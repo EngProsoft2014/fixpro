@@ -293,6 +293,8 @@ namespace FixPro.ViewModels
         //    }
         //}
 
+        public static AccountModel AccountModelObj { get; set; } = new AccountModel();
+
         Helpers.GenericRepository ORep = new Helpers.GenericRepository();
 
         //private SignalRService _signalRService;
@@ -314,11 +316,23 @@ namespace FixPro.ViewModels
             //Massages = new ObservableCollection<string>();
             UserRole = Helpers.Settings.UserRole;
 
-            Init();
-            GetPerrmission();
-            GetEmployeesInAccountId();
+            CheckInit();
+
         }
 
+        async void CheckInit()
+        {
+            if (Helpers.Settings.AccountId != "0")
+            {
+                bool Result = await CheckAccountExpired(int.Parse(Helpers.Settings.AccountId));
+                if (Result == true)
+                {
+                    Init();
+                    GetPerrmission();
+                    GetEmployeesInAccountId();
+                }
+            }
+        }
 
         //Get Perrmission for User
         public async void GetPerrmission()
@@ -330,7 +344,7 @@ namespace FixPro.ViewModels
 
         public async void GetEmployeesInAccountId()
         {
-           await GetEmployeesInAccountId(int.Parse(Helpers.Settings.AccountId));
+            await GetEmployeesInAccountId(int.Parse(Helpers.Settings.AccountId));
         }
 
         async void Init()
@@ -353,10 +367,9 @@ namespace FixPro.ViewModels
             LstEmpInAccountId = new ObservableCollection<EmployeeModel>();
 
             await Controls.StartData.GetAccountKeysAsync();
+            await GetNotifications();
 
             NumNotify = 0;
-
-            await GetNotifications();
 
             Login.UserName = Helpers.Settings.UserName;
             Login.Phone1 = Helpers.Settings.Phone;
@@ -371,15 +384,141 @@ namespace FixPro.ViewModels
             }
         }
 
+
+
+        async Task<bool> CheckAccountExpired(int AccountId)
+        {
+            DateTime Dt = DateTime.Now;
+
+            bool convert = DateTime.TryParse(Helpers.Settings.AccountDayExpired, out Dt);
+
+            if (convert)
+            {
+                if (DateTime.Now.Day > Dt.Day || DateTime.Now.Month > Dt.Month)
+                {
+                    AccountModelObj = await Controls.StartData.GetExpiredDate(AccountId);
+
+                    if (AccountModelObj?.ExpireDate != null)
+                    {
+                        string AccountExpiredFromDataBase = AccountModelObj?.ExpireDate.ToString();
+                        if (!string.IsNullOrEmpty(AccountExpiredFromDataBase))
+                        {
+                            Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+
+                            var _ExpireDate = DateTime.Parse(AccountExpiredFromDataBase);
+                            var _TodayDate = DateTime.Parse(DateTime.Now.ToString());
+                            TimeSpan diff = _TodayDate - _ExpireDate;
+                            var days = diff.Days;
+                            var Hours = diff.Hours;
+
+                            if (days > 0 || days == 0)
+                            {
+                                await App.Current.MainPage.DisplayAlert("Alert", "Account expired", "Ok");
+                                await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
+                                return false;
+                            }
+                            else
+                            {
+                                Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+                        return true;
+                    }
+                }
+                else
+                {
+                    Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+                    return true;
+                }
+            }
+            else
+            {
+                Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+                return true;
+            }
+        }
+
+
+        //async Task CheckAccountExpired(int AccountId)
+        //{
+
+        //    DateTime Dt = DateTime.Now;
+
+        //    bool convert = DateTime.TryParse(Helpers.Settings.AccountDayExpired, out Dt);
+
+        //    if (convert)
+        //    {
+        //        if (DateTime.Now.Day > Dt.Day || DateTime.Now.Month > Dt.Month)
+        //        {
+        //            AccountModelObj = await Controls.StartData.GetExpiredDate(AccountId);
+
+        //            if (AccountModelObj?.ExpireDate != null)
+        //            {
+        //                string AccountExpiredFromDataBase = AccountModelObj?.ExpireDate.ToString();
+        //                if (!string.IsNullOrEmpty(AccountExpiredFromDataBase))
+        //                {
+        //                    Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+
+        //                    var _ExpireDate = DateTime.Parse(AccountExpiredFromDataBase);
+        //                    var _TodayDate = DateTime.Parse(DateTime.Now.ToString());
+        //                    TimeSpan diff = _TodayDate - _ExpireDate;
+        //                    var days = diff.Days;
+        //                    var Hours = diff.Hours;
+
+        //                    if (days > 0 || days == 0)
+        //                    {
+        //                        await App.Current.MainPage.DisplayAlert("Alert", "Account expired", "Ok");
+        //                        await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
+        //                    }
+        //                    else
+        //                    {
+        //                        await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+        //                        Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+        //                    Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+        //                }
+        //            }
+        //            else
+        //            {
+        //                await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+        //                Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+        //            }
+        //        }
+        //        else
+        //        {
+        //            await App.Current.MainPage.Navigation.PushAsync(new MainPage());
+        //            Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
+        //    }
+        //}
+
         public async Task GetNotifications()
         {
-            
+
             if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
                 string UserToken = await _service.UserToken();
                 Messages = await ORep.GetAsync<ObservableCollection<NotificationsModel>>("api/Notifications/GetNotifications?" + "EmployeeId=" + Helpers.Settings.UserId, UserToken);
                 NumNotify = Messages.Count;
-            }      
+            }
         }
 
         // Get Employees in Account Id
@@ -474,7 +613,7 @@ namespace FixPro.ViewModels
                     }
                 }
             }
-                
+
             IsBusy = false;
         }
 
@@ -560,7 +699,7 @@ namespace FixPro.ViewModels
                     }
                 }
             }
-               
+
         }
 
         async void OnSelectedNotificationDetails(NotificationsModel model)

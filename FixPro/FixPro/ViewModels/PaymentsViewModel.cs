@@ -408,14 +408,14 @@ namespace FixPro.ViewModels
             
         }
 
-        async Task GetSkretKey(int? BranchId)
+        async Task GetSkretKey(int? AccountId,int? BranchId)
         {
             if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
                 UserDialogs.Instance.ShowLoading();
                 string UserToken = await _service.UserToken();
 
-                var json = await ORep.GetAsync<StripeAccountModel>(string.Format("api/Payments/GetStripeAccount?" + "BranchId=" + BranchId), UserToken);
+                var json = await ORep.GetAsync<StripeAccountModel>(string.Format("api/Payments/GetStripeAccount?" + "AccountId=" + AccountId + "&" + "BranchId=" + BranchId), UserToken);
 
                 if (json != null)
                 {
@@ -430,7 +430,7 @@ namespace FixPro.ViewModels
         {
             if (Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet)
             {
-                await GetSkretKey(OneInvoice.BrancheId);
+                await GetSkretKey(OneInvoice.AccountId, OneInvoice.BrancheId);
 
                 StripeConfiguration.ApiKey = StripeModel.SecretKey;
 

@@ -348,7 +348,7 @@
                                     <Label 
                                          HorizontalOptions="EndAndExpand"
                                          TextColor="Black"
-                                         Text="{Binding ScheduleDetails.CustomerDTO.TaxDTO.Rate,StringFormat='%{0}'}"
+                                         Text="{Binding CustomerDetails.TaxDTO.Rate,StringFormat='%{0}'}"
                                          FontSize="15">
                                     </Label>
                                 </StackLayout>

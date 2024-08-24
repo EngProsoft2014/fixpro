@@ -120,7 +120,15 @@ namespace FixPro.ViewModels
                     }
                     else if (MLogin.EmployeeStatus?.Contains("Account Is Expired") == true)
                     {
-                        await App.Current.MainPage.DisplayAlert("Alert", "Account expired", "Ok");
+                        Helpers.Settings.Email = MLogin.EmailUserName;
+                        bool answer = await App.Current.MainPage.DisplayAlert("Question?", "Account expired, Do you want to buy a pricing plan?", "Yes", "No");
+                        if(answer)
+                        {
+                            var ViewModel = new PlansViewModel();
+                            var page = new Views.PlansPages.ChoosePlanPage();
+                            page.BindingContext = ViewModel;
+                            await App.Current.MainPage.Navigation.PushAsync(page);
+                        }
                     }
                     else
                     {

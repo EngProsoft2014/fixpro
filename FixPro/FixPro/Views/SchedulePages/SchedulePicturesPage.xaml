@@ -99,7 +99,7 @@
                                                     <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
                                                 </yummy:PancakeView.Border>
                                                 <yummy:PancakeView.Shadow>
-                                                    <yummy:DropShadow Offset="1,2" Color="Black" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                                                    <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black, iOS=Gray}" BlurRadius="{OnPlatform Android=1,iOS=1}" Opacity="1"></yummy:DropShadow>
                                                 </yummy:PancakeView.Shadow>
                                             </yummy:PancakeView>
                                             <StackLayout.Triggers>

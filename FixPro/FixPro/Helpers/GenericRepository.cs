@@ -18,6 +18,7 @@ using FixPro.Models;
 using System.Collections.Generic;
 using GoogleApi.Entities.Translate.Common.Enums;
 using FixPro.Controls;
+using System.Linq;
 
 namespace FixPro.Helpers
 {
@@ -156,9 +157,11 @@ namespace FixPro.Helpers
                 else
                 {
                     jsonResult = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    List<string> result = jsonResult.Replace(":","").Replace("{","").Replace("Message","").Replace("\"","").Split('-').ToList();
                     Models.EmployeeModel obj = new Models.EmployeeModel()
-                    {
-                        EmployeeStatus = jsonResult
+                    {     
+                        EmailUserName = result[0],
+                        EmployeeStatus = result[1]
                     };
                     return obj;
                 }

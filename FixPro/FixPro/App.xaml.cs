@@ -5,6 +5,7 @@ using FixPro.Services.Data;
 using FixPro.ViewModels;
 using FixPro.Views;
 using FixPro.Views.CustomerPages;
+using FixPro.Views.PlansPages;
 using FixPro.Views.SchedulePages;
 using GoogleApi.Entities.Translate.Common.Enums;
 using OneSignalSDK.Xamarin;
@@ -35,8 +36,6 @@ namespace FixPro
 
         public static string AppName = "DeepLinking";
 
-        public static AccountModel AccountModelObj { get; set; } = new AccountModel();
-
         readonly Services.Data.ServicesService _service = new Services.Data.ServicesService();
 
         //public static string UserStateKey = "UserStateKey";
@@ -60,10 +59,9 @@ namespace FixPro
 
             Helpers.Settings.PlayerId = OneSignal.Default.DeviceState.userId != null ? OneSignal.Default.DeviceState.userId.ToString() : null;
 
-
+            
             if (Helpers.Settings.UserName != "" && Helpers.Settings.Password != "")
             {
-                
                 MainPage = new NavigationPage(new MainPage());
             }
             else
@@ -75,6 +73,7 @@ namespace FixPro
             OneSignal.Default.NotificationOpened += Default_NotificationOpened;
         }
 
+
         async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             if (e.NetworkAccess != NetworkAccess.Internet)
@@ -84,7 +83,6 @@ namespace FixPro
                 return;
             }
         }
-
 
 
         protected async override void OnStart()
@@ -98,10 +96,6 @@ namespace FixPro
                 await SignalRservice();
                 await SignalRserviceChangeUserData();
 
-                if (Helpers.Settings.AccountId != "0")
-                {
-                    await Init(int.Parse(Helpers.Settings.AccountId));
-                }
 
                 await Controls.StartData.GetCom_Main();
             }
@@ -403,87 +397,6 @@ namespace FixPro
             }
         }
 
-
-        async Task Init(int AccountId)
-        {
-            DateTime Dt = DateTime.Now;
-
-            bool convert = DateTime.TryParse(Helpers.Settings.AccountDayExpired, out Dt);
-
-            if (convert)
-            {
-                if (DateTime.Now.Day > Dt.Day || DateTime.Now.Month > Dt.Month)
-                {
-                    AccountModelObj = await GetExpiredDate(AccountId);
-
-                    if (AccountModelObj?.ExpireDate != null)
-                    {
-                        string AccountExpiredFromDataBase = AccountModelObj?.ExpireDate.ToString();
-                        if (!string.IsNullOrEmpty(AccountExpiredFromDataBase))
-                        {
-                            Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
-
-                            var _ExpireDate = DateTime.Parse(AccountExpiredFromDataBase);
-                            var _TodayDate = DateTime.Parse(DateTime.Now.ToString());
-                            TimeSpan diff = _TodayDate - _ExpireDate;
-                            var days = diff.Days;
-                            var Hours = diff.Hours;
-
-                            if (days > 0 || days == 0)
-                            {
-                                await App.Current.MainPage.DisplayAlert("Alert", "Account expired", "Ok");
-                                await App.Current.MainPage.Navigation.PushAsync(new Views.LoginPage());
-                            }
-                            else
-                            {
-                                await App.Current.MainPage.Navigation.PushAsync(new MainPage());
-                                Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
-                            }
-                        }
-                        else
-                        {
-                            await App.Current.MainPage.Navigation.PushAsync(new MainPage());
-                            Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
-                        }
-                    }
-                    else
-                    {
-                        await App.Current.MainPage.Navigation.PushAsync(new MainPage());
-                        Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
-                    }
-                }
-                else
-                {
-                    await App.Current.MainPage.Navigation.PushAsync(new MainPage());
-                    Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
-                }
-            }
-            else
-            {
-                Helpers.Settings.AccountDayExpired = DateTime.Now.ToString();
-            }
-        }
-
-        async Task<AccountModel> GetExpiredDate(int AccountId)
-        {
-            try
-            {
-                var ExpDate = await ORep.GetAsync<AccountModel>("api/Login/GetExpiredDate?AccountId=" + AccountId);
-                if(ExpDate != null)
-                {
-                    return ExpDate;
-                }
-                else
-                {
-                    return new AccountModel();
-                }
-            }
-            catch (Exception ex)
-            {
-                return new AccountModel();
-            }
-            
-        }
 
         private void HandleDeepLinking(Uri deepLink = null)
         {

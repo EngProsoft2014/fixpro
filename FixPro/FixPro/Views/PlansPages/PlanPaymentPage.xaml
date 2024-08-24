@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Controls:CustomsPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                       xmlns:Controls="clr-namespace:FixPro.Controls"
+                      xmlns:Helpers="clr-namespace:FixPro.Helpers"
+                      xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+                      xmlns:vm="clr-namespace:FixPro.ViewModels"
+                      xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+                      BackgroundColor="White"
+                      x:Name="page"
+             x:Class="FixPro.Views.PlansPages.PlanPaymentPage">
+    <ContentPage.BindingContext>
+        <vm:PlansViewModel></vm:PlansViewModel>
+    </ContentPage.BindingContext>
+
+    <StackLayout>
+        <!--Toolbar Credit Card-->
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="{OnPlatform iOS='15,50,15,10', Android='15,10,15,10'}">
+
+            <Image x:Name="imgback">
+                <Image.Source>
+                    <FontImageSource FontFamily="FontIconSolid" Color="#878686" Glyph="" Size="20"></FontImageSource>
+                </Image.Source>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                </Image.GestureRecognizers>
+            </Image>
+
+            <Label x:Name="lblTitle" Text="Payment" HeightRequest="30"
+                    VerticalOptions="FillAndExpand" Style="{StaticResource lblHeaderText}"
+                    HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+        </StackLayout>
+
+        <ScrollView VerticalOptions="FillAndExpand" Padding="0,0,0,30">
+            <StackLayout Padding="20,20,20,0" VerticalOptions="FillAndExpand" TranslationY="0" Spacing="25">
+                <StackLayout Orientation="Horizontal" Spacing="20" HorizontalOptions="EndAndExpand" Margin="0,0,20,10">
+                    <Image x:Name="imgBack">
+                        <Image.Source>
+                            <FontImageSource FontFamily="FontIconSolid" Color="#b66dff" Glyph="" Size="25"></FontImageSource>
+                        </Image.Source>
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BindingContext.ScanCommand,Source={x:Reference page}}"></TapGestureRecognizer>
+                        </Image.GestureRecognizers>
+                    </Image>
+
+                    <Label Text="Scan Card" VerticalTextAlignment="Center"></Label>
+                </StackLayout>
+
+                <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,5,10,5',iOS=10}" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                    <Entry Text="{Binding HolderName}"          
+                                 TextColor="Gray"
+                                 Placeholder="Card holder name"
+                                 FontSize="12"
+                                 HorizontalOptions="FillAndExpand"
+                                 VerticalTextAlignment="Center">
+                    </Entry>
+                    <yummy:PancakeView.Border>
+                        <yummy:Border Color="Gray" Thickness="1"></yummy:Border>
+                    </yummy:PancakeView.Border>
+                    <yummy:PancakeView.Shadow>
+                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black,iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                    </yummy:PancakeView.Shadow>
+                </yummy:PancakeView>
+
+                <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,5,10,5',iOS=10}" CornerRadius="10" HorizontalOptions="FillAndExpand">
+                    <Entry Text="{Binding CardNumber}"
+                                 TextColor="Gray"
+                                 Placeholder="Card Number"
+                                 FontSize="12"
+                                 HorizontalOptions="FillAndExpand"
+                                 VerticalTextAlignment="Center">
+                    </Entry>
+                    <yummy:PancakeView.Border>
+                        <yummy:Border Color="Gray" Thickness="1"></yummy:Border>
+                    </yummy:PancakeView.Border>
+                    <yummy:PancakeView.Shadow>
+                        <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black,iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                    </yummy:PancakeView.Shadow>
+                </yummy:PancakeView>
+
+                <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                    <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,5,10,5',iOS=10}" CornerRadius="10" WidthRequest="160" HorizontalOptions="StartAndExpand">
+                        <Entry Text="{Binding ExpirationDate}"               
+                         TextColor="Gray"
+                         Placeholder="Expired Date"
+                         FontSize="12"
+                         HorizontalOptions="FillAndExpand"
+                         VerticalTextAlignment="Center">
+                        </Entry>
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="Gray" Thickness="1"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black,iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+
+                    <Image x:Name="imgCard" HorizontalOptions="Center" Margin="10,0,10,0">
+                        <Image.Source>
+                            <FontImageSource FontFamily="FontIconSolid" Glyph="" Color="Gray" Size="25"></FontImageSource>
+                        </Image.Source>
+                    </Image>
+
+                    <yummy:PancakeView BackgroundColor="White" Padding="{OnPlatform Android='10,5,10,5',iOS=10}" CornerRadius="10" WidthRequest="150" HorizontalOptions="FillAndExpand">
+                        <Entry Text="{Binding cvv}"
+                             TextColor="Gray"
+                             Placeholder="Cvv"
+                             FontSize="12"
+                             HorizontalOptions="FillAndExpand"
+                             VerticalTextAlignment="Center">
+                        </Entry>
+                        <yummy:PancakeView.Border>
+                            <yummy:Border Color="Gray" Thickness="1"></yummy:Border>
+                        </yummy:PancakeView.Border>
+                        <yummy:PancakeView.Shadow>
+                            <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black,iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+                        </yummy:PancakeView.Shadow>
+                    </yummy:PancakeView>
+                </StackLayout>
+
+
+                <StackLayout Orientation="Horizontal" Spacing="20" HorizontalOptions="CenterAndExpand" Margin="0,20,0,0">
+
+                    <StackLayout  WidthRequest="150">
+
+                        <yummy:PancakeView x:Name="pnkcashMethod" CornerRadius="10" Padding="10" BackgroundColor="Transparent" >
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Thickness="2" Color="#c995fc"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <StackLayout >
+                                <RadioButton x:Name="rdYearly" IsChecked="{Binding IsYearly}"
+                                             GroupName="Group1"
+                                             HorizontalOptions="End"
+                                             VerticalOptions="Start" 
+                                             CheckedChanged="rdYearly_CheckedChanged"></RadioButton>
+
+                                <Button x:Name="btnYearly" 
+                                        Text="{Binding OnePlan.AnnualPrice,StringFormat='${0}'}"
+                                        Margin="0,4,0,4" 
+                                        HorizontalOptions="Center"
+                                        CornerRadius="10"
+                                        HeightRequest="40"
+                                        TextColor="White"
+                                        BackgroundColor="#3570b8">
+
+                                </Button>
+
+                                <Label Text="Once a year" 
+                                       FontFamily="InterMedium"
+                                       TextColor="#212121"
+                                       FontSize="14"
+                                       HorizontalOptions="Center"></Label>
+                            </StackLayout>
+                        </yummy:PancakeView>
+                    </StackLayout>
+
+
+
+                    <StackLayout  WidthRequest="150">
+                        <yummy:PancakeView x:Name="pnkcardMethod" CornerRadius="10" Padding="10" BackgroundColor="Transparent" >
+                            <yummy:PancakeView.Border>
+                                <yummy:Border Thickness="2" Color="#c995fc"></yummy:Border>
+                            </yummy:PancakeView.Border>
+                            <StackLayout>
+                                <RadioButton x:Name="rdMonthly" IsChecked="{Binding IsMonthly}"
+                                             GroupName="Group1"
+                                             HorizontalOptions="End"
+                                             VerticalOptions="Start"
+                                             CheckedChanged="rdMonthly_CheckedChanged"></RadioButton>
+
+                                <Button x:Name="btnMonthly" 
+                                        Text="{Binding OnePlan.MonthlyPrice,StringFormat='${0}'}"
+                                        Margin="0,4,0,4" 
+                                        HorizontalOptions="Center"
+                                        CornerRadius="10"
+                                        HeightRequest="40"
+                                        TextColor="White"
+                                        BackgroundColor="#3570b8">
+                                </Button>
+
+
+                                <Label Text="Once a month" 
+                                       FontFamily="InterMedium"
+                                       TextColor="#212121"
+                                       FontSize="14"
+                                       HorizontalOptions="Center"></Label>
+                            </StackLayout>
+                        </yummy:PancakeView>
+                    </StackLayout>
+                </StackLayout>
+
+            </StackLayout>
+
+        </ScrollView>
+
+        <yummy:PancakeView BackgroundColor="#8f1fff" Padding="{OnPlatform Android='5,10,5,10',iOS='5,15,5,15'}" Margin="{OnPlatform Android=20,iOS='20,20,20,50'}" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="End" BackgroundGradientStartPoint="1,1" BackgroundGradientEndPoint="1,0">
+            <Label x:Name="btnPayCredit" Text="Pay Now"
+                                 TextColor="White"
+                                 FontSize="16"
+                                 HorizontalOptions="CenterAndExpand"
+                                 VerticalTextAlignment="Center">
+            </Label>
+            <yummy:PancakeView.BackgroundGradientStops>
+                <yummy:GradientStopCollection>
+                    <yummy:GradientStop Color="#8f1fff" Offset="0"></yummy:GradientStop>
+                    <yummy:GradientStop Color="#b66dff" Offset="0.5"></yummy:GradientStop>
+                    <yummy:GradientStop Color="#c995fc" Offset="1.0"></yummy:GradientStop>
+                    <yummy:GradientStop Color="#e3c7ff" Offset="1.0"></yummy:GradientStop>
+                </yummy:GradientStopCollection>
+            </yummy:PancakeView.BackgroundGradientStops>
+            <yummy:PancakeView.Border>
+                <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>
+            </yummy:PancakeView.Border>
+            <yummy:PancakeView.Shadow>
+                <yummy:DropShadow Offset="1,2" Color="{OnPlatform Android=Black,iOS=Gray}" BlurRadius="1" Opacity="1"></yummy:DropShadow>
+            </yummy:PancakeView.Shadow>
+            <yummy:PancakeView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding BindingContext.CreditPayNow,Source={x:Reference page}}" CommandParameter="{Binding OnePlan}"></TapGestureRecognizer>
+            </yummy:PancakeView.GestureRecognizers>
+        </yummy:PancakeView>
+
+    </StackLayout>
+</Controls:CustomsPage>
