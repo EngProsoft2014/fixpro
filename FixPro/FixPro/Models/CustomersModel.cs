@@ -35,6 +35,7 @@ namespace FixPro.Models
         public string locationlongitude { get; set; }
         public Position MPosition { get { return new Position(locationlatitude == null ? 0 : double.Parse(locationlatitude), locationlongitude == null ? 0 : double.Parse(locationlongitude)); } }
         public string Phone1 { get; set; }
+        public string Phone1WithoutPermission { get; set; }
         public string Phone2 { get; set; }
         public string Mobile { get; set; }
         public string Email { get; set; }

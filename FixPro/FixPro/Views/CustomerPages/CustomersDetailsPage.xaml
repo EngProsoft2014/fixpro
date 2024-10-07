@@ -299,7 +299,7 @@
                                                         <yummy:PancakeView BackgroundColor="White" Padding="5,0,5,0" CornerRadius="10" HorizontalOptions="FillAndExpand">
                                                             <StackLayout HorizontalOptions="FillAndExpand" Margin="5,12,5,12">
                                                                 <Label 
-                                                                       Text="{Binding CustomerDetails.Phone1}" 
+                                                                       Text="{Binding CustomerDetails.Phone1WithoutPermission}" 
                                                                        TextColor="#8f1fff"
                                                                        FontSize="12"
                                                                        HorizontalOptions="Start"

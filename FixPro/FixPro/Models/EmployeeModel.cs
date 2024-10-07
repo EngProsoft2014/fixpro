@@ -103,5 +103,6 @@ namespace FixPro.Models
         public bool? ActiveEditEstimate_Invoice { get; set; }
         public string CompanyNameWithSpace { get; set; }
         public string EmployeeStatus { get; set; }
+        public bool? ActiveCustomerPhone { get; set; }
     }
 }

@@ -496,6 +496,11 @@
                                           FontSize="12"
                                           HorizontalOptions="FillAndExpand"
                                           VerticalTextAlignment="Center">
+                                        <Entry.Triggers>
+                                            <DataTrigger TargetType="Entry" Binding="{Binding IsUpdateCust}" Value="2">
+                                                <Setter Property="Text" Value="{Binding CustomerDetails.Phone1WithoutPermission}"></Setter>
+                                            </DataTrigger>
+                                        </Entry.Triggers>
                                     </Entry>
                                     <yummy:PancakeView.Border>
                                         <yummy:Border Color="LightGray" Thickness="1"></yummy:Border>

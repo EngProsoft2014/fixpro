@@ -22,6 +22,7 @@ using FixPro.Views.CustomerPages;
 using System.Reflection;
 using System.Xml.Linq;
 using Stripe.FinancialConnections;
+using Syncfusion.DataSource.Extensions;
 
 namespace FixPro.ViewModels
 {
@@ -1055,6 +1056,7 @@ namespace FixPro.ViewModels
             CreateNewCustomerFromSchedule = new Command(OnCreateNewCustomerFromSchedule);
             CreateNewCustomer = new Command(OnCreateNewCustomer);
 
+            GetPerrmission();
             GetAllCustomers();
         }
 
@@ -1139,8 +1141,8 @@ namespace FixPro.ViewModels
             }
             //CustomerDetails.Discount == null ||
             if (CustomerDetails.MemeberType == true)
-            { 
-                IsMemberShip = true; 
+            {
+                IsMemberShip = true;
             }
             else
             {
@@ -1175,7 +1177,7 @@ namespace FixPro.ViewModels
             ChooseCustomerCampaign = new Command<CampaignModel>(OnChooseCustomerCampaign);
             InsertCustomer = new Command<CustomersModel>(OnInsertCustomer);
             SelecteAddress = new Command(OnSelecteAddress);
-
+            GetPerrmission();
         }
 
 
@@ -1409,7 +1411,7 @@ namespace FixPro.ViewModels
 
                             TotalInvoice(OneInvoice);
 
-                            if(Net <= 0)
+                            if (Net <= 0)
                             {
                                 IsNotShowPayment = true;
                             }
@@ -1974,7 +1976,7 @@ namespace FixPro.ViewModels
                                 {
                                     await App.Current.MainPage.DisplayAlert("FixPro", "Invoice saved successfully.", "Ok");
 
-                                    if(OneInvoice.Net > 0)
+                                    if (OneInvoice.Net > 0)
                                     {
                                         var ViewModel = new SchedulesViewModel(OneInvoice, CustomerDetails);
                                         var page = new Views.PopupPages.PaymentMethodsPopup();
@@ -2051,7 +2053,7 @@ namespace FixPro.ViewModels
                             var json = "";
                             if (OneEstimate.Id == 0)
                             {
-                                
+
                                 UserDialogs.Instance.ShowLoading();
                                 //json = await Helpers.Utility.PostData("api/Estimates/PostEstimate", JsonConvert.SerializeObject(OneEstimate));
                                 json = await ORep.PostDataAsync("api/Estimates/PostEstimate", OneEstimate, UserToken);
@@ -2426,7 +2428,7 @@ namespace FixPro.ViewModels
                         model.State = CustomerDetails.State != null ? CustomerDetails.State : State;
                         model.City = CustomerDetails.City != null ? CustomerDetails.City : City;
                         model.PostalcodeZIP = CustomerDetails.PostalcodeZIP != null ? CustomerDetails.PostalcodeZIP : ZipCode;
-                        if((model.MemeberType == false || model.MemeberType == null) && model.MemberDTO == null)
+                        if ((model.MemeberType == false || model.MemeberType == null) && model.MemberDTO == null)
                         {
                             model.MemeberExpireDate = null;
                         }
@@ -2651,7 +2653,7 @@ namespace FixPro.ViewModels
                             //await App.Current.MainPage.DisplayAlert("Alert", "Failed Delete Inovice.", "Ok");
                         }
                     }
-                        
+
                     UserDialogs.Instance.HideLoading();
                 }
             }

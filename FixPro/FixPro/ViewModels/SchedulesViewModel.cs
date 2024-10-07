@@ -2375,7 +2375,17 @@ namespace FixPro.ViewModels
         {
             try
             {
-                PhoneDialer.Open(model.Phone1);
+                int tel;
+                bool Result = int.TryParse(model.Phone1, out tel);
+                if (Result) 
+                {
+                    PhoneDialer.Open(model.Phone1);
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("Warning", "You don't access this customer's phone", "OK");
+                }
+                
             }
             catch (FeatureNotSupportedException ex)
             {
